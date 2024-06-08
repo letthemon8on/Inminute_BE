@@ -1,4 +1,4 @@
-package org.example.inminute_demo.zoom.oauth2;
+package org.example.inminute_demo.zoom.auth;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -16,7 +16,7 @@ import java.util.Base64;
 import java.util.Map;
 
 @Service
-public class ZoomService {
+public class ZoomAuthService {
 
     private static final String ZOOM_URL = "https://zoom.us/oauth/token";
     private static final OkHttpClient client = new OkHttpClient();

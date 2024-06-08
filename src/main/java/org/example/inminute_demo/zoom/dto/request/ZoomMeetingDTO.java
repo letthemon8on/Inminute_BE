@@ -1,14 +1,14 @@
-package org.example.inminute_demo.zoom.dto;
+package org.example.inminute_demo.zoom.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.inminute_demo.zoom.domain.ZoomMeetingObjectEntity;
+import org.example.inminute_demo.zoom.domain.ZoomMeeting;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
-public class ZoomMeetingObjectDTO {
+public class ZoomMeetingDTO {
     private String topic;
     // private int duration;
     // private String start_time;
@@ -17,8 +17,8 @@ public class ZoomMeetingObjectDTO {
 
     // Getters and setters
 
-    public ZoomMeetingObjectEntity toEntity() {
-        ZoomMeetingObjectEntity entity = new ZoomMeetingObjectEntity();
+    public ZoomMeeting toEntity() {
+        ZoomMeeting entity = new ZoomMeeting();
         entity.setTopic(this.topic);
         // entity.setDuration(this.duration);
         // entity.setStartTime(this.start_time);

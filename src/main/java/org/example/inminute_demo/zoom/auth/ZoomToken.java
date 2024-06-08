@@ -1,4 +1,4 @@
-package org.example.inminute_demo.zoom.oauth2;
+package org.example.inminute_demo.zoom.auth;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
