@@ -1,9 +1,9 @@
 package org.example.inminute_demo.zoom.service;
 
-import org.example.inminute_demo.zoom.domain.ZoomMeetingObjectEntity;
-import org.example.inminute_demo.zoom.dto.ZoomMeetingObjectDTO;
-import org.example.inminute_demo.zoom.dto.ZoomMeetingSettingsDTO;
-import org.example.inminute_demo.zoom.oauth2.ZoomTokenRepository;
+import org.example.inminute_demo.zoom.domain.ZoomMeeting;
+import org.example.inminute_demo.zoom.dto.request.ZoomMeetingDTO;
+import org.example.inminute_demo.zoom.dto.request.ZoomMeetingSettingsDTO;
+import org.example.inminute_demo.zoom.auth.ZoomTokenRepository;
 import org.example.inminute_demo.zoom.repository.ZoomMeetingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 
 @Service
-public class ZoomMeetingService {
+public class ZoomService {
 
     @Autowired
     private ZoomTokenRepository zoomTokenRepository;
@@ -24,7 +24,7 @@ public class ZoomMeetingService {
     @Autowired
     private ZoomMeetingRepository zoomMeetingRepository;
 
-    public ZoomMeetingObjectEntity createMeeting(ZoomMeetingObjectDTO zoomMeetingObjectDTO) throws IOException {
+    public ZoomMeeting createMeeting(ZoomMeetingDTO zoomMeetingDTO) throws IOException {
         // Token 만료 여부 확인
         // isExpired();
 
@@ -34,7 +34,7 @@ public class ZoomMeetingService {
         String apiUrl = "https://api.zoom.us/v2/users/" + "swp0927@gmail.com" + "/meetings";
 
         // 호스트 이메일 설정
-        zoomMeetingObjectDTO.setHost_email("swp0927@gmail.com");
+        zoomMeetingDTO.setHost_email("swp0927@gmail.com");
 
         // 미팅 설정
         ZoomMeetingSettingsDTO settingsDTO = new ZoomMeetingSettingsDTO();
@@ -43,7 +43,7 @@ public class ZoomMeetingService {
         settingsDTO.setHost_video(false);
         settingsDTO.setAuto_recording("local");
         settingsDTO.setMute_upon_entry(true);
-        zoomMeetingObjectDTO.setSettings(settingsDTO);
+        zoomMeetingDTO.setSettings(settingsDTO);
 
         // REST 요청 설정
         RestTemplate restTemplate = new RestTemplate();
@@ -51,8 +51,8 @@ public class ZoomMeetingService {
         headers.add("Authorization", "Bearer " + zoomTokenRepository.findById(0L).get().getAccessToken());
         headers.add("content-type", "application/json");
 
-        HttpEntity<ZoomMeetingObjectDTO> httpEntity = new HttpEntity<>(zoomMeetingObjectDTO, headers);
-        ResponseEntity<ZoomMeetingObjectDTO> zEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, httpEntity, ZoomMeetingObjectDTO.class);
+        HttpEntity<ZoomMeetingDTO> httpEntity = new HttpEntity<>(zoomMeetingDTO, headers);
+        ResponseEntity<ZoomMeetingDTO> zEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, httpEntity, ZoomMeetingDTO.class);
 
         // 응답 처리
         if (zEntity.getStatusCodeValue() == 201) {
@@ -62,7 +62,7 @@ public class ZoomMeetingService {
             System.out.println("Error while creating zoom meeting: " + zEntity.getStatusCode());
         }
 
-        zoomMeetingObjectDTO.setSettings(null);
+        zoomMeetingDTO.setSettings(null);
         return null;
     }
 }

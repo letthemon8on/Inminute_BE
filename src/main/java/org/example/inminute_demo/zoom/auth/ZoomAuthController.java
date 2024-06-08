@@ -1,4 +1,4 @@
-package org.example.inminute_demo.zoom.oauth2;
+package org.example.inminute_demo.zoom.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 @RestController
-public class ZoomController {
+public class ZoomAuthController {
 
     @Autowired
-    private ZoomService zoomService;
+    private ZoomAuthService zoomAuthService;
 
     @GetMapping("/zoomApi")
     public ZoomToken getZoomToken(@RequestParam String code) throws IOException, NoSuchAlgorithmException {
@@ -20,7 +20,7 @@ public class ZoomController {
         String clientId = "G1cmu02jTSaxutApfmFYVA";
         String clientSecret = "sZFX1x0JC2fOG2rDUr09iM68Ts6tgA9j";
 
-        return zoomService.getAccessToken(code, redirectUri, clientId, clientSecret);
+        return zoomAuthService.getAccessToken(code, redirectUri, clientId, clientSecret);
     }
 
     @GetMapping("/zoomApi/refresh")
@@ -28,6 +28,6 @@ public class ZoomController {
         String clientId = "G1cmu02jTSaxutApfmFYVA";
         String clientSecret = "sZFX1x0JC2fOG2rDUr09iM68Ts6tgA9j";
 
-        return zoomService.refreshToken(clientId, clientSecret);
+        return zoomAuthService.refreshToken(clientId, clientSecret);
     }
 }

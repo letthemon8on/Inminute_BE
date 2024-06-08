@@ -1,4 +1,4 @@
-package org.example.inminute_demo.zoom.dto;
+package org.example.inminute_demo.zoom.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
