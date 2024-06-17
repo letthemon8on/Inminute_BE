@@ -19,7 +19,7 @@ import java.io.IOException;
 public class SttController {
 
     @Autowired
-    private SpeechToTextService sttService;
+    private SpeechToTextService speechToTextService;
 
     /**
      * 녹음 파일을 받아서 텍스트로 변환하여 반환
@@ -30,7 +30,7 @@ public class SttController {
     @PostMapping(value = "/audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> handleAudioMessage(@RequestParam("audioFile") MultipartFile audioFile) throws IOException {
 
-        String transcribe = sttService.transcribe(audioFile);
+        String transcribe = speechToTextService.transcribe(audioFile);
 
         return ResponseEntity.ok().body(transcribe);
     }
