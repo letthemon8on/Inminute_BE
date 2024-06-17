@@ -20,8 +20,8 @@ public class Note extends BaseEntity{
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "group_id")
-    private Group group;
+    @JoinColumn(name = "folder_id")
+    private Folder folder;
 
     private String name;
     private String script;

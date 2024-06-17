@@ -13,7 +13,7 @@ import static jakarta.persistence.FetchType.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Group extends BaseEntity{
+public class Folder extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
