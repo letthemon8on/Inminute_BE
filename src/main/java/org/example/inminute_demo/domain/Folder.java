@@ -24,4 +24,8 @@ public class Folder extends BaseEntity{
     private Member member;
 
     private String name;
+
+    public void update(String name){
+        this.name = name;
+    }
 }

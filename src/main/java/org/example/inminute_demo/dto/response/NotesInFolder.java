@@ -9,8 +9,9 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @AllArgsConstructor
-public class CreateFolderResponse {
+public class NotesInFolder {
 
     private Long id;
+    private String name;
     private LocalDateTime createdAt;
 }

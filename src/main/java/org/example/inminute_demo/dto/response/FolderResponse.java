@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
 @AllArgsConstructor
-public class CreateFolderResponse {
+public class FolderResponse {
 
     private Long id;
-    private LocalDateTime createdAt;
+    private String name;
+    private List<NotesInFolder> notesInFolders;
 }

@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @AllArgsConstructor
-public class CreateFolderResponse {
+public class UpdateFolderResponse {
 
     private Long id;
-    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
