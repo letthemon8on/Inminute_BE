@@ -122,6 +122,9 @@ public class NoteService {
     @Transactional
     public void deleteNote(Long noteId) {
 
-        noteRepository.deleteById(noteId);
+        Note note = noteRepository.findById(noteId)
+                        .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
+
+        noteRepository.delete(note);
     }
 }

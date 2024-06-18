@@ -90,6 +90,9 @@ public class FolderService {
     @Transactional
     public void deleteFolder(Long folderId) {
 
-        folderRepository.deleteById(folderId);
+        Folder folder = folderRepository.findById(folderId)
+                        .orElseThrow(() -> new TempHandler(ErrorStatus.FOLDER_NOT_FOUND));
+
+        folderRepository.delete(folder);
     }
 }
