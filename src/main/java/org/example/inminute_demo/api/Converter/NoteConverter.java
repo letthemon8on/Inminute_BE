@@ -3,6 +3,7 @@ package org.example.inminute_demo.api.Converter;
 import org.example.inminute_demo.api.domain.Note;
 import org.example.inminute_demo.api.dto.note.response.CreateNoteResponse;
 import org.example.inminute_demo.api.dto.note.response.NoteDetailResponse;
+import org.example.inminute_demo.api.dto.note.response.UpdateNoteResponse;
 
 public class NoteConverter {
 
@@ -14,14 +15,11 @@ public class NoteConverter {
                 .build();
     }
 
-    public static NoteDetailResponse toNoteDetailResponse(Note note) {
+    public static UpdateNoteResponse toUpdateNoteResponse(Note note) {
 
-        return NoteDetailResponse.builder()
+        return UpdateNoteResponse.builder()
                 .id(note.getId())
-                .name((note.getName()))
-                .script(note.getScript())
-                .summary(note.getSummary())
-                .participants(note.getParticipants())
+                .updatedAt(note.getUpdated_at())
                 .build();
     }
 }

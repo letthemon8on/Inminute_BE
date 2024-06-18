@@ -2,9 +2,11 @@ package org.example.inminute_demo.api.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.api.dto.note.request.CreateNoteRequest;
+import org.example.inminute_demo.api.dto.note.request.UpdateNoteRequest;
 import org.example.inminute_demo.api.dto.note.response.CreateNoteResponse;
 import org.example.inminute_demo.api.dto.note.response.NoteDetailResponse;
 import org.example.inminute_demo.api.dto.note.response.NoteListResponse;
+import org.example.inminute_demo.api.dto.note.response.UpdateNoteResponse;
 import org.example.inminute_demo.api.service.NoteService;
 import org.example.inminute_demo.global.apipayload.ApiResponse;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +22,18 @@ public class NoteController {
         return ApiResponse.onSuccess(noteService.createNote(createNoteRequest));
     }
 
-    // update note 메서드 구현 필요
+    @PatchMapping("/notes/{noteId}")
+    public ApiResponse<UpdateNoteResponse> updateNote(@PathVariable Long noteId, @RequestBody UpdateNoteRequest updateNoteRequest) {
+        return ApiResponse.onSuccess(noteService.updateNote(noteId, updateNoteRequest));
+    }
 
-    @GetMapping("/notes")
+    @GetMapping("/notes/all")
     public ApiResponse<NoteListResponse> getNoteList() {
         return ApiResponse.onSuccess(noteService.getNoteList());
     }
 
-    @GetMapping("/notes/{folderId}")
-    public ApiResponse<NoteListResponse> getNoteListByFolder(@PathVariable Long folderId) {
+    @GetMapping("/notes")
+    public ApiResponse<NoteListResponse> getNoteListByFolder(@RequestParam Long folderId) {
         return ApiResponse.onSuccess(noteService.getNoteListByFolder(folderId));
     }
 

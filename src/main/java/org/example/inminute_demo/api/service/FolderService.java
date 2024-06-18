@@ -43,7 +43,6 @@ public class FolderService {
         return createFolderResponse;
     }
 
-    // 400 에러 수정 필요
     @Transactional
     public UpdateFolderResponse updateFolder(Long folderId, UpdateFolderRequest updateFolderRequest) {
 

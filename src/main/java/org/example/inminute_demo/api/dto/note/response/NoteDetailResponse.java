@@ -3,6 +3,7 @@ package org.example.inminute_demo.api.dto.note.response;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.example.inminute_demo.api.domain.Participant;
 
 import java.util.List;
 
@@ -15,5 +16,5 @@ public class NoteDetailResponse {
     private String name;
     private String script;
     private String summary;
-    private List<String> participants;
+    private List<ParticipantName> participantNames;
 }

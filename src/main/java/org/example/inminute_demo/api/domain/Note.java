@@ -29,7 +29,15 @@ public class Note extends BaseEntity{
     private String script;
     private String summary;
 
-    // 추후에 spring security 적용해서 session 유저 가져와 구현 필요
-    @ElementCollection
-    private List<String> participants;
+    public void update(String name, String script, String summary) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (script != null) {
+            this.script = script;
+        }
+        if (summary != null) {
+            this.summary = summary;
+        }
+    }
 }

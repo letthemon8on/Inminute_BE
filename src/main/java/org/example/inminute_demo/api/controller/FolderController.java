@@ -29,7 +29,7 @@ public class FolderController {
         return ApiResponse.onSuccess(folderService.updateFolder(folderId, updateFolderRequest));
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ApiResponse<FolderListResponse> getFolderList() {
         return ApiResponse.onSuccess(folderService.getFolderList());
     }
