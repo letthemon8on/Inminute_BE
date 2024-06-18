@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @Slf4j
 @RestController
-@RequestMapping("/stt")
+@RequestMapping("/api/stt")
 public class SttController {
 
     @Autowired

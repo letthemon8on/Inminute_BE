@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 import static jakarta.persistence.FetchType.*;
 
 @Entity
@@ -26,4 +28,16 @@ public class Note extends BaseEntity{
     private String name;
     private String script;
     private String summary;
+
+    public void update(String name, String script, String summary) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (script != null) {
+            this.script = script;
+        }
+        if (summary != null) {
+            this.summary = summary;
+        }
+    }
 }
