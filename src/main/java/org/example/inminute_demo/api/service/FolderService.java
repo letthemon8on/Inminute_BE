@@ -51,6 +51,8 @@ public class FolderService {
                 .orElseThrow(() -> new TempHandler(ErrorStatus.FOLDER_NOT_FOUND));
 
         folder.update(updateFolderRequest.getName());
+        folderRepository.save(folder);
+
         UpdateFolderResponse updateFolderResponse = FolderConverter.toUpdateFolderResponse(folder);
         return updateFolderResponse;
     }
