@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 import static jakarta.persistence.FetchType.*;
 
 @Entity
@@ -26,4 +28,8 @@ public class Note extends BaseEntity{
     private String name;
     private String script;
     private String summary;
+
+    // 추후에 spring security 적용해서 session 유저 가져와 구현 필요
+    @ElementCollection
+    private List<String> participants;
 }

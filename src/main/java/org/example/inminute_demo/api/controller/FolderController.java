@@ -25,6 +25,7 @@ public class FolderController {
     // 400 에러 수정 필요
     @PatchMapping("/{folderId}")
     public ApiResponse<UpdateFolderResponse> updateFolder(@PathVariable Long folderId, @RequestBody UpdateFolderRequest updateFolderRequest) {
+        System.out.println("Received request: " + updateFolderRequest);
         return ApiResponse.onSuccess(folderService.updateFolder(folderId, updateFolderRequest));
     }
 
