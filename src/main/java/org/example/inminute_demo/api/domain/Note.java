@@ -29,6 +29,9 @@ public class Note extends BaseEntity{
     private String script;
     private String summary;
 
+    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Participant> participants;
+
     public void update(String name, String script, String summary) {
         if (name != null) {
             this.name = name;
