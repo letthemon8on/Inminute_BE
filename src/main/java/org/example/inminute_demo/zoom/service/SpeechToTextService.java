@@ -6,7 +6,6 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import com.google.protobuf.ByteString;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.api.domain.Note;
 import org.example.inminute_demo.api.repository.NoteRepository;
@@ -31,7 +30,7 @@ public class SpeechToTextService {
     private final String bucketName = "stt-demo-1125"; // Google Cloud Storage 버킷
     private final NoteRepository noteRepository;
 
-    public String transcribe(MultipartFile audioFile, Long noteId) throws IOException {
+    public void transcribe(MultipartFile audioFile, Long noteId) throws IOException {
         if (audioFile.isEmpty()) {
             throw new IOException("Required part 'audioFile' is not present.");
         }
@@ -77,7 +76,6 @@ public class SpeechToTextService {
 
             if (!results.isEmpty()) {
                 // 주어진 말 뭉치에 대해 여러 가능한 스크립트를 제공. 0번(가장 가능성 있는)을 사용한다.
-
                 for (SpeechRecognitionResult result : results) {
                     SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
                     System.out.printf("Transcription: %s\n", alternative.getTranscript());
@@ -94,11 +92,8 @@ public class SpeechToTextService {
                 String script = transcription.toString().trim();
                 note.toScript(script);
                 noteRepository.save(note);
-
-                return transcription.toString().trim();
             } else {
                 logger.error("No transcription result found");
-                return "";
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

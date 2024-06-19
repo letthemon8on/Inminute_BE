@@ -1,5 +1,6 @@
 package org.example.inminute_demo.zoom.auth;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,10 +10,10 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 @RestController
+@RequiredArgsConstructor
 public class ZoomAuthController {
 
-    @Autowired
-    private ZoomAuthService zoomAuthService;
+    private final ZoomAuthService zoomAuthService;
 
     // Zoom access code endpoint
     // https://zoom.us/oauth/authorize?response_type=code&client_id=G1cmu02jTSaxutApfmFYVA&redirect_uri=http://localhost:8080/zoomApi

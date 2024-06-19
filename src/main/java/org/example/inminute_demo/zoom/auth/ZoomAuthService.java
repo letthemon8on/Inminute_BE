@@ -3,11 +3,11 @@ package org.example.inminute_demo.zoom.auth;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -16,6 +16,7 @@ import java.util.Base64;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class ZoomAuthService {
 
     private static final String ZOOM_URL = "https://zoom.us/oauth/token";
@@ -23,8 +24,7 @@ public class ZoomAuthService {
     private static final ObjectMapper mapper = new ObjectMapper()
             .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
-    @Autowired
-    private ZoomTokenRepository zoomTokenRepository;
+    private final ZoomTokenRepository zoomTokenRepository;
 
     public ZoomToken getAccessToken(String code, String redirectUri, String clientId, String clientSecret) throws IOException, NoSuchAlgorithmException {
         String secretKey = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());

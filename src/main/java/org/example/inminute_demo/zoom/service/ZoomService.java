@@ -1,12 +1,10 @@
 package org.example.inminute_demo.zoom.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.inminute_demo.zoom.domain.ZoomMeeting;
 import org.example.inminute_demo.zoom.dto.request.ZoomMeetingDTO;
 import org.example.inminute_demo.zoom.dto.request.ZoomMeetingSettingsDTO;
 import org.example.inminute_demo.zoom.auth.ZoomTokenRepository;
 import org.example.inminute_demo.zoom.repository.ZoomMeetingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,7 +21,7 @@ public class ZoomService {
     private final ZoomTokenRepository zoomTokenRepository;
     private final ZoomMeetingRepository zoomMeetingRepository;
 
-    public ZoomMeeting createMeeting(ZoomMeetingDTO zoomMeetingDTO) throws IOException {
+    public void createMeeting(ZoomMeetingDTO zoomMeetingDTO) throws IOException {
 
         System.out.println("Request to create a Zoom meeting");
 
@@ -54,12 +52,11 @@ public class ZoomService {
         // 응답 처리
         if (zEntity.getStatusCodeValue() == 201) {
             System.out.println("Zoom meeting response: " + zEntity);
-            return zoomMeetingRepository.save(zEntity.getBody().toEntity());
+            zoomMeetingRepository.save(zEntity.getBody().toEntity());
         } else {
             System.out.println("Error while creating zoom meeting: " + zEntity.getStatusCode());
         }
 
         zoomMeetingDTO.setSettings(null);
-        return null;
     }
 }
