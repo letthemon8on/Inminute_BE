@@ -1,5 +1,6 @@
 package org.example.inminute_demo.zoom.service;
 
+import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.zoom.domain.ZoomMeeting;
 import org.example.inminute_demo.zoom.dto.request.ZoomMeetingDTO;
 import org.example.inminute_demo.zoom.dto.request.ZoomMeetingSettingsDTO;
@@ -16,17 +17,13 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 
 @Service
+@RequiredArgsConstructor
 public class ZoomService {
 
-    @Autowired
-    private ZoomTokenRepository zoomTokenRepository;
-
-    @Autowired
-    private ZoomMeetingRepository zoomMeetingRepository;
+    private final ZoomTokenRepository zoomTokenRepository;
+    private final ZoomMeetingRepository zoomMeetingRepository;
 
     public ZoomMeeting createMeeting(ZoomMeetingDTO zoomMeetingDTO) throws IOException {
-        // Token 만료 여부 확인
-        // isExpired();
 
         System.out.println("Request to create a Zoom meeting");
 

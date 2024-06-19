@@ -8,6 +8,10 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.google.protobuf.ByteString;
 import lombok.RequiredArgsConstructor;
+import org.example.inminute_demo.api.domain.Note;
+import org.example.inminute_demo.api.repository.NoteRepository;
+import org.example.inminute_demo.global.apipayload.Handler.TempHandler;
+import org.example.inminute_demo.global.apipayload.code.status.ErrorStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,13 +23,15 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class SpeechToTextService {
-    private final Logger logger = LoggerFactory.getLogger(SpeechToTextService.class);
-    private final String bucketName = "stt-demo-1125"; // 여기에 Google Cloud Storage 버킷 이름을 넣으세요
 
-    public String transcribe(MultipartFile audioFile) throws IOException {
+    private final Logger logger = LoggerFactory.getLogger(SpeechToTextService.class);
+    private final String bucketName = "stt-demo-1125"; // Google Cloud Storage 버킷
+    private final NoteRepository noteRepository;
+
+    public String transcribe(MultipartFile audioFile, Long noteId) throws IOException {
         if (audioFile.isEmpty()) {
             throw new IOException("Required part 'audioFile' is not present.");
         }
@@ -44,7 +50,8 @@ public class SpeechToTextService {
                     RecognitionConfig.newBuilder()
                             .setEncoding(RecognitionConfig.AudioEncoding.FLAC)
                             .setSampleRateHertz(32000)
-                            .setLanguageCode("ko-KR")
+                            .setLanguageCode("ko-KR")  // 기본 언어 설정
+                            .addAlternativeLanguageCodes("en-US")  // 대체 언어 설정
                             .build();
 
             // Google Cloud Storage URI를 사용하여 오디오 객체 생성
@@ -66,6 +73,7 @@ public class SpeechToTextService {
             LongRunningRecognizeResponse response = future.get();
 
             List<SpeechRecognitionResult> results = response.getResultsList();
+            StringBuilder transcription = new StringBuilder();
 
             if (!results.isEmpty()) {
                 // 주어진 말 뭉치에 대해 여러 가능한 스크립트를 제공. 0번(가장 가능성 있는)을 사용한다.
@@ -75,8 +83,19 @@ public class SpeechToTextService {
                     System.out.printf("Transcription: %s\n", alternative.getTranscript());
                 }
 
-                SpeechRecognitionResult result = results.get(0);
-                return result.getAlternatives(0).getTranscript();
+                for (SpeechRecognitionResult result : results) {
+                    SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+                    transcription.append(alternative.getTranscript()).append(" ");
+                }
+
+                Note note = noteRepository.findById(noteId)
+                        .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
+
+                String script = transcription.toString().trim();
+                note.toScript(script);
+                noteRepository.save(note);
+
+                return transcription.toString().trim();
             } else {
                 logger.error("No transcription result found");
                 return "";

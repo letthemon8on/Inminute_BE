@@ -1,6 +1,7 @@
 package org.example.inminute_demo.zoom.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.zoom.domain.ZoomMeeting;
 import org.example.inminute_demo.zoom.dto.request.ZoomMeetingDTO;
 import org.example.inminute_demo.zoom.service.ZoomService;
@@ -16,11 +17,11 @@ import java.io.IOException;
 
 @Tag(name = "Zoom", description = "Zoom 관련 API 입니다.")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/zoom")
 public class ZoomController {
 
-    @Autowired
-    private ZoomService zoomService;
+    private final ZoomService zoomService;
 
     @PostMapping("/create-meeting")
     public ResponseEntity<ZoomMeeting> createMeeting(@RequestBody ZoomMeetingDTO zoomMeetingDTO) {
