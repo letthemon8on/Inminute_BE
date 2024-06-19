@@ -9,6 +9,8 @@ import org.example.inminute_demo.api.dto.note.response.NoteListResponse;
 import org.example.inminute_demo.api.dto.note.response.UpdateNoteResponse;
 import org.example.inminute_demo.api.service.NoteService;
 import org.example.inminute_demo.global.apipayload.ApiResponse;
+import org.example.inminute_demo.global.login.dto.CustomOAuth2User;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,8 +20,8 @@ public class NoteController {
     private final NoteService noteService;
 
     @PostMapping("/notes")
-    public ApiResponse<CreateNoteResponse> createNote(@RequestBody CreateNoteRequest createNoteRequest) {
-        return ApiResponse.onSuccess(noteService.createNote(createNoteRequest));
+    public ApiResponse<CreateNoteResponse> createNote(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody CreateNoteRequest createNoteRequest) {
+        return ApiResponse.onSuccess(noteService.createNote(customOAuth2User.getUsername(), createNoteRequest));
     }
 
     @PatchMapping("/notes/{noteId}")
@@ -28,8 +30,8 @@ public class NoteController {
     }
 
     @GetMapping("/notes/all")
-    public ApiResponse<NoteListResponse> getNoteList() {
-        return ApiResponse.onSuccess(noteService.getNoteList());
+    public ApiResponse<NoteListResponse> getNoteList(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+        return ApiResponse.onSuccess(noteService.getNoteList(customOAuth2User.getUsername()));
     }
 
     @GetMapping("/notes")
