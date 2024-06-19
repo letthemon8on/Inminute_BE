@@ -14,6 +14,8 @@ import org.example.inminute_demo.api.domain.Member;
 import org.example.inminute_demo.api.domain.Note;
 import org.example.inminute_demo.api.dto.folder.request.CreateFolderRequest;
 import org.example.inminute_demo.api.dto.folder.request.UpdateFolderRequest;
+import org.example.inminute_demo.global.login.entity.UserEntity;
+import org.example.inminute_demo.global.login.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,17 +26,16 @@ import java.util.List;
 public class FolderService {
 
     private final FolderRepository folderRepository;
-    private final MemberRepository memberRepository;
     private final NoteRepository noteRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public CreateFolderResponse createFolder(CreateFolderRequest createFolderRequest) {
+    public CreateFolderResponse createFolder(String username, CreateFolderRequest createFolderRequest) {
 
-        Member member = memberRepository.findById(createFolderRequest.getMemberId())
-                .orElseThrow(() -> new TempHandler(ErrorStatus.SESSION_UNAUTHORIZED));
+        UserEntity user = userRepository.findByUsername(username);
 
         Folder folder = Folder.builder()
-                .member(member)
+                .userEntity(user)
                 .name(createFolderRequest.getName())
                 .build();
 
@@ -56,9 +57,9 @@ public class FolderService {
         return updateFolderResponse;
     }
 
-    public FolderListResponse getFolderList() {
+    public FolderListResponse getFolderList(String username) {
 
-        List<Folder> folders = folderRepository.findAll();
+        List<Folder> folders = folderRepository.findAllByUserEntity_Username(username);
         List<FolderResponse> folderResponses = new ArrayList<>();
 
         for (Folder folder : folders) {

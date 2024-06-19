@@ -8,6 +8,8 @@ import org.example.inminute_demo.api.dto.folder.request.UpdateFolderRequest;
 import org.example.inminute_demo.api.dto.folder.response.CreateFolderResponse;
 import org.example.inminute_demo.api.dto.folder.response.FolderListResponse;
 import org.example.inminute_demo.api.dto.folder.response.UpdateFolderResponse;
+import org.example.inminute_demo.global.login.dto.CustomOAuth2User;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,20 +20,18 @@ public class FolderController {
     private final FolderService folderService;
 
     @PostMapping
-    public ApiResponse<CreateFolderResponse> createFolder(@RequestBody CreateFolderRequest createFolderRequest) {
-        return ApiResponse.onSuccess(folderService.createFolder(createFolderRequest));
+    public ApiResponse<CreateFolderResponse> createFolder(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody CreateFolderRequest createFolderRequest) {
+        return ApiResponse.onSuccess(folderService.createFolder(customOAuth2User.getUsername(), createFolderRequest));
     }
 
-    // 400 에러 수정 필요
     @PatchMapping("/{folderId}")
     public ApiResponse<UpdateFolderResponse> updateFolder(@PathVariable Long folderId, @RequestBody UpdateFolderRequest updateFolderRequest) {
-        System.out.println("Received request: " + updateFolderRequest);
         return ApiResponse.onSuccess(folderService.updateFolder(folderId, updateFolderRequest));
     }
 
     @GetMapping("/all")
-    public ApiResponse<FolderListResponse> getFolderList() {
-        return ApiResponse.onSuccess(folderService.getFolderList());
+    public ApiResponse<FolderListResponse> getFolderList(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+        return ApiResponse.onSuccess(folderService.getFolderList(customOAuth2User.getUsername()));
     }
 
     @DeleteMapping("/{folderId}")

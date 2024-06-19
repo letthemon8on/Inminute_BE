@@ -14,6 +14,8 @@ import org.example.inminute_demo.api.repository.NoteRepository;
 import org.example.inminute_demo.api.repository.ParticipantRepository;
 import org.example.inminute_demo.global.apipayload.Handler.TempHandler;
 import org.example.inminute_demo.global.apipayload.code.status.ErrorStatus;
+import org.example.inminute_demo.global.login.entity.UserEntity;
+import org.example.inminute_demo.global.login.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,13 +28,16 @@ public class NoteService {
     private final NoteRepository noteRepository;
     private final FolderRepository folderRepository;
     private final ParticipantRepository participantRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public CreateNoteResponse createNote(CreateNoteRequest createNoteRequest) {
+    public CreateNoteResponse createNote(String username, CreateNoteRequest createNoteRequest) {
 
+        UserEntity user = userRepository.findByUsername(username);
         Folder folder = folderRepository.findByName(createNoteRequest.getFolderName());
 
         Note note = Note.builder()
+                .userEntity(user)
                 .folder(folder)
                 .name(createNoteRequest.getName())
                 .build();
@@ -54,9 +59,9 @@ public class NoteService {
         return updateNoteResponse;
     }
 
-    public NoteListResponse getNoteList() {
+    public NoteListResponse getNoteList(String username) {
 
-        List<Note> notes = noteRepository.findAll();
+        List<Note> notes = noteRepository.findAllByUserEntity_Username(username);
         List<NoteResponse> noteResponses = new ArrayList<>();
 
         for (Note note : notes) {
