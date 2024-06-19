@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.inminute_demo.api.domain.Participant;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -19,4 +20,5 @@ public class NoteDetailResponse {
     private String script;
     private String summary;
     private List<ParticipantName> participantNames;
+    private LocalDateTime createdAt;
 }

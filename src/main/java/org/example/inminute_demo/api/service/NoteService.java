@@ -120,6 +120,7 @@ public class NoteService {
                 .script(note.getScript())
                 .summary(note.getSummary())
                 .participantNames(participantNames)
+                .createdAt(note.getCreated_at())
                 .build();
 
         return noteDetailResponse;
