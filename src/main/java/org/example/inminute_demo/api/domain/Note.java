@@ -34,6 +34,8 @@ public class Note extends BaseEntity{
     private List<Participant> participants;
 
     private String name;
+
+    @Column(columnDefinition = "LONGTEXT")
     private String script;
     private String summary;
 
@@ -47,5 +49,9 @@ public class Note extends BaseEntity{
         if (summary != null) {
             this.summary = summary;
         }
+    }
+
+    public void toScript(String script) {
+        this.script = script;
     }
 }

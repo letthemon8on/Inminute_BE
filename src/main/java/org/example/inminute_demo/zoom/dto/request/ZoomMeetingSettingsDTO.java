@@ -11,6 +11,4 @@ public class ZoomMeetingSettingsDTO {
     private boolean host_video;
     private String auto_recording;
     private boolean mute_upon_entry;
-
-    // Getters and setters
 }

@@ -20,6 +20,4 @@ public class ZoomMeeting {
     // private int duration;
     // private String startTime;
     private String hostEmail;
-
-    // Getters and setters
 }

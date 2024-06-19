@@ -1,6 +1,7 @@
 package org.example.inminute_demo.zoom.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.inminute_demo.zoom.service.SpeechToTextService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,22 +18,16 @@ import java.io.IOException;
 @Tag(name = "Google STT", description = "Google STT 관련 API 입니다.")
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/stt")
 public class SttController {
 
-    @Autowired
-    private SpeechToTextService speechToTextService;
+    private final SpeechToTextService speechToTextService;
 
-    /**
-     * 녹음 파일을 받아서 텍스트로 변환하여 반환
-     *
-     * @param audioFile 오디오 파일
-     * @return 녹음 파일을 변환한 텍스트
-     */
     @PostMapping(value = "/audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> handleAudioMessage(@RequestParam("audioFile") MultipartFile audioFile) throws IOException {
+    public ResponseEntity<String> handleAudioMessage(@RequestParam("audioFile") MultipartFile audioFile, @RequestParam Long noteId) throws IOException {
 
-        String transcribe = speechToTextService.transcribe(audioFile);
+        String transcribe = speechToTextService.transcribe(audioFile, noteId);
 
         return ResponseEntity.ok().body(transcribe);
     }
