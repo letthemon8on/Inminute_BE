@@ -7,6 +7,5 @@ import java.util.List;
 
 public interface FolderRepository extends JpaRepository<Folder, Long> {
 
-    Folder findByName(String name);
     List<Folder> findAllByUserEntity_Username(String username);
 }

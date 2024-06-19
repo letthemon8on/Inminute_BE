@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class CreateNoteRequest {
 
     private String name;
-    private String folderName;
+    private Long folderId;
 }

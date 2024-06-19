@@ -34,7 +34,8 @@ public class NoteService {
     public CreateNoteResponse createNote(String username, CreateNoteRequest createNoteRequest) {
 
         UserEntity user = userRepository.findByUsername(username);
-        Folder folder = folderRepository.findByName(createNoteRequest.getFolderName());
+        Folder folder = folderRepository.findById(createNoteRequest.getFolderId())
+                .orElseThrow(() -> new TempHandler(ErrorStatus.FOLDER_NOT_FOUND));
 
         Note note = Note.builder()
                 .userEntity(user)
