@@ -1,5 +1,6 @@
 package org.example.inminute_demo.api.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.api.dto.note.request.CreateNoteRequest;
 import org.example.inminute_demo.api.dto.note.request.UpdateNoteRequest;
@@ -13,8 +14,10 @@ import org.example.inminute_demo.global.login.dto.CustomOAuth2User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Note", description = "Note 관련 API 입니다.")
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class NoteController {
 
     private final NoteService noteService;

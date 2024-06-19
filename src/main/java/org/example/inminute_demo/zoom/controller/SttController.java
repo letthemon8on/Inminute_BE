@@ -1,5 +1,6 @@
 package org.example.inminute_demo.zoom.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.example.inminute_demo.zoom.service.SpeechToTextService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Tag(name = "Google STT", description = "Google STT 관련 API 입니다.")
 @Slf4j
 @RestController
 @RequestMapping("/api/stt")

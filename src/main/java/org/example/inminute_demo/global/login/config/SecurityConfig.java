@@ -89,6 +89,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/v3/sapi-docs/**", "/swagger-ui/**").permitAll()
                         .anyRequest().authenticated());
 
         // 세션 설정 : STATELESS
