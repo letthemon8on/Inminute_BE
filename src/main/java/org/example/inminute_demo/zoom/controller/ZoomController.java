@@ -1,5 +1,6 @@
 package org.example.inminute_demo.zoom.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.inminute_demo.zoom.domain.ZoomMeeting;
 import org.example.inminute_demo.zoom.dto.request.ZoomMeetingDTO;
 import org.example.inminute_demo.zoom.service.ZoomService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
+@Tag(name = "Zoom", description = "Zoom 관련 API 입니다.")
 @RestController
 @RequestMapping("/api/zoom")
 public class ZoomController {

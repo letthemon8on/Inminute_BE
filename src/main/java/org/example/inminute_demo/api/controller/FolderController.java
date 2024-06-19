@@ -1,5 +1,6 @@
 package org.example.inminute_demo.api.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.api.service.FolderService;
 import org.example.inminute_demo.global.apipayload.ApiResponse;
@@ -12,9 +13,10 @@ import org.example.inminute_demo.global.login.dto.CustomOAuth2User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Folder", description = "Folder 관련 API 입니다.")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/folders")
+@RequestMapping("/api/folders")
 public class FolderController {
 
     private final FolderService folderService;
