@@ -89,6 +89,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/").permitAll()
+                        .requestMatchers("/zoomApi").permitAll()
                         .requestMatchers("/swagger-ui.html", "/v3/sapi-docs/**", "/swagger-ui/**").permitAll()
                         .anyRequest().authenticated());
 
