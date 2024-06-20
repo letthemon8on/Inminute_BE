@@ -1,6 +1,10 @@
 package org.example.inminute_demo.zoom.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.inminute_demo.api.domain.Note;
+import org.example.inminute_demo.api.repository.NoteRepository;
+import org.example.inminute_demo.global.apipayload.Handler.TempHandler;
+import org.example.inminute_demo.global.apipayload.code.status.ErrorStatus;
 import org.example.inminute_demo.zoom.dto.request.ZoomMeetingDTO;
 import org.example.inminute_demo.zoom.dto.request.ZoomMeetingSettingsDTO;
 import org.example.inminute_demo.zoom.auth.ZoomTokenRepository;
@@ -20,13 +24,22 @@ public class ZoomService {
 
     private final ZoomTokenRepository zoomTokenRepository;
     private final ZoomMeetingRepository zoomMeetingRepository;
+    private final NoteRepository noteRepository;
 
-    public void createMeeting(ZoomMeetingDTO zoomMeetingDTO) throws IOException {
+    public void createMeeting(Long noteId) throws IOException {
+
+        Note note = noteRepository.findById(noteId)
+                        .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
+
+        ZoomMeetingDTO zoomMeetingDTO = new ZoomMeetingDTO();
 
         System.out.println("Request to create a Zoom meeting");
 
         // API URL 설정
         String apiUrl = "https://api.zoom.us/v2/users/" + "swp0927@gmail.com" + "/meetings";
+
+        // 미팅 topic 설정
+        zoomMeetingDTO.setTopic(note.getName());
 
         // 호스트 이메일 설정
         zoomMeetingDTO.setHost_email("swp0927@gmail.com");

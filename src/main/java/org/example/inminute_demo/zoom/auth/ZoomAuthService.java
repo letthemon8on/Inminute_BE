@@ -26,7 +26,7 @@ public class ZoomAuthService {
 
     private final ZoomTokenRepository zoomTokenRepository;
 
-    public ZoomToken getAccessToken(String code, String redirectUri, String clientId, String clientSecret) throws IOException, NoSuchAlgorithmException {
+    public void getAccessToken(String code, String redirectUri, String clientId, String clientSecret) throws IOException, NoSuchAlgorithmException {
         String secretKey = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
 
         FormBody formBody = new FormBody.Builder()
@@ -65,11 +65,9 @@ public class ZoomAuthService {
         zoomToken.setRefreshToken(list.get("refresh_token"));
 
         zoomTokenRepository.save(zoomToken);
-
-        return zoomToken;
     }
 
-    public String refreshToken(String clientId, String clientSecret) throws IOException {
+    public void refreshToken(String clientId, String clientSecret) throws IOException {
         String secretKey = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
 
         ZoomToken currentToken = zoomTokenRepository.findById(0L).orElseThrow(() -> new RuntimeException("Token not found"));
@@ -105,7 +103,5 @@ public class ZoomAuthService {
         currentToken.setRefreshToken(list.get("refresh_token"));
 
         zoomTokenRepository.save(currentToken);
-
-        return list.get("access_token");
     }
 }
