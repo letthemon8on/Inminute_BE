@@ -8,6 +8,7 @@ import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -24,9 +25,18 @@ public class ZoomAuthService {
     private static final ObjectMapper mapper = new ObjectMapper()
             .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
+    @Value("${zoom.client-id}")
+    private String clientId;
+
+    @Value("${zoom.client-secret}")
+    private String clientSecret;
+
+    @Value("${zoom.redirect-uri}")
+    private String redirectUri;
+
     private final ZoomTokenRepository zoomTokenRepository;
 
-    public void getAccessToken(String code, String redirectUri, String clientId, String clientSecret) throws IOException, NoSuchAlgorithmException {
+    public void getAccessToken(String code) throws IOException, NoSuchAlgorithmException {
         String secretKey = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
 
         FormBody formBody = new FormBody.Builder()
@@ -67,7 +77,7 @@ public class ZoomAuthService {
         zoomTokenRepository.save(zoomToken);
     }
 
-    public void refreshToken(String clientId, String clientSecret) throws IOException {
+    public void refreshToken() throws IOException {
         String secretKey = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
 
         ZoomToken currentToken = zoomTokenRepository.findById(0L).orElseThrow(() -> new RuntimeException("Token not found"));

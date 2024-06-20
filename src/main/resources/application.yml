@@ -47,6 +47,11 @@ spring:
       max-file-size: 100MB
       max-request-size: 100MB
 
+zoom:
+  client-id: ${ZOOM_CLIENT_ID}
+  client-secret: ${ZOOM_CLIENT_SECRET}
+  redirect-uri: ${ZOOM_REDIRECT_URI}
+
 springdoc:
   api-docs:
     path: /api-docs
