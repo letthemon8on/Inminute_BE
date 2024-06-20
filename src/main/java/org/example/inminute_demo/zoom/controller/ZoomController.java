@@ -12,6 +12,7 @@ import java.io.IOException;
 @Tag(name = "Zoom", description = "Zoom 관련 API 입니다.")
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost/5173")
 @RequestMapping("/api/zoom")
 public class ZoomController {
 
