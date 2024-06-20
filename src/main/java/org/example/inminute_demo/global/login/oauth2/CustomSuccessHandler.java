@@ -45,7 +45,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // 쿠키를 통해 프론트엔드에게 jwt 전달
         response.addCookie(createCookie("Authorization", token));
-        response.sendRedirect("http://localhost:5173/list");
+        response.sendRedirect("http://localhost:5173/list/");
     }
 
     // key, value를 받아 쿠키 생성
