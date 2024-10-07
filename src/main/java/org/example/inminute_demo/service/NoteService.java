@@ -14,8 +14,8 @@ import org.example.inminute_demo.repository.ParticipantRepository;
 import org.example.inminute_demo.apipayload.Handler.TempHandler;
 import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
 import org.example.inminute_demo.dto.note.response.*;
-import org.example.inminute_demo.domain.UserEntity;
-import org.example.inminute_demo.repository.UserRepository;
+import org.example.inminute_demo.domain.Member;
+import org.example.inminute_demo.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,17 +28,17 @@ public class NoteService {
     private final NoteRepository noteRepository;
     private final FolderRepository folderRepository;
     private final ParticipantRepository participantRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public CreateNoteResponse createNote(String username, CreateNoteRequest createNoteRequest) {
 
-        UserEntity user = userRepository.findByUsername(username);
+        Member member= memberRepository.findByUsername(username);
         Folder folder = folderRepository.findById(createNoteRequest.getFolderId())
                 .orElseThrow(() -> new TempHandler(ErrorStatus.FOLDER_NOT_FOUND));
 
         Note note = Note.builder()
-                .userEntity(user)
+                .member(member)
                 .folder(folder)
                 .name(createNoteRequest.getName())
                 .build();

@@ -12,8 +12,8 @@ import org.example.inminute_demo.domain.Note;
 import org.example.inminute_demo.dto.folder.request.CreateFolderRequest;
 import org.example.inminute_demo.dto.folder.request.UpdateFolderRequest;
 import org.example.inminute_demo.dto.folder.response.*;
-import org.example.inminute_demo.domain.UserEntity;
-import org.example.inminute_demo.repository.UserRepository;
+import org.example.inminute_demo.domain.Member;
+import org.example.inminute_demo.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,15 +25,15 @@ public class FolderService {
 
     private final FolderRepository folderRepository;
     private final NoteRepository noteRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public CreateFolderResponse createFolder(String username, CreateFolderRequest createFolderRequest) {
 
-        UserEntity user = userRepository.findByUsername(username);
+        Member member = memberRepository.findByUsername(username);
 
         Folder folder = Folder.builder()
-                .userEntity(user)
+                .member(member)
                 .name(createFolderRequest.getName())
                 .build();
 

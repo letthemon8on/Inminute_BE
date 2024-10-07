@@ -22,8 +22,8 @@ public class Note extends BaseEntity{
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "userEntity_id")
-    private UserEntity userEntity;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "folder_id")
