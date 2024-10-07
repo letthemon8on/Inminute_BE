@@ -29,9 +29,6 @@ public class Note extends BaseEntity{
     @JoinColumn(name = "folder_id")
     private Folder folder;
 
-    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Participant> participants;
-
     private String name;
 
     @Column(columnDefinition = "LONGTEXT")

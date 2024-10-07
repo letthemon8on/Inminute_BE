@@ -18,6 +18,5 @@ public class NoteDetailResponse {
     private String name;
     private String script;
     private String summary;
-    private List<ParticipantName> participantNames;
     private LocalDateTime createdAt;
 }

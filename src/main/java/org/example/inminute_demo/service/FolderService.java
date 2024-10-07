@@ -57,7 +57,7 @@ public class FolderService {
 
     public FolderListResponse getFolderList(String username) {
 
-        List<Folder> folders = folderRepository.findAllByUserEntity_Username(username);
+        List<Folder> folders = folderRepository.findAllByMember_Username(username);
         List<FolderResponse> folderResponses = new ArrayList<>();
 
         for (Folder folder : folders) {

@@ -5,12 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.converter.NoteConverter;
 import org.example.inminute_demo.domain.Folder;
 import org.example.inminute_demo.domain.Note;
-import org.example.inminute_demo.domain.Participant;
 import org.example.inminute_demo.dto.note.request.CreateNoteRequest;
 import org.example.inminute_demo.dto.note.request.UpdateNoteRequest;
 import org.example.inminute_demo.repository.FolderRepository;
 import org.example.inminute_demo.repository.NoteRepository;
-import org.example.inminute_demo.repository.ParticipantRepository;
 import org.example.inminute_demo.apipayload.Handler.TempHandler;
 import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
 import org.example.inminute_demo.dto.note.response.*;
@@ -27,7 +25,6 @@ public class NoteService {
 
     private final NoteRepository noteRepository;
     private final FolderRepository folderRepository;
-    private final ParticipantRepository participantRepository;
     private final MemberRepository memberRepository;
 
     @Transactional
@@ -62,7 +59,7 @@ public class NoteService {
 
     public NoteListResponse getNoteList(String username) {
 
-        List<Note> notes = noteRepository.findAllByUserEntity_Username(username);
+        List<Note> notes = noteRepository.findAllByMember_Username(username);
         List<NoteResponse> noteResponses = new ArrayList<>();
 
         for (Note note : notes) {
@@ -103,23 +100,11 @@ public class NoteService {
         Note note = noteRepository.findById(noteId)
                 .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
 
-        List<Participant> participants = participantRepository.findAllByNote_Id(noteId);
-        List<ParticipantName> participantNames = new ArrayList<>();
-
-        for (Participant participant : participants) {
-            ParticipantName participantName = ParticipantName.builder()
-                    .name(participant.getName())
-                    .build();
-
-            participantNames.add(participantName);
-        }
-
         NoteDetailResponse noteDetailResponse = NoteDetailResponse.builder()
                 .id(note.getId())
                 .name(note.getName())
                 .script(note.getScript())
                 .summary(note.getSummary())
-                .participantNames(participantNames)
                 .createdAt(note.getCreated_at())
                 .build();
 
