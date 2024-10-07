@@ -35,7 +35,6 @@ public class NoteService {
                 .orElseThrow(() -> new TempHandler(ErrorStatus.FOLDER_NOT_FOUND));
 
         Note note = Note.builder()
-                .member(member)
                 .folder(folder)
                 .name(createNoteRequest.getName())
                 .build();
@@ -59,7 +58,7 @@ public class NoteService {
 
     public NoteListResponse getNoteList(String username) {
 
-        List<Note> notes = noteRepository.findAllByMember_Username(username);
+        List<Note> notes = noteRepository.findAll();
         List<NoteResponse> noteResponses = new ArrayList<>();
 
         for (Note note : notes) {
