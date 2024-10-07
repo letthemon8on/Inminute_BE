@@ -22,10 +22,6 @@ public class Note extends BaseEntity{
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "folder_id")
     private Folder folder;
 
