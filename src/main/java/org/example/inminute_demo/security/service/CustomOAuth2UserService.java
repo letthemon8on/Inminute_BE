@@ -48,7 +48,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
 
         // 리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값 생성
-        String username = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
+        String username = oAuth2Response.getProvider()+oAuth2Response.getProviderId();
         // 회원 조회
         Member existData = memberRepository.findByUsername(username);
 

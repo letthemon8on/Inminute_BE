@@ -31,7 +31,7 @@ public class TokenService {
         return cookie;
     }
 
-    public void reissueRefreshToken(HttpServletRequest request, HttpServletResponse response) {
+    public void reissueToken(HttpServletRequest request, HttpServletResponse response) {
 
         //get refresh token
         String refresh = null;
