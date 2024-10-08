@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.example.inminute_demo.security.dto.CustomOAuth2User;
 import org.example.inminute_demo.security.jwt.JWTUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -45,7 +46,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // 쿠키를 통해 프론트엔드에게 jwt 전달
         response.addCookie(createCookie("Authorization", token));
-        response.sendRedirect("http://localhost:5173/list");
+        response.setStatus(HttpStatus.OK.value());
+
+        // response.sendRedirect("http://localhost:5173/list");
     }
 
     // key, value를 받아 쿠키 생성
