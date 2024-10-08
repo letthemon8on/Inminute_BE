@@ -26,6 +26,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // naver, google 구분하기 위해 registrationId 가져옴
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuth2Response oAuth2Response = null;
+
+        System.out.println("userRequest clientRegistration : " + userRequest.getClientRegistration());
+        // token을 통해 응답받은 회원정보
+        System.out.println("oAuth2User : " + oAuth2User);
+
         if (registrationId.equals("naver")) {
 
             oAuth2Response = new NaverResponse(oAuth2User.getAttributes());

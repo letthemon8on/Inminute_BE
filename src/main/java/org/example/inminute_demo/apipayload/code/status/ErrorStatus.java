@@ -10,24 +10,19 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorStatus implements BaseCode {
 
-    // 에러 응답
-    INTERNER_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", "서버 에러"),
+    // 폴더
+    FOLDER_NOT_FOUND(HttpStatus.NOT_FOUND, "FOLDER4001", "존재하지 않는 폴더입니다."),
 
-    // 로그인 관련
-    JOIN_ALREADY_EXISTS(HttpStatus.CONFLICT, "user already exists", "이미 존재하는 아이디입니다."),
+    // 회의록
+    NOTE_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTE4001", "존재하지 않는 회의록입니다."),
 
-    LOGIN_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "LOGIN FAIL", "아이디 또는 비밀번호를 확인하세요"),
+    // 래디스
+    REDIS_NOT_FOUND(HttpStatus.BAD_REQUEST, "REDIS4001", "Redis 설정에 오류가 발생했습니다."),
 
-    // 세션 에러
-    SESSION_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "유효하지 않은 세션입니다."),
-
-    // 폴더 조회 실패
-    FOLDER_NOT_FOUND(HttpStatus.NOT_FOUND, "NOT FOUND", "존재하지 않는 폴더입니다."),
-
-    // 회의록 조회 실패
-    NOTE_NOT_FOUND(HttpStatus.NOT_FOUND, "NOT FOUND", "존재하지 않는 회의록입니다."),
-
-    REDIS_NOT_FOUND(HttpStatus.BAD_REQUEST, "REDIS4001", "Redis 설정에 오류가 발생했습니다.");
+    // 리프레쉬 토큰
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "REFRESH_TOKEN4001", "리프레쉬 토큰이 없습니다."),
+    REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "REFRESH_TOKEN4001", "리프레쉬 토큰이 만료되었습니다."),
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "REFRESH_TOKEN4001", "유효하지 않은 리프레쉬 토큰입니다.");
 
 
 
