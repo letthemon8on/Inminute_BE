@@ -8,5 +8,5 @@ import java.util.List;
 public interface NoteRepository extends JpaRepository<Note, Long> {
 
     List<Note> findAllByFolder_Id(Long folderId);
-    List<Note> findAllByMember_Username(String username);
+    // List<Note> findAllByMember_Username(String username);
 }
