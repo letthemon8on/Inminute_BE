@@ -1,5 +1,6 @@
 package org.example.inminute_demo.security.oauth2;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.redis.RedisClient;
 import org.example.inminute_demo.security.dto.CustomOAuth2User;
+import org.example.inminute_demo.security.dto.LoginResponse;
 import org.example.inminute_demo.security.jwt.JWTUtil;
 import org.example.inminute_demo.security.service.TokenService;
 import org.springframework.http.HttpStatus;
@@ -49,14 +51,27 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         System.out.println("---------------customSuccessHandler------------------");
 
-        // 쿠키를 통해 프론트엔드에게 jwt 전달
+        // 토큰을 쿠키에 저장하여 응답
         response.addCookie(tokenService.createCookie("accessToken", accessToken));
         response.addCookie(tokenService.createCookie("refreshToken", refreshToken));
+        response.setStatus(HttpStatus.OK.value());
 
         // 로그인 성공 후 리다이렉션 -> 추후 논의 예정
-        response.sendRedirect("https://inminute.kr");
+        // response.sendRedirect("https://inminute.kr");
 
         // redis에 refresh 토큰 저장
         redisClient.setValue(username, refreshToken, 864000000L);
+
+        // 로그인 응답 반환
+        LoginResponse loginResponse = LoginResponse.builder()
+                .username(username)
+                .role(role)
+                .build();
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.writeValue(response.getWriter(), loginResponse);
     }
 }
