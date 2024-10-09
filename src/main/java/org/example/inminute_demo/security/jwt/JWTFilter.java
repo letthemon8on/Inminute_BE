@@ -27,6 +27,8 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        System.out.println("-------------------------JWT FILTER------------------------");
+
         // JWT 만료 후 재로그인 시 무한 루프 해결
         String requestUri = request.getRequestURI();
 
@@ -41,20 +43,20 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        // cookie들을 불러온 뒤 Authorization Key에 담긴 쿠키를 찾음
-        String authorization = null;
+        //cookie들을 불러온 뒤 Authorization Key에 담긴 쿠키를 찾음
+        String accessToken = null;
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
 
-            System.out.println(cookie.getName());
-            if (cookie.getName().equals("Authorization")) {
+            System.out.println("cookie = " + cookie.getName()+"= "+cookie.getValue());
+            if (cookie.getName().equals("accessToken")) {
 
-                authorization = cookie.getValue();
+                accessToken = cookie.getValue();
             }
         }
 
         // Authorization 헤더 검증
-        if (authorization == null) {
+        if (accessToken == null) {
 
             System.out.println("token null");
             filterChain.doFilter(request, response);
@@ -63,11 +65,8 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 토큰을 쿠키에서 꺼냄
-        String token = authorization;
-
         // 토큰 소멸 시간 검증
-        if (jwtUtil.isExpired(token)) {
+        if (jwtUtil.isExpired(accessToken)) {
 
             System.out.println("token expired");
             filterChain.doFilter(request, response);
@@ -77,13 +76,15 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         // 토큰에서 username과 role 획득
-        String username = jwtUtil.getUsername(token);
-        String role = jwtUtil.getRole(token);
+        String username = jwtUtil.getUsername(accessToken);
+        String role = jwtUtil.getRole(accessToken);
 
         // userDTO를 생성하여 값 set
         UserDTO userDTO = new UserDTO();
         userDTO.setUsername(username);
         userDTO.setRole(role);
+
+        System.out.println(userDTO);
 
         // UserDetails에 회원 정보 객체 담기
         CustomOAuth2User customOAuth2User = new CustomOAuth2User(userDTO);

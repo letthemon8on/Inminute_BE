@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-@Tag(name = "Google STT", description = "Google STT 관련 API 입니다.")
+@Tag(name = "Google STT", description = "Google STT 관련 API입니다.")
 @Slf4j
 @RestController
 @RequiredArgsConstructor

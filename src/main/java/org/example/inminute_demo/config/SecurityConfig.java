@@ -3,6 +3,10 @@ package org.example.inminute_demo.config;
 import jakarta.servlet.http.HttpServletRequest;
 
 import lombok.RequiredArgsConstructor;
+import org.example.inminute_demo.redis.RedisClient;
+import org.example.inminute_demo.security.exception.CustomAccessDeniedHandler;
+import org.example.inminute_demo.security.exception.CustomAuthenticationEntryPoint;
+import org.example.inminute_demo.security.jwt.CustomLogoutFilter;
 import org.example.inminute_demo.security.jwt.JWTFilter;
 import org.example.inminute_demo.security.jwt.JWTUtil;
 import org.example.inminute_demo.security.oauth2.CustomSuccessHandler;
@@ -15,10 +19,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -28,6 +34,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
+    private final RedisClient redisClient;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -48,7 +55,8 @@ public class SecurityConfig {
 
                         CorsConfiguration configuration = new CorsConfiguration();
 
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://inminute.kr", "http://api.inminute.kr",
+                                "https://inminute.kr", "https://api.inminute.kr"));
                         configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -89,6 +97,16 @@ public class SecurityConfig {
                                 .userService(customOAuth2UserService))
                         .successHandler(customSuccessHandler)
                 );
+
+        // 로그아웃 필터
+        http
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, redisClient), LogoutFilter.class);
+
+        // 시큐리티 필터 내부 예외처리
+        http
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint()) // 인증 예외
+                        .accessDeniedHandler(new CustomAccessDeniedHandler())); // 인가 예외
 
         // 경로별 인가 작업
         http
