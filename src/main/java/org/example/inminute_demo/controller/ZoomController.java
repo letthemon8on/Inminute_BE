@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-@Tag(name = "Zoom", description = "Zoom 관련 API 입니다.")
+@Tag(name = "Zoom", description = "Zoom 관련 API입니다.")
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost/5173")

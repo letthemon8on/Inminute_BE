@@ -14,7 +14,7 @@ import org.example.inminute_demo.security.dto.CustomOAuth2User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Note", description = "Note 관련 API 입니다.")
+@Tag(name = "Note", description = "Note 관련 API입니다.")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")

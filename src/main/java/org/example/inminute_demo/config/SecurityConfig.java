@@ -3,6 +3,8 @@ package org.example.inminute_demo.config;
 import jakarta.servlet.http.HttpServletRequest;
 
 import lombok.RequiredArgsConstructor;
+import org.example.inminute_demo.redis.RedisClient;
+import org.example.inminute_demo.security.jwt.CustomLogoutFilter;
 import org.example.inminute_demo.security.jwt.JWTFilter;
 import org.example.inminute_demo.security.jwt.JWTUtil;
 import org.example.inminute_demo.security.oauth2.CustomSuccessHandler;
@@ -15,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -29,6 +32,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
+    private final RedisClient redisClient;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -91,6 +95,9 @@ public class SecurityConfig {
                                 .userService(customOAuth2UserService))
                         .successHandler(customSuccessHandler)
                 );
+
+        http
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, redisClient), LogoutFilter.class);
 
         // 경로별 인가 작업
         http
