@@ -37,11 +37,15 @@ public class NoteController {
     }
 
     @GetMapping("/notes/all")
+    @Operation(summary = "회의록 리스트 조회", description = "생성시간 오름차순으로 전체 회의록 리스트를 조회합니다. " +
+            "</br> 메인페이지에서 사용하세요.")
     public ApiResponse<NoteListResponse> getNoteList(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
-        return ApiResponse.onSuccess(noteService.getNoteList(customOAuth2User.getUsername()));
+        return ApiResponse.onSuccess(noteService.getNoteList(customOAuth2User));
     }
 
     @GetMapping("/notes")
+    @Operation(summary = "폴더별 리스트 조회", description = "지정한 folderId에 해당하는 회의록 리스트를 생성시간 오름차순으로 조회합니다. " +
+            "</br> 폴더바에서 폴더 클릭 시 사용하세요.")
     public ApiResponse<NoteListResponse> getNoteListByFolder(@RequestParam Long folderId) {
         return ApiResponse.onSuccess(noteService.getNoteListByFolder(folderId));
     }
