@@ -1,6 +1,7 @@
 package org.example.inminute_demo.security.service;
 
 import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
+import org.example.inminute_demo.converter.MemberConverter;
 import org.example.inminute_demo.exception.GeneralException;
 import org.example.inminute_demo.security.dto.*;
 import org.example.inminute_demo.domain.Member;
@@ -10,6 +11,8 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -52,39 +55,29 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // 리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값 생성
         String username = oAuth2Response.getProvider()+oAuth2Response.getProviderId();
         // 회원 조회
-        Member existData = memberRepository.findByUsername(username);
+        Optional<Member> existData = memberRepository.findByUsername(username);
 
         // 한 번도 로그인 한 적 없는 경우 -> 유저 정보 save
-        if (existData == null) {
+        if (existData.isEmpty()) {
 
-            Member member = new Member();
-            member.setUsername(username);
-            member.setEmail(oAuth2Response.getEmail());
-            member.setName(oAuth2Response.getName());
-            member.setRole("ROLE_USER");
+            Member member = MemberConverter.toMember(username, oAuth2Response);
 
             memberRepository.save(member);
 
-            UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(username);
-            userDTO.setName(oAuth2Response.getName());
-            userDTO.setRole("ROLE_USER");
+            UserDTO userDTO = MemberConverter.toUserDTO(member);
 
             return new CustomOAuth2User(userDTO);
         }
         // 한 번이라도 로그인 하여 유저 정보가 존재하는 경우 -> 유저 정보 update
         else {
 
-            existData.setEmail(oAuth2Response.getEmail());
-            existData.setName(oAuth2Response.getName());
+            Member member = existData.get();
+            member.updateEmail(oAuth2Response.getEmail());
+            member.updateName(oAuth2Response.getName());
 
-            memberRepository.save(existData);
+            memberRepository.save(member);
 
-            UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(existData.getUsername());
-            // name은 변경되었을 수 있기 때문에 기존 데이터가 아닌 oAuth2Response에서 가져옴
-            userDTO.setName(oAuth2Response.getName());
-            userDTO.setRole(existData.getRole());
+            UserDTO userDTO = MemberConverter.toUserDTO(member);
 
             return new CustomOAuth2User(userDTO);
         }

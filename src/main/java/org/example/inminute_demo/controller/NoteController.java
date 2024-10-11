@@ -1,5 +1,6 @@
 package org.example.inminute_demo.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.dto.note.request.CreateNoteRequest;
@@ -23,7 +24,10 @@ public class NoteController {
     private final NoteService noteService;
 
     @PostMapping("/notes")
-    public ApiResponse<CreateNoteResponse> createNote(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody CreateNoteRequest createNoteRequest) {
+    @Operation(summary = "회의록 생성", description = "folderId 값을 requestBody에 포함할 경우 폴더가 지정된 회의록이, " +
+            "포함하지 않을 경우 폴더가 지정되지 않은 회의록이 생성됩니다.")
+    public ApiResponse<CreateNoteResponse> createNote(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+                                                      @RequestBody CreateNoteRequest createNoteRequest) {
         return ApiResponse.onSuccess(noteService.createNote(customOAuth2User, createNoteRequest));
     }
 
@@ -33,11 +37,15 @@ public class NoteController {
     }
 
     @GetMapping("/notes/all")
+    @Operation(summary = "회의록 리스트 조회", description = "생성시간 오름차순으로 전체 회의록 리스트를 조회합니다. " +
+            "</br> 메인페이지에서 사용하세요.")
     public ApiResponse<NoteListResponse> getNoteList(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
-        return ApiResponse.onSuccess(noteService.getNoteList(customOAuth2User.getUsername()));
+        return ApiResponse.onSuccess(noteService.getNoteList(customOAuth2User));
     }
 
     @GetMapping("/notes")
+    @Operation(summary = "폴더별 리스트 조회", description = "지정한 folderId에 해당하는 회의록 리스트를 생성시간 오름차순으로 조회합니다. " +
+            "</br> 폴더바에서 폴더 클릭 시 사용하세요.")
     public ApiResponse<NoteListResponse> getNoteListByFolder(@RequestParam Long folderId) {
         return ApiResponse.onSuccess(noteService.getNoteListByFolder(folderId));
     }
