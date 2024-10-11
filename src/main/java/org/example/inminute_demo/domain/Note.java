@@ -25,6 +25,10 @@ public class Note extends BaseEntity{
     @JoinColumn(name = "folder_id")
     private Folder folder;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     private String name;
 
     @Column(columnDefinition = "LONGTEXT")

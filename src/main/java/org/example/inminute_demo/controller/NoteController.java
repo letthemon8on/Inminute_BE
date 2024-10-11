@@ -1,5 +1,6 @@
 package org.example.inminute_demo.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.dto.note.request.CreateNoteRequest;
@@ -23,7 +24,10 @@ public class NoteController {
     private final NoteService noteService;
 
     @PostMapping("/notes")
-    public ApiResponse<CreateNoteResponse> createNote(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody CreateNoteRequest createNoteRequest) {
+    @Operation(summary = "회의록 생성", description = "folderId 값을 requestBody에 포함할 경우 폴더가 지정된 회의록이, " +
+            "포함하지 않을 경우 폴더가 지정되지 않은 회의록이 생성됩니다.")
+    public ApiResponse<CreateNoteResponse> createNote(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+                                                      @RequestBody CreateNoteRequest createNoteRequest) {
         return ApiResponse.onSuccess(noteService.createNote(customOAuth2User, createNoteRequest));
     }
 

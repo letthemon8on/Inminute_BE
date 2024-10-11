@@ -31,18 +31,34 @@ public class NoteService {
     @Transactional
     public CreateNoteResponse createNote(CustomOAuth2User customOAuth2User, CreateNoteRequest createNoteRequest) {
 
-        Member member= memberService.loadMemberByCustomOAuth2User(customOAuth2User);
-        Folder folder = folderRepository.findById(createNoteRequest.getFolderId())
-                .orElseThrow(() -> new TempHandler(ErrorStatus.FOLDER_NOT_FOUND));
+        Member member = memberService.loadMemberByCustomOAuth2User(customOAuth2User);
 
-        Note note = Note.builder()
-                .folder(folder)
-                .name(createNoteRequest.getName())
-                .build();
+        if (createNoteRequest.getFolderId() != null) {
+            Folder folder = folderRepository.findById(createNoteRequest.getFolderId())
+                    .orElseThrow(() -> new TempHandler(ErrorStatus.FOLDER_NOT_FOUND));
 
-        noteRepository.save(note);
-        CreateNoteResponse createNoteResponse = NoteConverter.toCreateNoteResponse(note);
-        return createNoteResponse;
+            Note note = Note.builder()
+                    .member(member)
+                    .folder(folder)
+                    .name(createNoteRequest.getName())
+                    .build();
+
+            noteRepository.save(note);
+            CreateNoteResponse createNoteResponse = NoteConverter.toCreateNoteResponse(note);
+            return createNoteResponse;
+        }
+        else {
+            Note note = Note.builder()
+                    .member(member)
+                    .name(createNoteRequest.getName())
+                    .build();
+
+            noteRepository.save(note);
+            CreateNoteResponse createNoteResponse = NoteConverter.toCreateNoteResponse(note);
+            return createNoteResponse;
+        }
+
+
     }
 
     public UpdateNoteResponse updateNote(Long noteId, UpdateNoteRequest updateNoteRequest) {
