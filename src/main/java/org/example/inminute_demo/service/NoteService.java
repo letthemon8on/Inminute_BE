@@ -14,6 +14,7 @@ import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
 import org.example.inminute_demo.dto.note.response.*;
 import org.example.inminute_demo.domain.Member;
 import org.example.inminute_demo.repository.MemberRepository;
+import org.example.inminute_demo.security.dto.CustomOAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,12 +26,12 @@ public class NoteService {
 
     private final NoteRepository noteRepository;
     private final FolderRepository folderRepository;
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     @Transactional
-    public CreateNoteResponse createNote(String username, CreateNoteRequest createNoteRequest) {
+    public CreateNoteResponse createNote(CustomOAuth2User customOAuth2User, CreateNoteRequest createNoteRequest) {
 
-        Member member= memberRepository.findByUsername(username);
+        Member member= memberService.loadMemberByCustomOAuth2User(customOAuth2User);
         Folder folder = folderRepository.findById(createNoteRequest.getFolderId())
                 .orElseThrow(() -> new TempHandler(ErrorStatus.FOLDER_NOT_FOUND));
 
@@ -117,5 +118,10 @@ public class NoteService {
                         .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
 
         noteRepository.delete(note);
+    }
+
+    public List<Note> getNotesByFolder(Long folderId) {
+
+        return noteRepository.findAllByFolder_Id(folderId);
     }
 }

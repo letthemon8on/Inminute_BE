@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -15,5 +16,6 @@ public class FolderResponse {
 
     private Long id;
     private String name;
+    private LocalDateTime create_at;
     private List<NotesInFolder> notesInFolders;
 }

@@ -14,6 +14,7 @@ import org.example.inminute_demo.dto.folder.request.UpdateFolderRequest;
 import org.example.inminute_demo.dto.folder.response.*;
 import org.example.inminute_demo.domain.Member;
 import org.example.inminute_demo.repository.MemberRepository;
+import org.example.inminute_demo.security.dto.CustomOAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,13 +25,13 @@ import java.util.List;
 public class FolderService {
 
     private final FolderRepository folderRepository;
-    private final NoteRepository noteRepository;
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
+    private final NoteService noteService;
 
     @Transactional
-    public CreateFolderResponse createFolder(String username, CreateFolderRequest createFolderRequest) {
+    public CreateFolderResponse createFolder(CustomOAuth2User customOAuth2User, CreateFolderRequest createFolderRequest) {
 
-        Member member = memberRepository.findByUsername(username);
+        Member member = memberService.loadMemberByCustomOAuth2User(customOAuth2User);
 
         Folder folder = Folder.builder()
                 .member(member)
@@ -38,6 +39,7 @@ public class FolderService {
                 .build();
 
         folderRepository.save(folder);
+
         CreateFolderResponse createFolderResponse = FolderConverter.toCreateGroupResponse(folder);
         return createFolderResponse;
     }
@@ -55,15 +57,17 @@ public class FolderService {
         return updateFolderResponse;
     }
 
-    public FolderListResponse getFolderList(String username) {
+    public FolderListResponse getFolderList(CustomOAuth2User customOAuth2User) {
 
-        List<Folder> folders = folderRepository.findAllByMember_Username(username);
+        Member member = memberService.loadMemberByCustomOAuth2User(customOAuth2User);
+
+        List<Folder> folders = folderRepository.findAllByMember_Id(member.getId());
+
         List<FolderResponse> folderResponses = new ArrayList<>();
-
         for (Folder folder : folders) {
-            List<Note> notes = noteRepository.findAllByFolder_Id(folder.getId());
-            List<NotesInFolder> notesInFolders = new ArrayList<>();
+            List<Note> notes = noteService.getNotesByFolder(folder.getId());
 
+            List<NotesInFolder> notesInFolders = new ArrayList<>();
             for (Note note : notes) {
                 NotesInFolder notesInFolder = NotesInFolder.builder()
                         .id(note.getId())
@@ -77,6 +81,7 @@ public class FolderService {
             FolderResponse folderResponse = FolderResponse.builder()
                     .id(folder.getId())
                     .name(folder.getName())
+                    .create_at(folder.getCreated_at())
                     .notesInFolders(notesInFolders)
                     .build();
 

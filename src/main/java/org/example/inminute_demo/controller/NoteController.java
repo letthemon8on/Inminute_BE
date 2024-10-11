@@ -24,7 +24,7 @@ public class NoteController {
 
     @PostMapping("/notes")
     public ApiResponse<CreateNoteResponse> createNote(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody CreateNoteRequest createNoteRequest) {
-        return ApiResponse.onSuccess(noteService.createNote(customOAuth2User.getUsername(), createNoteRequest));
+        return ApiResponse.onSuccess(noteService.createNote(customOAuth2User, createNoteRequest));
     }
 
     @PatchMapping("/notes/{noteId}")
