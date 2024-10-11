@@ -14,6 +14,7 @@ import org.example.inminute_demo.dto.folder.request.UpdateFolderRequest;
 import org.example.inminute_demo.dto.folder.response.*;
 import org.example.inminute_demo.domain.Member;
 import org.example.inminute_demo.repository.MemberRepository;
+import org.example.inminute_demo.security.dto.CustomOAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,12 +26,12 @@ public class FolderService {
 
     private final FolderRepository folderRepository;
     private final NoteRepository noteRepository;
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     @Transactional
-    public CreateFolderResponse createFolder(String username, CreateFolderRequest createFolderRequest) {
+    public CreateFolderResponse createFolder(CustomOAuth2User customOAuth2User, CreateFolderRequest createFolderRequest) {
 
-        Member member = memberRepository.findByUsername(username);
+        Member member = memberService.loadMemberByCustomOAuth2User(customOAuth2User);
 
         Folder folder = Folder.builder()
                 .member(member)
@@ -38,6 +39,7 @@ public class FolderService {
                 .build();
 
         folderRepository.save(folder);
+
         CreateFolderResponse createFolderResponse = FolderConverter.toCreateGroupResponse(folder);
         return createFolderResponse;
     }

@@ -22,8 +22,9 @@ public class FolderController {
     private final FolderService folderService;
 
     @PostMapping
-    public ApiResponse<CreateFolderResponse> createFolder(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody CreateFolderRequest createFolderRequest) {
-        return ApiResponse.onSuccess(folderService.createFolder(customOAuth2User.getUsername(), createFolderRequest));
+    public ApiResponse<CreateFolderResponse> createFolder(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+                                                          @RequestBody CreateFolderRequest createFolderRequest) {
+        return ApiResponse.onSuccess(folderService.createFolder(customOAuth2User, createFolderRequest));
     }
 
     @PatchMapping("/{folderId}")
