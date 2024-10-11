@@ -4,12 +4,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
-@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Member extends BaseEntity {
 
     @Id
@@ -22,4 +23,15 @@ public class Member extends BaseEntity {
     private String email;
 
     private String role;
+
+    private String nickname;
+
+    private Boolean isFirst;
+
+    public void updateIsFirst() { this.isFirst = false; }
+    public void updateNickname(String nickname) { this.nickname = nickname; }
+    public void updateEmail(String email) { this.email = email; }
+    public void updateName(String name) { this.name = name; }
+
+
 }

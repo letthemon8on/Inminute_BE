@@ -80,9 +80,10 @@ public class JWTFilter extends OncePerRequestFilter {
         String role = jwtUtil.getRole(accessToken);
 
         // userDTO를 생성하여 값 set
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUsername(username);
-        userDTO.setRole(role);
+        UserDTO userDTO = UserDTO.builder()
+                .username(username)
+                .role(role)
+                .build();
 
         System.out.println(userDTO);
 

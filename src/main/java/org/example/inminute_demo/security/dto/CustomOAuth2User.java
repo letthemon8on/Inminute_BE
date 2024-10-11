@@ -48,4 +48,9 @@ public class CustomOAuth2User implements OAuth2User {
 
         return userDTO.getUsername();
     }
+
+    public Boolean getIsFirst() {
+
+        return userDTO.getIsFirst();
+    }
 }
