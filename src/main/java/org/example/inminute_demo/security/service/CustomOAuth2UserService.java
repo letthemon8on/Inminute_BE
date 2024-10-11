@@ -1,5 +1,7 @@
 package org.example.inminute_demo.security.service;
 
+import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
+import org.example.inminute_demo.exception.GeneralException;
 import org.example.inminute_demo.security.dto.*;
 import org.example.inminute_demo.domain.Member;
 import org.example.inminute_demo.repository.MemberRepository;

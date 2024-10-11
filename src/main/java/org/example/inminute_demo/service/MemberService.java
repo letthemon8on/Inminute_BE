@@ -18,7 +18,6 @@ public class MemberService {
 
         String username = customOAuth2User.getUsername();
 
-        return memberRepository.findByUsername(username)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        return memberRepository.findByUsername(username);
     }
 }
