@@ -118,4 +118,9 @@ public class NoteService {
 
         noteRepository.delete(note);
     }
+
+    public List<Note> getNotesByFolder(Long folderId) {
+
+        return noteRepository.findAllByFolder_Id(folderId);
+    }
 }

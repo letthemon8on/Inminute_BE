@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface FolderRepository extends JpaRepository<Folder, Long> {
 
-    List<Folder> findAllByMember_Username(String username);
+    List<Folder> findAllByMember_Id(Long memberId);
 }

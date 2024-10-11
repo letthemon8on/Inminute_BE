@@ -34,7 +34,7 @@ public class FolderController {
 
     @GetMapping("/all")
     public ApiResponse<FolderListResponse> getFolderList(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
-        return ApiResponse.onSuccess(folderService.getFolderList(customOAuth2User.getUsername()));
+        return ApiResponse.onSuccess(folderService.getFolderList(customOAuth2User));
     }
 
     @DeleteMapping("/{folderId}")
