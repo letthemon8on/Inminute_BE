@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Authorization", description = "스프링 시큐리티 관련 API입니다.")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
 public class TokenController {
 
     private final TokenService tokenService;
