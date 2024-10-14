@@ -55,8 +55,8 @@ public class SecurityConfig {
 
                         CorsConfiguration configuration = new CorsConfiguration();
 
-                        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://inminute.kr", "http://api.inminute.kr",
-                                "https://inminute.kr", "https://api.inminute.kr"));
+                        configuration.setAllowedOrigins(List.of("http://localhost:3000/", "http://inminute.kr/", "http://api.inminute.kr/",
+                                "https://inminute.kr/", "https://api.inminute.kr/"));
                         configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -111,7 +111,7 @@ public class SecurityConfig {
         // 경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "oauth2/**", "logout", "/reissue").permitAll()
+                        .requestMatchers("/", "oauth2/**", "/login", "logout", "/reissue").permitAll()
                         .requestMatchers("/zoomApi").permitAll()
                         .requestMatchers("/swagger-ui.html", "/v3/sapi-docs/**", "/swagger-ui/**").permitAll()
                         .anyRequest().authenticated());
