@@ -51,11 +51,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         System.out.println("---------------customSuccessHandler------------------");
 
-        // 엑세스 토큰을 헤더에 저장하여 응답
-        response.addHeader("accessToken", accessToken);
+        /*// 엑세스 토큰을 헤더에 저장하여 응답
+        response.addHeader("accessToken", accessToken);*/
 
         // 토큰을 쿠키에 저장하여 응답
-        // response.addCookie(tokenService.createCookie("accessToken", accessToken));
+        response.addCookie(tokenService.createCookie("accessToken", accessToken));
         response.addCookie(tokenService.createCookie("refreshToken", refreshToken));
         response.setStatus(HttpStatus.OK.value());
 
