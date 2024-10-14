@@ -43,10 +43,10 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 헤더에서 access키에 담긴 토큰을 꺼냄
-        String accessToken = request.getHeader("accessToken");
+        /*// 헤더에서 access키에 담긴 토큰을 꺼냄
+        String accessToken = request.getHeader("accessToken");*/
 
-        /*//cookie들을 불러온 뒤 Authorization Key에 담긴 쿠키를 찾음
+        //cookie들을 불러온 뒤 Authorization Key에 담긴 쿠키를 찾음
         String accessToken = null;
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
@@ -56,7 +56,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
                 accessToken = cookie.getValue();
             }
-        }*/
+        }
 
         // Authorization 헤더 검증
         if (accessToken == null) {
