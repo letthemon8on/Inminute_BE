@@ -26,7 +26,7 @@ public class TokenService {
         cookie.setMaxAge(60 * 60 * 60);
         // cookie.setSecure(true); // https를 사용할 경우
         cookie.setPath("/"); // 쿠키가 적용될 경로
-        cookie.setDomain(".inminute.kr"); // 루트 도메인과 서브도메인에서 쿠키 공유
+        // cookie.setDomain(".inminute.kr"); // 루트 도메인과 서브도메인에서 쿠키 공유
         cookie.setHttpOnly(true);
         return cookie;
     }
