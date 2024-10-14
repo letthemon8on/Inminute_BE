@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.converter.NoteConverter;
 import org.example.inminute_demo.domain.Folder;
 import org.example.inminute_demo.domain.Note;
+import org.example.inminute_demo.domain.NoteJoinMember;
 import org.example.inminute_demo.dto.note.request.CreateNoteRequest;
 import org.example.inminute_demo.dto.note.request.UpdateNoteRequest;
 import org.example.inminute_demo.repository.FolderRepository;
+import org.example.inminute_demo.repository.NoteJoinMemberRepository;
 import org.example.inminute_demo.repository.NoteRepository;
 import org.example.inminute_demo.apipayload.Handler.TempHandler;
 import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
@@ -25,6 +27,7 @@ import java.util.List;
 public class NoteService {
 
     private final NoteRepository noteRepository;
+    private final NoteJoinMemberRepository noteJoinMemberRepository;
     private final FolderRepository folderRepository;
     private final MemberService memberService;
 
@@ -33,31 +36,35 @@ public class NoteService {
 
         Member member = memberService.loadMemberByCustomOAuth2User(customOAuth2User);
 
+        Note note;
         if (createNoteRequest.getFolderId() != null) {
             Folder folder = folderRepository.findById(createNoteRequest.getFolderId())
                     .orElseThrow(() -> new TempHandler(ErrorStatus.FOLDER_NOT_FOUND));
 
-            Note note = Note.builder()
+            note = Note.builder()
                     .member(member)
                     .folder(folder)
                     .name(createNoteRequest.getName())
                     .build();
-
-            noteRepository.save(note);
-            CreateNoteResponse createNoteResponse = NoteConverter.toCreateNoteResponse(note);
-            return createNoteResponse;
         }
         else {
-            Note note = Note.builder()
+            note = Note.builder()
                     .member(member)
                     .name(createNoteRequest.getName())
                     .build();
-
-            noteRepository.save(note);
-            CreateNoteResponse createNoteResponse = NoteConverter.toCreateNoteResponse(note);
-            return createNoteResponse;
         }
+        noteRepository.save(note);
+
+        NoteJoinMember noteJoinMember = NoteJoinMember.builder() // 중간 테이블 엔티티 생성
+                .member(member)
+                .note(note)
+                .build();
+        noteJoinMemberRepository.save(noteJoinMember);
+
+        CreateNoteResponse createNoteResponse = NoteConverter.toCreateNoteResponse(note);
+        return createNoteResponse;
     }
+
 
     public UpdateNoteResponse updateNote(Long noteId, UpdateNoteRequest updateNoteRequest) {
 

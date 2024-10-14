@@ -32,6 +32,7 @@ public class NoteController {
     }
 
     @PatchMapping("/notes/{noteId}")
+    @Operation(summary = "회의록 수정", description = "")
     public ApiResponse<UpdateNoteResponse> updateNote(@PathVariable Long noteId, @RequestBody UpdateNoteRequest updateNoteRequest) {
         return ApiResponse.onSuccess(noteService.updateNote(noteId, updateNoteRequest));
     }
