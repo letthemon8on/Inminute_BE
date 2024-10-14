@@ -7,12 +7,10 @@ import org.example.inminute_demo.apipayload.ApiResponse;
 import org.example.inminute_demo.dto.member.request.MemberRequest;
 import org.example.inminute_demo.dto.member.response.MemberResponse;
 import org.example.inminute_demo.security.dto.CustomOAuth2User;
+import org.example.inminute_demo.security.dto.LoginResponse;
 import org.example.inminute_demo.service.MemberService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Member", description = "사용자 관련 API입니다.")
 @RestController
@@ -27,5 +25,11 @@ public class MemberController {
     public ApiResponse<MemberResponse> addMemberDetail(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,
                                                        @RequestBody MemberRequest memberRequest) {
         return ApiResponse.onSuccess(memberService.addDetail(customOAuth2User, memberRequest));
+    }
+
+    @GetMapping
+    @Operation(summary = "사용자 정보 조회", description = "현재 로그인한 사용자의 정보를 조회합니다.")
+    public ApiResponse<LoginResponse> getMemberDetail(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+        return ApiResponse.onSuccess(memberService.getMemberDetail(customOAuth2User));
     }
 }

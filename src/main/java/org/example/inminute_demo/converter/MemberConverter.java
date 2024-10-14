@@ -2,6 +2,7 @@ package org.example.inminute_demo.converter;
 
 import org.example.inminute_demo.domain.Member;
 import org.example.inminute_demo.dto.member.response.MemberResponse;
+import org.example.inminute_demo.security.dto.LoginResponse;
 import org.example.inminute_demo.security.dto.OAuth2Response;
 import org.example.inminute_demo.security.dto.UserDTO;
 
@@ -29,6 +30,14 @@ public class MemberConverter {
         return UserDTO.builder()
                 .username(member.getUsername())
                 .name(member.getName())
+                .role(member.getRole())
+                .isFirst(member.getIsFirst())
+                .build();
+    }
+
+    public static LoginResponse toLoginResponse(Member member) {
+        return LoginResponse.builder()
+                .username(member.getUsername())
                 .role(member.getRole())
                 .isFirst(member.getIsFirst())
                 .build();

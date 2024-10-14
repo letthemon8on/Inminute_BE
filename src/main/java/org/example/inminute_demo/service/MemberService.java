@@ -9,6 +9,7 @@ import org.example.inminute_demo.dto.member.response.MemberResponse;
 import org.example.inminute_demo.exception.GeneralException;
 import org.example.inminute_demo.repository.MemberRepository;
 import org.example.inminute_demo.security.dto.CustomOAuth2User;
+import org.example.inminute_demo.security.dto.LoginResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,5 +44,13 @@ public class MemberService {
         memberRepository.save(member);
 
         return MemberConverter.toMemberResponse(member);
+    }
+
+    public LoginResponse getMemberDetail(CustomOAuth2User customOAuth2User) {
+
+        Member member = memberRepository.findByUsername(customOAuth2User.getUsername())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        return MemberConverter.toLoginResponse(member);
     }
 }
