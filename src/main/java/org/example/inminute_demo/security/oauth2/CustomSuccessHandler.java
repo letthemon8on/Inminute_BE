@@ -51,20 +51,28 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         System.out.println("---------------customSuccessHandler------------------");
 
+        // 엑세스 토큰을 헤더에 저장하여 응답
+        response.addHeader("accesssToken", accessToken);
+
         // 토큰을 쿠키에 저장하여 응답
-        response.addCookie(tokenService.createCookie("accessToken", accessToken));
+        // response.addCookie(tokenService.createCookie("accessToken", accessToken));
         response.addCookie(tokenService.createCookie("refreshToken", refreshToken));
         response.setStatus(HttpStatus.OK.value());
-
-        // 로그인 성공 후 리다이렉션 -> 추후 논의 예정
-        // response.sendRedirect("https://inminute.kr");
 
         // redis에 refresh 토큰 저장
         redisClient.setValue(username, refreshToken, 864000000L);
 
         Boolean isFirst = customUserDetails.getIsFirst();
 
-        // 로그인 응답 반환
+        // 로그인 성공 후 리다이렉트
+        if (isFirst) {
+            response.sendRedirect("https://inminute.kr/about");
+        }
+        else {
+            response.sendRedirect("https://inminute.kr/");
+        }
+
+        /*// 로그인 응답 반환
         LoginResponse loginResponse = LoginResponse.builder()
                 .username(username)
                 .role(role)
@@ -75,6 +83,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.setCharacterEncoding("UTF-8");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(response.getWriter(), loginResponse);
+        objectMapper.writeValue(response.getWriter(), loginResponse);*/
     }
 }
