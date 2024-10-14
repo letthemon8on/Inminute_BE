@@ -27,7 +27,7 @@ import java.util.List;
 public class NoteService {
 
     private final NoteRepository noteRepository;
-    private final NoteJoinMemberRepository noteJoinMemberRepository;
+    private final NoteJoinMemberService noteJoinMemberService;
     private final FolderRepository folderRepository;
     private final MemberService memberService;
 
@@ -55,16 +55,11 @@ public class NoteService {
         }
         noteRepository.save(note);
 
-        NoteJoinMember noteJoinMember = NoteJoinMember.builder() // 중간 테이블 엔티티 생성
-                .member(member)
-                .note(note)
-                .build();
-        noteJoinMemberRepository.save(noteJoinMember);
+        noteJoinMemberService.saveParents(member, note); // 중간 테이블 엔티티 생성
 
         CreateNoteResponse createNoteResponse = NoteConverter.toCreateNoteResponse(note);
         return createNoteResponse;
     }
-
 
     public UpdateNoteResponse updateNote(Long noteId, UpdateNoteRequest updateNoteRequest) {
 
