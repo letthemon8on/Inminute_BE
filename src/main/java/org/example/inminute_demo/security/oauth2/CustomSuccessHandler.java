@@ -72,7 +72,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // 로그인 성공 후 리다이렉트
         if (isFirst) {
-            response.sendRedirect("https://inminute.kr/about");
+            response.sendRedirect("https://inminute.kr/about?source=login");
         }
         else {
             response.sendRedirect("https://inminute.kr/");
