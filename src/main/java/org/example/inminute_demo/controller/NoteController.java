@@ -9,6 +9,8 @@ import org.example.inminute_demo.dto.note.response.CreateNoteResponse;
 import org.example.inminute_demo.dto.note.response.NoteDetailResponse;
 import org.example.inminute_demo.dto.note.response.NoteListResponse;
 import org.example.inminute_demo.dto.note.response.UpdateNoteResponse;
+import org.example.inminute_demo.dto.noteJoinMember.request.UpdateNoteJoinMemberRequest;
+import org.example.inminute_demo.service.NoteJoinMemberService;
 import org.example.inminute_demo.service.NoteService;
 import org.example.inminute_demo.apipayload.ApiResponse;
 import org.example.inminute_demo.security.dto.CustomOAuth2User;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class NoteController {
 
     private final NoteService noteService;
+    private final NoteJoinMemberService noteJoinMemberService;
 
     @PostMapping("/notes")
     @Operation(summary = "회의록 생성", description = "folderId 값을 requestBody에 포함할 경우 폴더가 지정된 회의록이, " +
@@ -32,8 +35,17 @@ public class NoteController {
     }
 
     @PatchMapping("/notes/{noteId}")
+    @Operation(summary = "회의록 수정", description = "회의록 이름, 전체 스크립트, 한 줄 요약 중 원하는 항목을 수정합니다.")
     public ApiResponse<UpdateNoteResponse> updateNote(@PathVariable Long noteId, @RequestBody UpdateNoteRequest updateNoteRequest) {
         return ApiResponse.onSuccess(noteService.updateNote(noteId, updateNoteRequest));
+    }
+
+    @PatchMapping("/notes/join-member/{noteId}")
+    @Operation(summary = "회의록 화자별 세부정보 수정", description = "화자별 요약, 화자별 todo 중 원하는 항목을 수정합니다.")
+    public ApiResponse<?> updateNoteJoinMember(@PathVariable Long noteId,
+                                               @RequestBody UpdateNoteJoinMemberRequest updateNoteJoinMemberRequest) {
+        noteJoinMemberService.updateNoteJoinMember(noteId, updateNoteJoinMemberRequest);
+        return ApiResponse.onSuccess("수정 완료됨");
     }
 
     @GetMapping("/notes/all")
@@ -44,7 +56,7 @@ public class NoteController {
     }
 
     @GetMapping("/notes")
-    @Operation(summary = "폴더별 리스트 조회", description = "지정한 folderId에 해당하는 회의록 리스트를 생성시간 오름차순으로 조회합니다. " +
+    @Operation(summary = "폴더별 회의록 리스트 조회", description = "지정한 folderId에 해당하는 회의록 리스트를 생성시간 오름차순으로 조회합니다. " +
             "</br> 폴더바에서 폴더 클릭 시 사용하세요.")
     public ApiResponse<NoteListResponse> getNoteListByFolder(@RequestParam Long folderId) {
         return ApiResponse.onSuccess(noteService.getNoteListByFolder(folderId));

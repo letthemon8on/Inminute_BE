@@ -25,6 +25,17 @@ public class NoteJoinMember extends BaseEntity {
     @JoinColumn(name = "note_id")
     private Note note;
 
+    @Column(columnDefinition = "LONGTEXT")
+    private String script;
     private String summary;
     private String todo;
+
+    public void update(String summary, String todo) {
+        if (summary != null) {
+            this.summary = summary;
+        }
+        if (todo != null) {
+            this.todo = todo;
+        }
+    }
 }
