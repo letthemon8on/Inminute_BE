@@ -62,10 +62,13 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // redis에 refresh 토큰 저장
         redisClient.setValue(username, refreshToken, 864000000L);
 
+        Boolean isFirst = customUserDetails.getIsFirst();
+
         // 로그인 응답 반환
         LoginResponse loginResponse = LoginResponse.builder()
                 .username(username)
                 .role(role)
+                .isFirst(isFirst)
                 .build();
 
         response.setContentType("application/json");
