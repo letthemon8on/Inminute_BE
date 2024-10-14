@@ -111,7 +111,7 @@ public class SecurityConfig {
         // 경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/", "oauth2/**", "logout", "/reissue").permitAll()
                         .requestMatchers("/zoomApi").permitAll()
                         .requestMatchers("/swagger-ui.html", "/v3/sapi-docs/**", "/swagger-ui/**").permitAll()
                         .anyRequest().authenticated());
