@@ -10,6 +10,7 @@ import org.example.inminute_demo.exception.GeneralException;
 import org.example.inminute_demo.redis.RedisClient;
 import org.example.inminute_demo.security.jwt.JWTUtil;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -29,6 +30,18 @@ public class TokenService {
         cookie.setDomain(".inminute.kr"); // 루트 도메인과 서브도메인에서 쿠키 공유
         cookie.setHttpOnly(true);
         return cookie;
+    }
+
+    public ResponseCookie createResponseCookie(String key, String value) {
+
+        return ResponseCookie.from(key, value)
+                .maxAge(60*60*60)
+                .secure(true)
+                .path("/")
+                .httpOnly(true)
+                .domain(".inminute.kr")
+                .sameSite("None")
+                .build();
     }
 
     public void reissueToken(HttpServletRequest request, HttpServletResponse response) {
