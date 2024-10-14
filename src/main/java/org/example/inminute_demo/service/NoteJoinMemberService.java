@@ -1,9 +1,12 @@
 package org.example.inminute_demo.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
 import org.example.inminute_demo.domain.Member;
 import org.example.inminute_demo.domain.Note;
 import org.example.inminute_demo.domain.NoteJoinMember;
+import org.example.inminute_demo.dto.noteJoinMember.request.UpdateNoteJoinMemberRequest;
+import org.example.inminute_demo.exception.GeneralException;
 import org.example.inminute_demo.repository.NoteJoinMemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,10 +20,20 @@ public class NoteJoinMemberService {
     @Transactional
     public void saveParents(Member member, Note note) {
 
-        NoteJoinMember noteJoinMember = NoteJoinMember.builder() // 중간 테이블 엔티티 생성
+        NoteJoinMember noteJoinMember = NoteJoinMember.builder()
                 .member(member)
                 .note(note)
                 .build();
+        noteJoinMemberRepository.save(noteJoinMember);
+    }
+
+    @Transactional
+    public void updateNoteJoinMember(Long noteId, UpdateNoteJoinMemberRequest updateNoteJoinMemberRequest) {
+
+        NoteJoinMember noteJoinMember = noteJoinMemberRepository.findByNote_Id(noteId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.NOTE_NOT_FOUND));
+
+        noteJoinMember.update(updateNoteJoinMemberRequest.getSummary(), updateNoteJoinMemberRequest.getTodo());
         noteJoinMemberRepository.save(noteJoinMember);
     }
 }
