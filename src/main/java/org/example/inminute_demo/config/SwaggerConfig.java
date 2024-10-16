@@ -2,6 +2,7 @@ package org.example.inminute_demo.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
@@ -19,7 +20,9 @@ import java.util.List;
 @OpenAPIDefinition(
         info = @Info(title = "Inminute API 명세서",
                 description = "Let On Inminute API 명세서입니다.",
-                version = "v1"))
+                version = "v1"),
+        servers = {@Server(url = "https://api.inminute.kr", description = "https url"),
+        @Server(url = "/", description = "Default Server URL")})
 @RequiredArgsConstructor
 @Configuration
 public class SwaggerConfig {
