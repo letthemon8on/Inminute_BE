@@ -1,6 +1,7 @@
 package org.example.inminute_demo.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.net.HttpHeaders;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
 import org.example.inminute_demo.redis.RedisClient;
+import org.springframework.http.ResponseCookie;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -103,16 +105,18 @@ public class CustomLogoutFilter extends GenericFilterBean {
         redisClient.deleteValue(username);
 
         // 쿠키에 저장되어 있는 Refresh 토큰, Access 토큰 null값 처리
-        Cookie refreshCookie = new Cookie("refreshToken", null);
-        refreshCookie.setMaxAge(0);
-        refreshCookie.setPath("/");
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", null)
+                .maxAge(0)
+                .path("/")
+                .build();
 
-        Cookie accessCookie = new Cookie("accessToken", null);
-        accessCookie.setMaxAge(0);
-        accessCookie.setPath("/");
+        ResponseCookie accessCookie = ResponseCookie.from("accessToken", null)
+                .maxAge(0)
+                .path("/")
+                .build();
 
-        response.addCookie(refreshCookie);
-        response.addCookie(accessCookie);
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
         response.setStatus(HttpServletResponse.SC_OK);
 
         response.setContentType("application/json");
