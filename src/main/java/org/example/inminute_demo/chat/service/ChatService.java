@@ -15,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
-import static org.example.inminute_demo.chat.converter.ChatConverter.*;
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -26,11 +24,11 @@ public class ChatService {
 
     // 채팅 내역 저장
     @Transactional
-    public ChatResponse save(ChatRequest chatRequest, Long noteId, String username) {
-        Chat chat = toChat(chatRequest, noteId);
+    public ChatResponse save(ChatRequest chatRequest, Long noteId, Map<String, Object> header) {
+        Chat chat = ChatConverter.toChat(chatRequest, noteId);
         Chat savedChat = chatRepository.save(chat);
 
-        return toChatResponse(savedChat, username);
+        return toChatResponse(savedChat, header);
     }
 
     // 채팅 내역 조회(페이징)
@@ -42,5 +40,15 @@ public class ChatService {
     // 모든 채팅 내역 조회
     public List<ChatResponse> getAllByNoteId(Long noteId) {
         return chatRepository.findAllByNoteId(noteId);
+    }
+
+    private ChatResponse toChatResponse(Chat chat, Map<String, Object> header) {
+        String username = getValueFromHeader(header, "username");
+
+        return ChatConverter.toChatResponse(chat, username);
+    }
+
+    private String getValueFromHeader(Map<String, Object> header, String key) {
+        return (String)header.get(key);
     }
 }
