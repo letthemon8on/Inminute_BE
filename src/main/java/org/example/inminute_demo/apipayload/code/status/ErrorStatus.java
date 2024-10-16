@@ -32,7 +32,10 @@ public enum ErrorStatus implements BaseCode {
     INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "ACCESS_TOKEN4001", "유효하지 않은 엑세스 토큰입니다."),
 
     // 인가
-    FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER4001", "접근 권한이 없습니다.");
+    FORBIDDEN(HttpStatus.FORBIDDEN, "MEMBER4001", "접근 권한이 없습니다."),
+
+    // 웹 소켓
+    EXCEPTION_IN_WEBSOCKET(HttpStatus.UNAUTHORIZED, "W4001", "웹 소켓 연결 중에 예외가 발생하였습니다.");
 
 
 
