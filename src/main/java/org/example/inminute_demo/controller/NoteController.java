@@ -17,6 +17,8 @@ import org.example.inminute_demo.security.dto.CustomOAuth2User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Tag(name = "Note", description = "Note 관련 API입니다.")
 @RestController
 @RequiredArgsConstructor
@@ -65,6 +67,12 @@ public class NoteController {
     @GetMapping("/notes-detail/{noteId}")
     public ApiResponse<NoteDetailResponse> getNote(@PathVariable Long noteId) {
         return ApiResponse.onSuccess(noteService.getNote(noteId));
+    }
+
+    @GetMapping("/notes/{uuid}")
+    @Operation(summary = "UUID 회의록 상세정보 조회", description = "url의 UUID를 통해 회의록 상세 정보를 조회합니다.")
+    public ApiResponse<NoteDetailResponse> getNoteByUuid(@PathVariable UUID uuid) {
+        return ApiResponse.onSuccess(noteService.getNoteByUuid(uuid));
     }
 
     @DeleteMapping("/notes/{noteId}")

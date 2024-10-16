@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -116,6 +117,21 @@ public class NoteService {
     public NoteDetailResponse getNote(Long noteId) {
 
         Note note = noteRepository.findById(noteId)
+                .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
+
+        NoteDetailResponse noteDetailResponse = NoteDetailResponse.builder()
+                .id(note.getId())
+                .name(note.getName())
+                .script(note.getScript())
+                .summary(note.getSummary())
+                .createdAt(note.getCreated_at())
+                .build();
+
+        return noteDetailResponse;
+    }
+
+    public NoteDetailResponse getNoteByUuid(UUID uuid) {
+        Note note = noteRepository.findByUuid(uuid)
                 .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
 
         NoteDetailResponse noteDetailResponse = NoteDetailResponse.builder()
