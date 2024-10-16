@@ -107,12 +107,20 @@ public class CustomLogoutFilter extends GenericFilterBean {
         // 쿠키에 저장되어 있는 Refresh 토큰, Access 토큰 null값 처리
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", null)
                 .maxAge(0)
+                .secure(true)
                 .path("/")
+                .httpOnly(true)
+                .domain(".inminute.kr")
+                .sameSite("None")
                 .build();
 
         ResponseCookie accessCookie = ResponseCookie.from("accessToken", null)
                 .maxAge(0)
+                .secure(true)
                 .path("/")
+                .httpOnly(true)
+                .domain(".inminute.kr")
+                .sameSite("None")
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
