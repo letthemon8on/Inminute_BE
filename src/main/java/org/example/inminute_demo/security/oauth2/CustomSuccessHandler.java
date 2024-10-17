@@ -70,12 +70,22 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Boolean isFirst = customUserDetails.getIsFirst();
 
-        // 로그인 성공 후 리다이렉트
-        if (isFirst) {
-            response.sendRedirect("https://inminute.kr/?source=login");
+        String redirectUrl = request.getParameter("redirect");
+        if (redirectUrl != null) { // redirectUrl 값이 존재하는 경우 회의록 링크에 접속한 사용자로 판단
+            if (isFirst) { // 처음 로그인한 사용자라면 redirectUrl을 쿼리 파라미터로 설정하여 사용자 추가정보 입력 페이지로 리다이렉트
+                response.sendRedirect("https://inminute.kr/?source=login&redirect=" + redirectUrl);
+            }
+            else {
+                response.sendRedirect("https://inminute.kr" + redirectUrl);
+            }
         }
-        else {
-            response.sendRedirect("https://inminute.kr/home");
+        else { // 로그인 성공 후 리다이렉트
+            if (isFirst) {
+                response.sendRedirect("https://inminute.kr/?source=login");
+            }
+            else {
+                response.sendRedirect("https://inminute.kr/home");
+            }
         }
 
         /*// 로그인 응답 반환

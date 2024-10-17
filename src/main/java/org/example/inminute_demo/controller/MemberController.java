@@ -2,6 +2,7 @@ package org.example.inminute_demo.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.apipayload.ApiResponse;
 import org.example.inminute_demo.dto.member.request.MemberRequest;
@@ -12,6 +13,8 @@ import org.example.inminute_demo.service.MemberService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @Tag(name = "Member", description = "사용자 관련 API입니다.")
 @RestController
 @RequiredArgsConstructor
@@ -21,10 +24,20 @@ public class MemberController {
     private final MemberService memberService;
 
     @PatchMapping
-    @Operation(summary = "사용자 초기정보 추가", description = "사용자의 isFirst 속성이 true인 경우 닉네임을 추가합니다.")
-    public ApiResponse<MemberResponse> addMemberDetail(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,
-                                                       @RequestBody MemberRequest memberRequest) {
-        return ApiResponse.onSuccess(memberService.addDetail(customOAuth2User, memberRequest));
+    @Operation(summary = "사용자 초기정보 추가", description = "사용자의 isFirst 속성이 true인 경우 닉네임을 추가합니다." +
+            "</br> RequestBody에 redirectUrl을 추가할 경우 해당 페이지로 리다이렉트되고, 추가하지 않을 경우 메인 페이지로 리다이렉트됩니다.")
+    public void addMemberDetail(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+                                @RequestBody MemberRequest memberRequest,
+                                HttpServletResponse response) throws IOException {
+
+        memberService.addDetail(customOAuth2User, memberRequest);
+
+        String redirectUrl = memberRequest.getRedirectUrl();
+        if (redirectUrl != null && !redirectUrl.isEmpty()) {
+            response.sendRedirect("https://inminute.kr" + redirectUrl);
+        } else {
+            response.sendRedirect("https://inminute.kr/home");
+        }
     }
 
     @GetMapping

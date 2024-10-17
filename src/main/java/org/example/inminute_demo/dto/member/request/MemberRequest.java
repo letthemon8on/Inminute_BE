@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class MemberRequest {
 
     private String nickname;
+    private String redirectUrl;
 }

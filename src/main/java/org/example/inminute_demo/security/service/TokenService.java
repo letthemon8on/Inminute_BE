@@ -39,7 +39,7 @@ public class TokenService {
                 .secure(true)
                 .path("/")
                 .httpOnly(true)
-                .domain(".inminute.kr")
+                // .domain(".inminute.kr")
                 .sameSite("None")
                 .build();
     }

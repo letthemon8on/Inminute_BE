@@ -27,7 +27,7 @@ public class MemberService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
-    public MemberResponse addDetail(CustomOAuth2User customOAuth2User, MemberRequest memberRequest) {
+    public void addDetail(CustomOAuth2User customOAuth2User, MemberRequest memberRequest) {
 
         Member member = memberRepository.findByUsername(customOAuth2User.getUsername())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
@@ -42,8 +42,6 @@ public class MemberService {
 
         member.updateIsFirst();
         memberRepository.save(member);
-
-        return MemberConverter.toMemberResponse(member);
     }
 
     public LoginResponse getMemberDetail(CustomOAuth2User customOAuth2User) {
