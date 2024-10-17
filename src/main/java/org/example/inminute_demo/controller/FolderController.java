@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Folder", description = "Folder 관련 API입니다.")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/folders")
+@RequestMapping("/folders")
 public class FolderController {
 
     private final FolderService folderService;
