@@ -32,9 +32,9 @@ public class MemberController {
 
         memberService.addDetail(customOAuth2User, memberRequest);
 
-        String redirectUrl = memberRequest.getRedirectUrl();
-        if (redirectUrl != null && !redirectUrl.isEmpty()) {
-            response.sendRedirect("https://inminute.kr" + redirectUrl);
+        String uuid = memberRequest.getUuid();
+        if (uuid != null && !uuid.isEmpty()) {
+            response.sendRedirect("https://inminute.kr/notes/" + uuid);
         } else {
             response.sendRedirect("https://inminute.kr/home");
         }

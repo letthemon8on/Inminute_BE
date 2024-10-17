@@ -62,10 +62,9 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         if (accessToken == null && requestUri.startsWith("/notes/detail/")) {
-            // String uuid = requestUri.substring("/notes/detail/".length()); // "123e4567-e89b-12d3-a456-426614174000"
-            // String redirectUrl = "https://inminute.kr/?redirect=" + uuid;
 
-            String redirectUrl = "https://inminute.kr/?redirect=" + requestUri;
+            String uuid = requestUri.substring("/notes/detail/".length()); // "123e4567-e89b-12d3-a456-426614174000"
+            String redirectUrl = "https://inminute.kr/?redirect=" + uuid;
             response.sendRedirect(redirectUrl);
             return;
         }
