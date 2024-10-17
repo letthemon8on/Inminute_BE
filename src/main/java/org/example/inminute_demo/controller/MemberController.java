@@ -24,20 +24,10 @@ public class MemberController {
     private final MemberService memberService;
 
     @PatchMapping
-    @Operation(summary = "사용자 초기정보 추가", description = "사용자의 isFirst 속성이 true인 경우 닉네임을 추가합니다." +
-            "</br> RequestBody에 redirectUrl을 추가할 경우 해당 페이지로 리다이렉트되고, 추가하지 않을 경우 메인 페이지로 리다이렉트됩니다.")
-    public void addMemberDetail(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,
-                                @RequestBody MemberRequest memberRequest,
-                                HttpServletResponse response) throws IOException {
-
-        memberService.addDetail(customOAuth2User, memberRequest);
-
-        String uuid = memberRequest.getUuid();
-        if (uuid != null && !uuid.isEmpty()) {
-            response.sendRedirect("https://inminute.kr/notes/" + uuid);
-        } else {
-            response.sendRedirect("https://inminute.kr/home");
-        }
+    @Operation(summary = "사용자 초기정보 추가", description = "사용자의 isFirst 속성이 true인 경우 닉네임을 추가합니다.")
+    public ApiResponse<MemberResponse> addMemberDetail(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+                                                       @RequestBody MemberRequest memberRequest) {
+        return ApiResponse.onSuccess(memberService.addDetail(customOAuth2User, memberRequest));
     }
 
     @GetMapping
