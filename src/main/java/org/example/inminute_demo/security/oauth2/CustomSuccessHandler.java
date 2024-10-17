@@ -70,7 +70,14 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Boolean isFirst = customUserDetails.getIsFirst();
 
-        String uuid = request.getParameter("redirect");
+        // Oauth2 리다이렉트 과정에서 redirect 파라미터가 유지되도록 state 파라미터에 추가
+        String state = request.getParameter("state");
+        String uuid = null;
+
+        if (state != null && state.startsWith("redirect=")) {
+            uuid = state.substring("redirect=".length()); // redirect 파라미터로부터 회의록 uuid 추출
+        }
+
         if (uuid != null) { // redirect 파라미터에 uuid 값이 존재하는 경우 회의록 링크에 접속한 사용자로 판단
             if (isFirst) { // 처음 로그인한 사용자라면 uuid를 쿼리 파라미터로 설정하여 사용자 추가정보 입력 페이지로 리다이렉트
                 response.sendRedirect("https://inminute.kr/?source=login&redirect=" + uuid);
