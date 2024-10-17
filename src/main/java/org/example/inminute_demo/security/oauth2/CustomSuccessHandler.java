@@ -20,6 +20,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -71,9 +73,16 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Boolean isFirst = customUserDetails.getIsFirst();
 
         // Oauth2 리다이렉트 과정에서 uuid가 유지되도록 state 파라미터에 추가
-        String uuid = request.getParameter("state");
+        String encodedState = request.getParameter("state");
+        String uuid = null;
 
-        if (uuid != null) { // redirect 파라미터에 uuid 값이 존재하는 경우 회의록 링크에 접속한 사용자로 판단
+        // Oauth2가 자동으로 url 인코딩 -> 디코딩 과정 필요
+        if (encodedState != null && !encodedState.isEmpty()) {
+            // state 값 디코딩하여 uuid 추출
+            uuid = new String(Base64.getDecoder().decode(encodedState), StandardCharsets.UTF_8);
+        }
+
+        if (uuid != null) { // state 파라미터에 uuid 값이 존재하는 경우 회의록 링크에 접속한 사용자로 판단
             if (isFirst) { // 처음 로그인한 사용자라면 uuid를 쿼리 파라미터로 설정하여 사용자 추가정보 입력 페이지로 리다이렉트
                 response.sendRedirect("https://inminute.kr/?source=login&redirect=" + uuid);
             }
