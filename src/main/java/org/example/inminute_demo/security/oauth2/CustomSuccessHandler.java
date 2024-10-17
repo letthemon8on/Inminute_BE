@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collection;
@@ -79,7 +80,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // Oauth2가 자동으로 url 인코딩 -> 디코딩 과정 필요
         if (encodedState != null && !encodedState.isEmpty()) {
             // state 값 디코딩하여 uuid 추출
-            uuid = new String(Base64.getDecoder().decode(encodedState), StandardCharsets.UTF_8);
+            uuid = URLDecoder.decode(encodedState, StandardCharsets.UTF_8);
         }
 
         if (uuid != null) { // state 파라미터에 uuid 값이 존재하는 경우 회의록 링크에 접속한 사용자로 판단
