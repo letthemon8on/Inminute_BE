@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -83,7 +84,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             uuid = URLDecoder.decode(encodedState, StandardCharsets.UTF_8);
         }
 
-        if (uuid != null) { // state 파라미터에 uuid 값이 존재하는 경우 회의록 링크에 접속한 사용자로 판단
+        if (uuid != null && isValidUUID(uuid)) { // state 파라미터에 uuid 값이 존재하는 경우 회의록 링크에 접속한 사용자로 판단
             if (isFirst) { // 처음 로그인한 사용자라면 uuid를 쿼리 파라미터로 설정하여 사용자 추가정보 입력 페이지로 리다이렉트
                 response.sendRedirect("https://inminute.kr/?source=login&redirect=" + uuid);
             }
@@ -112,5 +113,15 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.writeValue(response.getWriter(), loginResponse);*/
+    }
+
+    // 유효한 UUID인지 확인하는 메서드
+    private boolean isValidUUID(String uuid) {
+        try {
+            UUID.fromString(uuid);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }
