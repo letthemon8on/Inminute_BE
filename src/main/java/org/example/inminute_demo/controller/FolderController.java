@@ -36,7 +36,8 @@ public class FolderController {
     }
 
     @GetMapping("/all")
-    @Operation(summary = "폴더 리스트 조회", description = "생성시간 오름차순으로 폴더 리스트 및 각 폴더에 해당하는 회의록 리스트를 조회합니다.")
+    @Operation(summary = "폴더 리스트 조회(폴더 바)", description = "생성시간 오름차순으로 폴더 리스트 및 각 폴더에 해당하는 회의록 리스트를 조회하고," +
+            "<br> 폴더가 지정되지 않은 회의록 리스트를 생성시간 오름차순으로 조회합니다.")
     public ApiResponse<FolderListResponse> getFolderList(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
         return ApiResponse.onSuccess(folderService.getFolderList(customOAuth2User));
     }
