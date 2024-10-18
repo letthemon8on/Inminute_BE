@@ -13,4 +13,5 @@ public class UserDTO {
     private String username;
 
     private Boolean isFirst;
+    private String nickname;
 }

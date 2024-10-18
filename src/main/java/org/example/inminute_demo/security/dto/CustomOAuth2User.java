@@ -53,4 +53,9 @@ public class CustomOAuth2User implements OAuth2User {
 
         return userDTO.getIsFirst();
     }
+
+    public String getNickname() {
+
+        return userDTO.getNickname();
+    }
 }

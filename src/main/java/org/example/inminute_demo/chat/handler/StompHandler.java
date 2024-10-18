@@ -3,14 +3,18 @@ package org.example.inminute_demo.chat.handler;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.inminute_demo.chat.exception.WebSocketException;
 import org.example.inminute_demo.domain.Member;
 import org.example.inminute_demo.repository.MemberRepository;
 import org.example.inminute_demo.repository.NoteJoinMemberRepository;
+import org.example.inminute_demo.security.dto.CustomOAuth2User;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -36,17 +40,24 @@ public class StompHandler implements ChannelInterceptor {
 
         if (StompCommand.CONNECT.equals(command)) { // 클라이언트가 WebSocket 연결 요청
 
-            // JWT 인증
-            Member member = getUserByAuthorizationHeader(
-                    accessor.getFirstNativeHeader("Authorization"));
-            // 인증 후 데이터를 헤더에 추가
-            setValue(accessor, "userId", user.getId());
-            setValue(accessor, "username", user.getNickname());
-            setValue(accessor, "profileImgUrl", user.getProfileImgUrl());
+            // 쿠키 기반 jwt 인증을 통해 생성된 세션에서 사용자 정보 가져옴
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        } else if (StompCommand.SUBSCRIBE.equals(command)) { // 채팅룸 구독요청(진입) -> CrewMember인지 검증
+            if (auth != null && auth.isAuthenticated()) {
+                CustomOAuth2User customOAuth2User = (CustomOAuth2User) auth.getPrincipal();
 
-            Long userId = (Long)getValue(accessor, "userId");
+                // 사용자 정보 가져오기
+                String username = customOAuth2User.getUsername();
+                String nickname = customOAuth2User.getNickname();
+
+                // 인증 후 데이터를 헤더에 추가
+                setValue(accessor, "username", username);
+                setValue(accessor, "username", nickname);
+            }
+
+        } else if (StompCommand.SUBSCRIBE.equals(command)) { // 채팅룸 구독요청(진입) -> NoteJoinMember인지 검증
+
+            String username = (String)getValue(accessor, "username");
             Long crewId = parseCrewIdFromPath(accessor);
             log.debug("userId : " + userId + "crewId : " + crewId);
             setValue(accessor, "crewId", crewId);
@@ -61,29 +72,6 @@ public class StompHandler implements ChannelInterceptor {
         log.info("message:" + message);
 
         return message;
-    }
-
-    private Member getUserByAuthorizationHeader(String authHeaderValue) {
-
-        String accessToken = getTokenByAuthorizationHeader(authHeaderValue);
-
-        Claims claims = jwtTokenProvider.getClaims(accessToken);
-        Long userId = claims.get("userId", Long.class);
-
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-    }
-
-    private String getTokenByAuthorizationHeader(String authHeaderValue) {
-
-        if (Objects.isNull(authHeaderValue) || authHeaderValue.isBlank()) {
-            throw new WebSocketException("authHeaderValue: " + authHeaderValue);
-        }
-
-        String accessToken = ExtractUtil.extractToken(authHeaderValue);
-        jwtTokenProvider.validateToken(accessToken); // 예외 발생할 수 있음
-
-        return accessToken;
     }
 
     private Long parseCrewIdFromPath(StompHeaderAccessor accessor) {
