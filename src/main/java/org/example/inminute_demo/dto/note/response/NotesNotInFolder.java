@@ -1,4 +1,4 @@
-package org.example.inminute_demo.dto.folder.response;
+package org.example.inminute_demo.dto.note.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,16 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FolderResponse {
+public class NotesNotInFolder {
 
     private Long id;
     private String name;
-    private LocalDateTime create_at;
-    private List<NotesInFolder> notes;
+    private LocalDateTime createdAt;
 }
