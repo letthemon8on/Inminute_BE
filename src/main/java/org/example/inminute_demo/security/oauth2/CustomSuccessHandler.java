@@ -1,16 +1,13 @@
 package org.example.inminute_demo.security.oauth2;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.net.HttpHeaders;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.redis.RedisClient;
 import org.example.inminute_demo.security.dto.CustomOAuth2User;
-import org.example.inminute_demo.security.dto.LoginResponse;
 import org.example.inminute_demo.security.jwt.JWTUtil;
 import org.example.inminute_demo.security.service.TokenService;
 import org.springframework.http.HttpStatus;
@@ -20,12 +17,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -74,36 +67,14 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Boolean isFirst = customUserDetails.getIsFirst();
 
-        // Oauth2 리다이렉트 과정에서 uuid가 유지되도록 state 파라미터에 추가
-        String encodedState = request.getParameter("state");
-        System.out.println("Received state: " + encodedState);  // 디버깅을 위해 state 값 출력
-
-        String uuid = null;
-
-        // Oauth2가 자동으로 url 인코딩 -> 디코딩 과정 필요
-        if (encodedState != null && !encodedState.isEmpty()) {
-            // state 값 디코딩하여 uuid 추출
-            uuid = URLDecoder.decode(encodedState, StandardCharsets.UTF_8);
-            System.out.println("Decoded state (UUID): " + uuid);  // 디버깅을 위해 uuid 출력
-
+         // 로그인 성공 후 리다이렉트
+        if (isFirst) {
+            response.sendRedirect("https://inminute.kr/?source=login");
+        }
+        else {
+            response.sendRedirect("https://inminute.kr/home");
         }
 
-        if (uuid != null && isValidUUID(uuid)) { // state 파라미터에 uuid 값이 존재하는 경우 회의록 링크에 접속한 사용자로 판단
-            if (isFirst) { // 처음 로그인한 사용자라면 uuid를 쿼리 파라미터로 설정하여 사용자 추가정보 입력 페이지로 리다이렉트
-                response.sendRedirect("https://inminute.kr/?source=login&redirect=" + uuid);
-            }
-            else {
-                response.sendRedirect("https://inminute.kr/note/" + uuid);
-            }
-        }
-        else { // 로그인 성공 후 리다이렉트
-            if (isFirst) {
-                response.sendRedirect("https://inminute.kr/?source=login");
-            }
-            else {
-                response.sendRedirect("https://inminute.kr/home");
-            }
-        }
 
         /*// 로그인 응답 반환
         LoginResponse loginResponse = LoginResponse.builder()
@@ -117,15 +88,5 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.writeValue(response.getWriter(), loginResponse);*/
-    }
-
-    // 유효한 UUID인지 확인하는 메서드
-    private boolean isValidUUID(String uuid) {
-        try {
-            UUID.fromString(uuid);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
     }
 }
