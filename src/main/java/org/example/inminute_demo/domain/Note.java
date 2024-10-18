@@ -41,11 +41,11 @@ public class Note extends BaseEntity{
     private String summary;
 
     @Column(nullable = false, unique = true)
-    private UUID uuid; // 링크 공유를 위해 생성
+    private String uuid; // 링크 공유를 위해 생성
 
     @PrePersist
     public void prePersist() {
-        this.uuid = UUID.randomUUID();
+        this.uuid = UUID.randomUUID().toString();
     }
 
     public void update(String name, String script, String summary) {
