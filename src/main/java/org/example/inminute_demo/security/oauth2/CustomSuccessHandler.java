@@ -76,12 +76,16 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // Oauth2 리다이렉트 과정에서 uuid가 유지되도록 state 파라미터에 추가
         String encodedState = request.getParameter("state");
+        System.out.println("Received state: " + encodedState);  // 디버깅을 위해 state 값 출력
+
         String uuid = null;
 
         // Oauth2가 자동으로 url 인코딩 -> 디코딩 과정 필요
         if (encodedState != null && !encodedState.isEmpty()) {
             // state 값 디코딩하여 uuid 추출
             uuid = URLDecoder.decode(encodedState, StandardCharsets.UTF_8);
+            System.out.println("Decoded state (UUID): " + uuid);  // 디버깅을 위해 uuid 출력
+
         }
 
         if (uuid != null && isValidUUID(uuid)) { // state 파라미터에 uuid 값이 존재하는 경우 회의록 링크에 접속한 사용자로 판단
