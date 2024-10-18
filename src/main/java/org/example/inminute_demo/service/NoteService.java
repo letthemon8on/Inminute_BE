@@ -130,7 +130,7 @@ public class NoteService {
         return noteDetailResponse;
     }
 
-    public NoteDetailResponse getNoteByUuid(UUID uuid) {
+    public NoteDetailResponse getNoteByUuid(String uuid) {
         Note note = noteRepository.findByUuid(uuid)
                 .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
 
