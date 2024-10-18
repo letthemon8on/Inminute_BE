@@ -1,5 +1,6 @@
 package org.example.inminute_demo.security.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -8,6 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.example.inminute_demo.security.dto.CustomOAuth2User;
 import org.example.inminute_demo.security.dto.UserDTO;
+import org.example.inminute_demo.security.dto.UuidResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,16 +52,39 @@ public class JWTFilter extends OncePerRequestFilter {
         //cookie들을 불러온 뒤 Authorization Key에 담긴 쿠키를 찾음
         String accessToken = null;
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
 
-            System.out.println("cookie = " + cookie.getName()+"= "+cookie.getValue());
-            if (cookie.getName().equals("accessToken")) {
+                System.out.println("cookie = " + cookie.getName() + "= " + cookie.getValue());
+                if (cookie.getName().equals("accessToken")) {
 
-                accessToken = cookie.getValue();
+                    accessToken = cookie.getValue();
+                    break;
+                }
             }
         }
 
-        // Authorization 헤더 검증
+        if (accessToken == null && requestUri.startsWith("/notes/detail/")) {
+
+            String uuid = requestUri.substring("/notes/detail/".length()); // "123e4567-e89b-12d3-a456-426614174000"
+
+            // String redirectUrl = "https://inminute.kr/?redirect=" + uuid;
+            // response.sendRedirect(redirectUrl);
+
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            UuidResponse uuidResponse = UuidResponse.builder()
+                    .uuid(uuid)
+                    .build();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.writeValue(response.getWriter(), uuidResponse);
+            return;
+        }
+
+        /*// Authorization 헤더 검증
         if (accessToken == null) {
 
             System.out.println("token null");
@@ -66,7 +92,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
             // 조건이 해당되면 메소드 종료 (필수)
             return;
-        }
+        }*/
 
         // 토큰 소멸 시간 검증
         if (jwtUtil.isExpired(accessToken)) {

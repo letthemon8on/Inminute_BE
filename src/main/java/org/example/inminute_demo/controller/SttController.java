@@ -16,7 +16,7 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost/5173")
-@RequestMapping("/api/stt")
+@RequestMapping("/stt")
 public class SttController {
 
     private final SpeechToTextService speechToTextService;

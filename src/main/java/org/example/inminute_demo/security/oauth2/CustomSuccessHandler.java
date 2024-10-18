@@ -1,16 +1,13 @@
 package org.example.inminute_demo.security.oauth2;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.net.HttpHeaders;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.redis.RedisClient;
 import org.example.inminute_demo.security.dto.CustomOAuth2User;
-import org.example.inminute_demo.security.dto.LoginResponse;
 import org.example.inminute_demo.security.jwt.JWTUtil;
 import org.example.inminute_demo.security.service.TokenService;
 import org.springframework.http.HttpStatus;
@@ -70,13 +67,14 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Boolean isFirst = customUserDetails.getIsFirst();
 
-        // 로그인 성공 후 리다이렉트
+         // 로그인 성공 후 리다이렉트
         if (isFirst) {
             response.sendRedirect("https://inminute.kr/?source=login");
         }
         else {
             response.sendRedirect("https://inminute.kr/home");
         }
+
 
         /*// 로그인 응답 반환
         LoginResponse loginResponse = LoginResponse.builder()

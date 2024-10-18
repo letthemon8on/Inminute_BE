@@ -12,7 +12,7 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost/5173")
-@RequestMapping("/api/zoom")
+@RequestMapping("/zoom")
 public class ZoomController {
 
     private final ZoomService zoomService;

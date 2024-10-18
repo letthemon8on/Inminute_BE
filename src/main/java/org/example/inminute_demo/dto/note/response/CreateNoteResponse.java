@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Builder
@@ -15,4 +16,5 @@ public class CreateNoteResponse {
 
     private Long id;
     private LocalDateTime createdAt;
+    private UUID uuid;
 }

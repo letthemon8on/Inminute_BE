@@ -2,6 +2,7 @@ package org.example.inminute_demo.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.apipayload.ApiResponse;
 import org.example.inminute_demo.dto.member.request.MemberRequest;
@@ -11,6 +12,8 @@ import org.example.inminute_demo.security.dto.LoginResponse;
 import org.example.inminute_demo.service.MemberService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @Tag(name = "Member", description = "사용자 관련 API입니다.")
 @RestController

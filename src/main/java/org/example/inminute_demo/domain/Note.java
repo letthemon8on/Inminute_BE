@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static jakarta.persistence.FetchType.*;
 
@@ -38,6 +39,14 @@ public class Note extends BaseEntity{
     @Column(columnDefinition = "LONGTEXT")
     private String script;
     private String summary;
+
+    @Column(nullable = false, unique = true)
+    private UUID uuid; // 링크 공유를 위해 생성
+
+    @PrePersist
+    public void prePersist() {
+        this.uuid = UUID.randomUUID();
+    }
 
     public void update(String name, String script, String summary) {
         if (name != null) {
