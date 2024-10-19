@@ -1,6 +1,7 @@
 package org.example.inminute_demo.chat.config;
 
 import lombok.RequiredArgsConstructor;
+import org.example.inminute_demo.chat.handler.StompHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

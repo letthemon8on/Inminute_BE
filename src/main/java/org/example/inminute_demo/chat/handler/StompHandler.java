@@ -5,8 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.inminute_demo.chat.exception.WebSocketException;
 import org.example.inminute_demo.domain.Member;
+import org.example.inminute_demo.domain.Note;
+import org.example.inminute_demo.domain.NoteJoinMember;
 import org.example.inminute_demo.repository.MemberRepository;
 import org.example.inminute_demo.repository.NoteJoinMemberRepository;
+import org.example.inminute_demo.repository.NoteRepository;
 import org.example.inminute_demo.security.dto.CustomOAuth2User;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -16,18 +19,20 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.Objects;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class StompHandler implements ChannelInterceptor {
 
     public static final String DEFAULT_PATH = "/topic/public/";
 
-    // private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
+    private final NoteRepository noteRepository;
     private final NoteJoinMemberRepository noteJoinMemberRepository;
 
     // WebSocket으로 들어온 메시지가 처리되기 전에 실행됨
@@ -58,14 +63,17 @@ public class StompHandler implements ChannelInterceptor {
         } else if (StompCommand.SUBSCRIBE.equals(command)) { // 채팅룸 구독요청(진입) -> NoteJoinMember인지 검증
 
             String username = (String)getValue(accessor, "username");
-            Long crewId = parseCrewIdFromPath(accessor);
-            log.debug("userId : " + userId + "crewId : " + crewId);
-            setValue(accessor, "crewId", crewId);
-            validateUserInCrew(userId, crewId);
+            String uuid = parseUUIDFromPath(accessor);
+            log.debug("username : " + username + "uuid : " + uuid);
+            setValue(accessor, "uuid", uuid);
+
+            // 회의록-노트 사이 연결이 없다면 생성하기
+            ensureNoteJoinMember(username, uuid);
+            // validateNoteJoinMember(username, uuid);
 
         } else if (StompCommand.DISCONNECT == command) { // Websocket 연결 종료
-            Long userId = (Long)getValue(accessor, "userId");
-            log.info("DISCONNECTED userId : {}", userId);
+            String username = (String)getValue(accessor, "username");
+            log.info("DISCONNECTED username : {}", username);
         }
 
         log.info("header : " + message.getHeaders());
@@ -74,17 +82,41 @@ public class StompHandler implements ChannelInterceptor {
         return message;
     }
 
-    private Long parseCrewIdFromPath(StompHeaderAccessor accessor) {
+    // Note와 Member 사이에 연결이 있는지 확인하고, 없다면 생성
+    @Transactional
+    protected void ensureNoteJoinMember(String username, String uuid) {
+        Boolean isMemberJoined = noteJoinMemberRepository.existsByMember_UsernameAndNote_Uuid(username, uuid);
+
+        if (!isMemberJoined) {
+            // 연결이 없으면 새로 생성
+            Member member = memberRepository.findByUsername(username)
+                    .orElseThrow(() -> new WebSocketException("사용자 정보를 찾을 수 없습니다."));
+            Note note = noteRepository.findByUuid(uuid)
+                    .orElseThrow(() -> new WebSocketException("노트 정보를 찾을 수 없습니다."));
+
+            NoteJoinMember noteJoinMember = NoteJoinMember.builder()
+                    .member(member)
+                    .note(note)
+                    .build();
+
+            noteJoinMemberRepository.save(noteJoinMember);
+        }
+    }
+
+    // 메세지의 목적지 경로에서 회의록의 uuid 추출
+    private String parseUUIDFromPath(StompHeaderAccessor accessor) {
         String destination = accessor.getDestination();
-        return Long.parseLong(destination.substring(DEFAULT_PATH.length()));
+        return destination.substring(DEFAULT_PATH.length());
     }
 
-    private void validateUserInCrew(Long userId, Long crewId) {
-        crewMemberRepository.findCrewMemberByCrewIdAndUserId(crewId, userId)
+    // 해당 회의에 참여하는 사용자인지 검증
+    private void validateNoteJoinMember(String username, String uuid) {
+        noteJoinMemberRepository.findByMember_UsernameAndNote_Uuid(username, uuid)
                 .orElseThrow(() -> new WebSocketException(
-                        String.format("crew Id : {} userId : {} 로 조회된 결과가 없습니다.", crewId, userId)));
+                        String.format("uuid : {} username : {} 로 조회된 결과가 없습니다.", uuid, username)));
     }
 
+    // Stomp 세션 속성으로부터 원하는 값 추출
     private Object getValue(StompHeaderAccessor accessor, String key) {
         Map<String, Object> sessionAttributes = getSessionAttributes(accessor);
         Object value = sessionAttributes.get(key);
@@ -96,11 +128,13 @@ public class StompHandler implements ChannelInterceptor {
         return value;
     }
 
+    // Stomp 세션 속성에 원하는 값 삽입
     private void setValue(StompHeaderAccessor accessor, String key, Object value) {
         Map<String, Object> sessionAttributes = getSessionAttributes(accessor);
         sessionAttributes.put(key, value);
     }
 
+    // Stomp 세션 속성 가져오기
     private Map<String, Object> getSessionAttributes(StompHeaderAccessor accessor) {
         Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
 
