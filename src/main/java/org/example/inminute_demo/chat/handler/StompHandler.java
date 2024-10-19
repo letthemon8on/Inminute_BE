@@ -45,11 +45,11 @@ public class StompHandler implements ChannelInterceptor {
 
         if (StompCommand.CONNECT.equals(command)) { // 클라이언트가 WebSocket 연결 요청
 
-            // 쿠키 기반 jwt 인증을 통해 생성된 세션에서 사용자 정보 가져옴
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            // Stomp 헤더에 담긴 simpUser 정보 가져옴
+            Authentication simpUser = (Authentication) accessor.getUser();
 
-            if (auth != null && auth.isAuthenticated()) {
-                CustomOAuth2User customOAuth2User = (CustomOAuth2User) auth.getPrincipal();
+            if (simpUser != null && simpUser.isAuthenticated()) {
+                CustomOAuth2User customOAuth2User = (CustomOAuth2User) simpUser.getPrincipal();
 
                 // 사용자 정보 가져오기
                 String username = customOAuth2User.getUsername();
