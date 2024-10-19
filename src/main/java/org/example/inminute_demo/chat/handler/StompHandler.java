@@ -51,9 +51,12 @@ public class StompHandler implements ChannelInterceptor {
             if (simpUser != null && simpUser.isAuthenticated()) {
                 CustomOAuth2User customOAuth2User = (CustomOAuth2User) simpUser.getPrincipal();
 
+                Member member = memberRepository.findByUsername(customOAuth2User.getUsername())
+                        .orElseThrow(() -> new WebSocketException("사용자 정보를 찾을 수 없습니다."));
+
                 // 사용자 정보 가져오기
-                String username = customOAuth2User.getUsername();
-                String nickname = customOAuth2User.getNickname();
+                String username = member.getUsername();
+                String nickname = member.getNickname();
 
                 // 인증 후 데이터를 헤더에 추가
                 setValue(accessor, "username", username);

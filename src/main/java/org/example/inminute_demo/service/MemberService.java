@@ -27,6 +27,7 @@ public class MemberService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
+    @Transactional
     public MemberResponse addDetail(CustomOAuth2User customOAuth2User, MemberRequest memberRequest) {
 
         Member member = memberRepository.findByUsername(customOAuth2User.getUsername())
