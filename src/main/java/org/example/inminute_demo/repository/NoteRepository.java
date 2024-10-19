@@ -10,6 +10,7 @@ public interface NoteRepository extends JpaRepository<Note, Long> {
 
     List<Note> findAllByFolder_Id(Long folderId);
     List<Note> findAllByMember_Id(Long memberId);
+    List<Note> findAllByMember_IdAndFolder_IdIsNull(Long memberId);
 
     Optional<Note> findByUuid(String uuid);
 }

@@ -3,6 +3,8 @@ package org.example.inminute_demo.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.converter.FolderConverter;
+import org.example.inminute_demo.dto.note.response.NoteResponse;
+import org.example.inminute_demo.dto.note.response.NotesNotInFolder;
 import org.example.inminute_demo.repository.FolderRepository;
 import org.example.inminute_demo.repository.NoteRepository;
 import org.example.inminute_demo.apipayload.Handler.TempHandler;
@@ -82,13 +84,31 @@ public class FolderService {
                     .id(folder.getId())
                     .name(folder.getName())
                     .create_at(folder.getCreated_at())
-                    .notesInFolders(notesInFolders)
+                    .notes(notesInFolders)
                     .build();
 
             folderResponses.add(folderResponse);
         }
 
-        return new FolderListResponse(folderResponses);
+        List<Note> notes = noteService.getNotesNotInFolder(member.getId());
+
+        List<NotesNotInFolder> notesNotInFolders = new ArrayList<>();
+        for (Note note : notes) {
+            NotesNotInFolder notesNotInFolder = NotesNotInFolder.builder()
+                    .id(note.getId())
+                    .name(note.getName())
+                    .createdAt(note.getCreated_at())
+                    .build();
+
+            notesNotInFolders.add(notesNotInFolder);
+        }
+
+        FolderListResponse folderListResponse = FolderListResponse.builder()
+                .folders(folderResponses)
+                .notes(notesNotInFolders)
+                .build();
+
+        return folderListResponse;
     }
 
     @Transactional

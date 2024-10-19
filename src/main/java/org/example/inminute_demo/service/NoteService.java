@@ -158,4 +158,9 @@ public class NoteService {
 
         return noteRepository.findAllByFolder_Id(folderId);
     }
+
+    public List<Note> getNotesNotInFolder(Long memberId) {
+
+        return noteRepository.findAllByMember_IdAndFolder_IdIsNull(memberId);
+    }
 }

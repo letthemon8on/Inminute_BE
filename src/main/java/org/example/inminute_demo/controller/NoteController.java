@@ -65,17 +65,19 @@ public class NoteController {
     }
 
     @GetMapping("/{noteId}")
+    @Operation(summary = "회의록 상세정보 조회(개발중)", description = "지정한 회의록 상세 정보를 조회합니다.")
     public ApiResponse<NoteDetailResponse> getNote(@PathVariable Long noteId) {
         return ApiResponse.onSuccess(noteService.getNote(noteId));
     }
 
     @GetMapping("/detail/{uuid}")
-    @Operation(summary = "UUID 회의록 상세정보 조회", description = "url의 UUID를 통해 회의록 상세 정보를 조회합니다.")
+    @Operation(summary = "UUID 회의록 상세정보 조회(개발중)", description = "url의 UUID를 통해 회의록 상세 정보를 조회합니다.")
     public ApiResponse<NoteDetailResponse> getNoteByUuid(@PathVariable String uuid) {
         return ApiResponse.onSuccess(noteService.getNoteByUuid(uuid));
     }
 
     @DeleteMapping("/{noteId}")
+    @Operation(summary = "회의록 삭제(개발중)", description = "지정한 회의록을 삭제합니다.")
     public ApiResponse<?> deleteNote(@PathVariable Long noteId) {
         noteService.deleteNote(noteId);
         return ApiResponse.onSuccess("회의록 삭제됨");
