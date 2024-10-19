@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface NoteJoinMemberRepository extends JpaRepository<NoteJoinMember, Long> {
 
     Optional<NoteJoinMember> findByNote_Id(Long noteId);
+    Optional<NoteJoinMember> findByMember_UsernameAndNote_Uuid(String username, String uuid);
+    Boolean existsByMember_UsernameAndNote_Uuid(String username, String uuid);
 }
