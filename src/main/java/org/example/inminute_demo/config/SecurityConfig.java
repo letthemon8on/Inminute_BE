@@ -55,8 +55,8 @@ public class SecurityConfig {
 
                         CorsConfiguration configuration = new CorsConfiguration();
 
-                        configuration.setAllowedOrigins(List.of("http://localhost:3000/", "http://inminute.kr/", "http://api.inminute.kr/",
-                                "https://inminute.kr/", "https://api.inminute.kr/"));
+                        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://inminute.kr", "http://api.inminute.kr",
+                                "https://inminute.kr", "https://api.inminute.kr"));
                         configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -114,6 +114,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "oauth2/**", "/login", "logout", "/reissue").permitAll()
                         .requestMatchers("/zoomApi").permitAll()
                         .requestMatchers("/swagger-ui.html", "/v3/sapi-docs/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll() // WebSocket 핸드셰이크 요청 허용
                         .anyRequest().authenticated());
 
         // 세션 설정 : STATELESS

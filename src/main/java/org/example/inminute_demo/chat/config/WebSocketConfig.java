@@ -19,8 +19,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) { // Web Socket 시작 endpoint 등록
         registry.addEndpoint("/ws")
-                .setAllowedOrigins("http://localhost:3000/", "http://inminute.kr/", "http://api.inminute.kr/",
-                        "https://inminute.kr/", "https://api.inminute.kr/")
+                .setAllowedOrigins("http://localhost:3000", "http://inminute.kr", "http://api.inminute.kr",
+                        "https://inminute.kr", "https://api.inminute.kr")
                 .withSockJS(); // Web Socket 지원하지 않는 브라우저에서도 사용 가능하도록
     }
 
