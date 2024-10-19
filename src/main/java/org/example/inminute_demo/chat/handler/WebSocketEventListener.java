@@ -42,7 +42,7 @@ public class WebSocketEventListener {
         String uuid = (String)getValue(accessor, "uuid");
 
         logger.info("User: {} {} Subscribe Note : {}", username, nickname, uuid);
-        ChatRequest chatRequest = new ChatRequest(MessageType.JOIN, username,
+        ChatRequest chatRequest = new ChatRequest(MessageType.JOIN, nickname,
                 nickname + " 님이 입장했습니다.");
         messagingTemplate.convertAndSend("/topic/public/" + uuid, chatRequest);
 
@@ -60,7 +60,7 @@ public class WebSocketEventListener {
         logger.info("User: {} {} Disconnected Note : {}", username, nickname, uuid);
 
         ChatRequest chatRequest = new ChatRequest(
-                MessageType.LEAVE, username, nickname + " 님이 떠났습니다.");
+                MessageType.LEAVE, nickname, nickname + " 님이 떠났습니다.");
 
         messagingTemplate.convertAndSend("/topic/public/" + uuid, chatRequest);
     }

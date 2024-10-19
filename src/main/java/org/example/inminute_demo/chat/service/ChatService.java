@@ -25,7 +25,8 @@ public class ChatService {
     // 채팅 내역 저장
     @Transactional
     public ChatResponse save(ChatRequest chatRequest, String uuid, Map<String, Object> header) {
-        Chat chat = ChatConverter.toChat(chatRequest, uuid);
+        String username = getValueFromHeader(header, "username");
+        Chat chat = ChatConverter.toChat(chatRequest, username, uuid);
         Chat savedChat = chatRepository.save(chat);
 
         return toChatResponse(savedChat, header);

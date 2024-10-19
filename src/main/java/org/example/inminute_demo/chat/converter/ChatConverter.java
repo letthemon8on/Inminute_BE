@@ -6,9 +6,9 @@ import org.example.inminute_demo.chat.dto.response.ChatResponse;
 
 public class ChatConverter {
 
-    public static Chat toChat(ChatRequest chatRequest, String uuid) {
+    public static Chat toChat(ChatRequest chatRequest, String username, String uuid) {
         return Chat.builder()
-                .username(chatRequest.username())
+                .username(username)
                 .type(chatRequest.type())
                 .content(chatRequest.content())
                 .uuid(uuid)
