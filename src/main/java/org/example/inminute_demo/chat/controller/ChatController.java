@@ -1,5 +1,7 @@
 package org.example.inminute_demo.chat.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.inminute_demo.apipayload.ApiResponse;
@@ -23,6 +25,7 @@ import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+@Tag(name = "Chat", description = "채팅 관련 API입니다.")
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
@@ -30,9 +33,9 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping(value = "/notes/{uuid}/chats", produces = APPLICATION_JSON_VALUE)
-    public ApiResponse<ChatsInNote> getChattingList(
-            @PathVariable(name = "uuid") String uuid,
-            @PageableDefault(sort = "createdAt") Pageable pageable) {
+    @Operation(summary = "회의록 전체 채팅 조회(페이징)", description = "해당 회의록에 작성된 모든 채팅 내역을 페이징 처리하여 조회합니다.")
+    public ApiResponse<ChatsInNote> getChattingList(@PathVariable(name = "uuid") String uuid,
+                                                    @PageableDefault(sort = "createdAt") Pageable pageable) {
 
         ChatsInNote result = chatService.getByNoteUUID(uuid, pageable);
 
@@ -40,8 +43,8 @@ public class ChatController {
     }
 
     @GetMapping(value = "/notes/{uuid}/chats/all", produces = APPLICATION_JSON_VALUE)
-    public ApiResponse<ChatResponses> getAllChattingList(
-            @PathVariable(name = "uuid") String uuid) {
+    @Operation(summary = "회의록 전체 채팅 조회", description = "해당 회의록에 작성된 모든 채팅 내역을 조회합니다.")
+    public ApiResponse<ChatResponses> getAllChattingList(@PathVariable(name = "uuid") String uuid) {
 
         List<ChatResponse> result = chatService.getAllByNoteUUID(uuid);
 
