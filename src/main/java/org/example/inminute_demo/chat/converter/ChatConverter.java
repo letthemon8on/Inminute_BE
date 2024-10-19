@@ -6,19 +6,19 @@ import org.example.inminute_demo.chat.dto.response.ChatResponse;
 
 public class ChatConverter {
 
-    public static Chat toChat(ChatRequest chatRequest, Long noteId) {
+    public static Chat toChat(ChatRequest chatRequest, String uuid) {
         return Chat.builder()
-                .memberId(chatRequest.memberId())
+                .username(chatRequest.username())
                 .type(chatRequest.type())
                 .content(chatRequest.content())
-                .noteId(noteId)
+                .uuid(uuid)
                 .build();
     }
 
-    public static ChatResponse toChatResponse(Chat chat, String username) {
+    public static ChatResponse toChatResponse(Chat chat, String username, String nickname) {
         return ChatResponse.builder()
-                .memberId(chat.getMemberId())
                 .username(username)
+                .nickname(nickname)
                 .type(chat.getType())
                 .createdAt(chat.getCreated_at())
                 .content(chat.getContent())

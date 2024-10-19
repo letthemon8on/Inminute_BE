@@ -52,7 +52,7 @@ public class StompHandler implements ChannelInterceptor {
 
                 // 인증 후 데이터를 헤더에 추가
                 setValue(accessor, "username", username);
-                setValue(accessor, "username", nickname);
+                setValue(accessor, "nickname", nickname);
             }
 
         } else if (StompCommand.SUBSCRIBE.equals(command)) { // 채팅룸 구독요청(진입) -> NoteJoinMember인지 검증

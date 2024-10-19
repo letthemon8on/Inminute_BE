@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 @Builder
 public record ChatResponse(
         Long id,
-        Long memberId,
         String username,
+        String nickname,
         MessageType type,
         LocalDateTime createdAt,
         String content

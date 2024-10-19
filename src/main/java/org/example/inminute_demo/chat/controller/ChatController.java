@@ -29,34 +29,34 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    @GetMapping(value = "/notes/{noteId}/chats", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/notes/{uuid}/chats", produces = APPLICATION_JSON_VALUE)
     public ApiResponse<ChatsInNote> getChattingList(
-            @PathVariable(name = "noteId") Long noteId,
+            @PathVariable(name = "uuid") String uuid,
             @PageableDefault(sort = "createdAt") Pageable pageable) {
 
-        ChatsInNote result = chatService.getByNoteId(noteId, pageable);
+        ChatsInNote result = chatService.getByNoteUUID(uuid, pageable);
 
         return ApiResponse.onSuccess(result);
     }
 
-    @GetMapping(value = "/notes/{noteId}/chats/all", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/notes/{uuid}/chats/all", produces = APPLICATION_JSON_VALUE)
     public ApiResponse<ChatResponses> getAllChattingList(
-            @PathVariable(name = "noteId") Long noteId) {
+            @PathVariable(name = "uuid") String uuid) {
 
-        List<ChatResponse> result = chatService.getAllByNoteId(noteId);
+        List<ChatResponse> result = chatService.getAllByNoteUUID(uuid);
 
         ChatResponses chatResponses = new ChatResponses(result);
 
         return ApiResponse.onSuccess(chatResponses);
     }
 
-    // 특정 채팅방(noteId)로부터 메시지를 받아 저장하고, 저장된 메시지를 WebSocket을 통해 구독자들에게 전송
-    @MessageMapping("/chat.sendMessage/{noteId}")
-    @SendTo("/topic/public/{noteId}") // /topic/public/{noteId} 경로를 구독하는 클라이언트들에게 메세지 전달
-    public ChatResponse sendMessage(@DestinationVariable Long noteId,
+    // 특정 채팅방(uuid)로부터 메시지를 받아 저장하고, 저장된 메시지를 WebSocket을 통해 구독자들에게 전송
+    @MessageMapping("/chat.sendMessage/{uuid}")
+    @SendTo("/topic/public/{uuid}") // /topic/public/{uuid} 경로를 구독하는 클라이언트들에게 메세지 전달
+    public ChatResponse sendMessage(@DestinationVariable String uuid,
                                     @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
                                     @Payload ChatRequest chatRequest) {
 
-        return chatService.save(chatRequest, noteId, simpSessionAttributes);
+        return chatService.save(chatRequest, uuid, simpSessionAttributes);
     }
 }

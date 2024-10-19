@@ -23,9 +23,9 @@ public class Chat extends BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    private Long memberId;
+    private String username;
 
-    private Long noteId;
+    private String uuid;
 
     @Enumerated(STRING)
     private MessageType type;

@@ -16,20 +16,20 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
     @Query("""
 			SELECT 
 			new org.example.inminute_demo.chat.dto.response.ChatResponse
-			(c.id, u.id, u.nickname, c.type, c.created_at, c.content) 
+			(c.id, u.username, u.nickname, c.type, c.created_at, c.content) 
 			FROM Chat c 
-			JOIN Member u ON u.id = c.memberId 
-			WHERE c.noteId = :noteId
+			JOIN Member u ON u.username = c.username
+			WHERE c.uuid = :uuid
 		""")
-    Page<ChatResponse> findByNoteId(@Param("noteId") Long noteId, Pageable pageable);
+    Page<ChatResponse> findByNoteUUID(@Param("uuid") String uuid, Pageable pageable);
 
     @Query("""
 			SELECT 
 			new org.example.inminute_demo.chat.dto.response.ChatResponse
-			(c.id, u.id, u.nickname, c.type, c.created_at, c.content) 
+			(c.id, u.username, u.nickname, c.type, c.created_at, c.content) 
 			FROM Chat c 
-			JOIN Member u ON u.id = c.memberId 
-			WHERE c.noteId = :noteId
+			JOIN Member u ON u.username = c.username 
+			WHERE c.uuid = :uuid
 		""")
-    List<ChatResponse> findAllByNoteId(@Param("noteId") Long noteId);
+    List<ChatResponse> findAllByNoteUUID(@Param("uuid") String uuid);
 }

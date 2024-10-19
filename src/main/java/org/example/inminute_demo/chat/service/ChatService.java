@@ -24,28 +24,29 @@ public class ChatService {
 
     // 채팅 내역 저장
     @Transactional
-    public ChatResponse save(ChatRequest chatRequest, Long noteId, Map<String, Object> header) {
-        Chat chat = ChatConverter.toChat(chatRequest, noteId);
+    public ChatResponse save(ChatRequest chatRequest, String uuid, Map<String, Object> header) {
+        Chat chat = ChatConverter.toChat(chatRequest, uuid);
         Chat savedChat = chatRepository.save(chat);
 
         return toChatResponse(savedChat, header);
     }
 
     // 채팅 내역 조회(페이징)
-    public ChatsInNote getByNoteId(Long noteId, Pageable pageable) {
-        Page<ChatResponse> result = chatRepository.findByNoteId(noteId, pageable);
+    public ChatsInNote getByNoteUUID(String uuid, Pageable pageable) {
+        Page<ChatResponse> result = chatRepository.findByNoteUUID(uuid, pageable);
         return new ChatsInNote(result);
     }
 
     // 모든 채팅 내역 조회
-    public List<ChatResponse> getAllByNoteId(Long noteId) {
-        return chatRepository.findAllByNoteId(noteId);
+    public List<ChatResponse> getAllByNoteUUID(String uuid) {
+        return chatRepository.findAllByNoteUUID(uuid);
     }
 
     private ChatResponse toChatResponse(Chat chat, Map<String, Object> header) {
         String username = getValueFromHeader(header, "username");
+        String nickname = getValueFromHeader(header, "nickname");
 
-        return ChatConverter.toChatResponse(chat, username);
+        return ChatConverter.toChatResponse(chat, username, nickname);
     }
 
     private String getValueFromHeader(Map<String, Object> header, String key) {
