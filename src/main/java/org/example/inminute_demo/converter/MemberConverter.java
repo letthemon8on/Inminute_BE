@@ -38,6 +38,7 @@ public class MemberConverter {
     public static LoginResponse toLoginResponse(Member member) {
         return LoginResponse.builder()
                 .username(member.getUsername())
+                .nickname(member.getNickname())
                 .role(member.getRole())
                 .isFirst(member.getIsFirst())
                 .build();
