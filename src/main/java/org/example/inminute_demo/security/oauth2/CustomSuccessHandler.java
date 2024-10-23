@@ -67,14 +67,20 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Boolean isFirst = customUserDetails.getIsFirst();
 
-         // 로그인 성공 후 리다이렉트
-        if (isFirst) {
+        // 로그인 성공 후 리다이렉트
+        /*if (isFirst) {
             response.sendRedirect("https://inminute.kr/?source=login");
         }
         else {
             response.sendRedirect("https://inminute.kr/home");
-        }
+        }*/
 
+        if (isFirst) {
+            response.sendRedirect("http://localhost:3000/?source=login");
+        }
+        else {
+            response.sendRedirect("http://localhost:3000/home");
+        }
 
         /*// 로그인 응답 반환
         LoginResponse loginResponse = LoginResponse.builder()
