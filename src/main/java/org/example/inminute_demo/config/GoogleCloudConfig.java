@@ -12,7 +12,7 @@ import org.springframework.core.io.Resource;
 public class GoogleCloudConfig {
 
     @Value("${spring.cloud.gcp.credentials.location}")
-    private Resource gcsCredentials;
+    private Resource gcsCredentials; // String, Resource 중 선택 필요
 
     @Bean
     public SpeechSettings speechSettings() {
