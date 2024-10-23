@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+
+import java.io.InputStream;
 
 @Configuration
 public class GoogleCloudConfig {
@@ -14,11 +17,17 @@ public class GoogleCloudConfig {
     @Value("${spring.cloud.gcp.credentials.location}")
     private Resource gcsCredentials;
 
+    private final ResourceLoader resourceLoader;
+
+    public GoogleCloudConfig(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
+
     @Bean
     public SpeechSettings speechSettings() {
-        try {
+        try (InputStream credentialsStream = gcsCredentials.getInputStream()) {
             return SpeechSettings.newBuilder()
-                    .setCredentialsProvider(() -> GoogleCredentials.fromStream(gcsCredentials.getInputStream()))
+                    .setCredentialsProvider(() -> GoogleCredentials.fromStream(credentialsStream))
                     .build();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -27,9 +36,9 @@ public class GoogleCloudConfig {
 
     @Bean
     public SpeechStubSettings speechStubSettings() {
-        try {
+        try (InputStream credentialsStream = gcsCredentials.getInputStream()) {
             return SpeechStubSettings.newBuilder()
-                    .setCredentialsProvider(() -> GoogleCredentials.fromStream(gcsCredentials.getInputStream()))
+                    .setCredentialsProvider(() -> GoogleCredentials.fromStream(credentialsStream))
                     .build();
         } catch (Exception e) {
             throw new RuntimeException(e);
