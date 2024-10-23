@@ -8,17 +8,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 
+import java.io.FileInputStream;
+
 @Configuration
 public class GoogleCloudConfig {
 
-    @Value("classpath:googlestt.json")
-    private Resource gcsCredentials;
+    @Value("${spring.cloud.gcp.credentials.location}")
+    private String gcsCredentials;
 
     @Bean
     public SpeechSettings speechSettings() {
         try {
             return SpeechSettings.newBuilder()
-                    .setCredentialsProvider(() -> GoogleCredentials.fromStream(gcsCredentials.getInputStream()))
+                    .setCredentialsProvider(() -> GoogleCredentials.fromStream(new FileInputStream(gcsCredentials)))
                     .build();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -29,7 +31,7 @@ public class GoogleCloudConfig {
     public SpeechStubSettings speechStubSettings() {
         try {
             return SpeechStubSettings.newBuilder()
-                    .setCredentialsProvider(() -> GoogleCredentials.fromStream(gcsCredentials.getInputStream()))
+                    .setCredentialsProvider(() -> GoogleCredentials.fromStream(new FileInputStream(gcsCredentials)))
                     .build();
         } catch (Exception e) {
             throw new RuntimeException(e);
