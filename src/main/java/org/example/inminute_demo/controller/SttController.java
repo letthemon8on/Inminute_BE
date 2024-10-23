@@ -15,7 +15,7 @@ import java.io.IOException;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost/5173")
+// @CrossOrigin(origins = "http://localhost/5173")
 @RequestMapping("/stt")
 public class SttController {
 
@@ -24,6 +24,12 @@ public class SttController {
     @PostMapping(value = "/audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<?> handleAudioMessage(@RequestParam("audioFile") MultipartFile audioFile, @RequestParam Long noteId) throws IOException {
         speechToTextService.transcribe(audioFile, noteId);
+        return ApiResponse.onSuccess("텍스트 변환 완료됨");
+    }
+
+    @PostMapping(value = "/audio-short", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<?> handleShortAudioMessage(@RequestParam("audioFile") MultipartFile audioFile, @RequestParam Long noteId) throws IOException {
+        speechToTextService.shortTranscribe(audioFile, noteId);
         return ApiResponse.onSuccess("텍스트 변환 완료됨");
     }
 }

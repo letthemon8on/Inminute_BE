@@ -103,6 +103,63 @@ public class SpeechToTextService {
         }
     }
 
+    public void shortTranscribe(MultipartFile audioFile, Long noteId) throws IOException {
+        if (audioFile.isEmpty()) {
+            throw new IOException("Required part 'audioFile' is not present.");
+        }
+
+        // 클라이언트 인스턴스화
+        try (SpeechClient speechClient = SpeechClient.create()) {
+            // 설정 객체 생성
+            RecognitionConfig recognitionConfig =
+                    RecognitionConfig.newBuilder()
+                            .setEncoding(RecognitionConfig.AudioEncoding.FLAC)
+                            .setSampleRateHertz(32000)
+                            .setLanguageCode("ko-KR")  // 기본 언어 설정
+                            .addAlternativeLanguageCodes("en-US")  // 대체 언어 설정
+                            .build();
+
+            // 오디오 파일을 RecognitionAudio로 변환
+            RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder()
+                    .setContent(com.google.protobuf.ByteString.copyFrom(audioFile.getBytes()))  // 오디오 파일 데이터를 설정
+                    .build();
+
+            // Recognize 요청 생성
+            RecognizeRequest request = RecognizeRequest.newBuilder()
+                    .setConfig(recognitionConfig)
+                    .setAudio(recognitionAudio)
+                    .build();
+
+            // STT API 요청 실행
+            RecognizeResponse response = speechClient.recognize(request);
+            List<SpeechRecognitionResult> results = response.getResultsList();
+
+            StringBuilder transcription = new StringBuilder();
+
+            if (!results.isEmpty()) {
+                for (SpeechRecognitionResult result : results) {
+                    // 가장 가능성 있는 텍스트 변환 결과 사용
+                    SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+                    transcription.append(alternative.getTranscript()).append(" ");
+                    System.out.printf("Transcription: %s\n", alternative.getTranscript());
+                }
+
+                // 텍스트 변환 결과 저장
+                Note note = noteRepository.findById(noteId)
+                        .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
+
+                String script = transcription.toString().trim();
+                note.toScript(script);
+                noteRepository.save(note);
+
+            } else {
+                logger.error("No transcription result found");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to transcribe audio file", e);
+        }
+    }
+
     private String uploadFileToGCS(Path filePath) {
         Storage storage = StorageOptions.getDefaultInstance().getService();
         String blobName = UUID.randomUUID().toString() + "-" + filePath.getFileName().toString();
