@@ -15,7 +15,6 @@ import java.io.IOException;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-// @CrossOrigin(origins = "http://localhost/5173")
 @RequestMapping("/stt")
 public class SttController {
 
