@@ -3,6 +3,7 @@ package org.example.inminute_demo.chat.handler;
 import com.google.cloud.speech.v1.*;
 import com.google.protobuf.ByteString;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.inminute_demo.chat.converter.ChatConverter;
 import org.example.inminute_demo.chat.domain.Chat;
 import org.example.inminute_demo.chat.exception.WebSocketException;
@@ -21,6 +22,7 @@ import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AudioStreamHandler extends BinaryWebSocketHandler {
@@ -36,6 +38,10 @@ public class AudioStreamHandler extends BinaryWebSocketHandler {
         try {
             // WebSocket을 통해 받은 Binary 데이터를 스트림에 저장
             byteArrayOutputStream.write(message.getPayload().array());
+
+            if (byteArrayOutputStream.toString().isEmpty()) {
+                throw new WebSocketException("오디오 스트림을 찾지 못했습니다.");
+            }
 
             // Google STT로 변환
             String transcript = transcribeAudio(byteArrayOutputStream.toByteArray());
