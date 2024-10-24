@@ -53,8 +53,7 @@ public class AudioStreamHandler extends BinaryWebSocketHandler {
             // 특정 채팅방 구독자들에게 변환된 텍스트를 메시지로 전송
             String uuid = parseUUIDFromPath(session);
             ChatRequest chatRequest = new ChatRequest(
-                    MessageType.CHAT, member.getNickname(), transcript
-            );
+                    MessageType.CHAT, member.getNickname(), transcript);
             messagingTemplate.convertAndSend("/topic/public/" + uuid, chatRequest);
 
             // 변환된 텍스트 Chat 엔티티로 저장
