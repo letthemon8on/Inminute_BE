@@ -17,6 +17,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(audioStreamHandler, "/audio-stream/{uuid}")
-                .setAllowedOrigins("*"); // 필요한 도메인 설정
+                .setAllowedOrigins("http://localhost:3000", "http://inminute.kr", "http://api.inminute.kr",
+                        "https://inminute.kr", "https://api.inminute.kr"); // 필요한 도메인 설정
     }
 }
