@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.inminute_demo.apipayload.ApiResponse;
+import org.example.inminute_demo.chat.dto.request.AudioRequest;
 import org.example.inminute_demo.chat.dto.request.ChatRequest;
 import org.example.inminute_demo.chat.dto.response.ChatResponse;
 import org.example.inminute_demo.chat.dto.response.ChatResponses;
@@ -61,5 +62,15 @@ public class ChatController {
                                     @Payload ChatRequest chatRequest) {
 
         return chatService.save(chatRequest, uuid, simpSessionAttributes);
+    }
+
+    // 바이트 코드로 인코딩된 오디오 데이터를 받아 텍스트로 변환 후 구독자들에게 전송
+    @MessageMapping("/chat.sendAudio/{uuid}")
+    @SendTo("/topic/public/{uuid}") // /topic/public/{uuid} 경로를 구독하는 클라이언트들에게 변환된 텍스트 메세지 전달
+    public ChatResponse sendAudioMessage(@DestinationVariable String uuid,
+                                         @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
+                                         @Payload AudioRequest audioRequest) {
+
+        return chatService.transcribe(audioRequest, uuid, simpSessionAttributes);
     }
 }
