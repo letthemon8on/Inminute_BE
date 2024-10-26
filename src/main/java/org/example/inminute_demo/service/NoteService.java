@@ -90,6 +90,7 @@ public class NoteService {
             }
             NoteResponse noteResponse = NoteResponse.builder()
                     .id(note.getId())
+                    .uuid(note.getUuid())
                     .folderName(folderName)
                     .name(note.getName())
                     .createdAt(note.getCreated_at())

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class NoteResponse {
 
     private Long id;
+    private String uuid;
     private String folderName;
     private String name;
     private LocalDateTime createdAt;
