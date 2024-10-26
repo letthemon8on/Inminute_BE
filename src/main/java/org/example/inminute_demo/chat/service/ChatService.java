@@ -3,6 +3,7 @@ package org.example.inminute_demo.chat.service;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.chat.converter.ChatConverter;
 import org.example.inminute_demo.chat.domain.Chat;
+import org.example.inminute_demo.chat.dto.request.AudioRequest;
 import org.example.inminute_demo.chat.dto.request.ChatRequest;
 import org.example.inminute_demo.chat.dto.response.ChatResponse;
 import org.example.inminute_demo.chat.dto.response.ChatsInNote;
@@ -21,12 +22,25 @@ import java.util.Map;
 public class ChatService {
 
     private final ChatRepository chatRepository;
+    private final TranscribeService transcribeService;
 
     // 채팅 내역 저장
     @Transactional
     public ChatResponse save(ChatRequest chatRequest, String uuid, Map<String, Object> header) {
         String username = getValueFromHeader(header, "username");
         Chat chat = ChatConverter.toChat(chatRequest, username, uuid);
+        Chat savedChat = chatRepository.save(chat);
+
+        return toChatResponse(savedChat, header);
+    }
+
+    @Transactional
+    public ChatResponse transcribe(AudioRequest audioRequest, String uuid, Map<String, Object> header) {
+        String username = getValueFromHeader(header, "username");
+
+        String transcript = transcribeService.transcribeAudio(audioRequest.audioCode());
+
+        Chat chat = ChatConverter.toChatFromTranscript(transcript, username, uuid);
         Chat savedChat = chatRepository.save(chat);
 
         return toChatResponse(savedChat, header);
