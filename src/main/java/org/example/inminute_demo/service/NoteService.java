@@ -82,8 +82,15 @@ public class NoteService {
 
         List<NoteResponse> noteResponses = new ArrayList<>();
         for (Note note : notes) {
+            String folderName = null;
+            if (note.getFolder() != null && note.getFolder().getId() != null) {
+                Folder folder = folderRepository.findById(note.getFolder().getId())
+                        .orElseThrow(() -> new TempHandler(ErrorStatus.FOLDER_NOT_FOUND));
+                folderName = folder.getName();
+            }
             NoteResponse noteResponse = NoteResponse.builder()
                     .id(note.getId())
+                    .folderName(folderName)
                     .name(note.getName())
                     .createdAt(note.getCreated_at())
                     .summary(note.getSummary())
