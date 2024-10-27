@@ -73,6 +73,7 @@ public class FolderService {
             for (Note note : notes) {
                 NotesInFolder notesInFolder = NotesInFolder.builder()
                         .id(note.getId())
+                        .uuid(note.getUuid())
                         .name(note.getName())
                         .createdAt(note.getCreated_at())
                         .build();
@@ -96,6 +97,7 @@ public class FolderService {
         for (Note note : notes) {
             NotesNotInFolder notesNotInFolder = NotesNotInFolder.builder()
                     .id(note.getId())
+                    .uuid(note.getUuid())
                     .name(note.getName())
                     .createdAt(note.getCreated_at())
                     .build();

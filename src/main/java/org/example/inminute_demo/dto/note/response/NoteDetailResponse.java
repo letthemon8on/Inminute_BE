@@ -15,6 +15,7 @@ import java.util.List;
 public class NoteDetailResponse {
 
     private Long id;
+    private String uuid;
     private String name;
     private String script;
     private String summary;

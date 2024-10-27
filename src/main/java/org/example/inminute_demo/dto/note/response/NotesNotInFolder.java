@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class NotesNotInFolder {
 
     private Long id;
+    private String uuid;
     private String name;
     private LocalDateTime createdAt;
 }

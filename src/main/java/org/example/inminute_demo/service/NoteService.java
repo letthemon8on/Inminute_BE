@@ -129,6 +129,7 @@ public class NoteService {
 
         NoteDetailResponse noteDetailResponse = NoteDetailResponse.builder()
                 .id(note.getId())
+                .uuid(note.getUuid())
                 .name(note.getName())
                 .script(note.getScript())
                 .summary(note.getSummary())
