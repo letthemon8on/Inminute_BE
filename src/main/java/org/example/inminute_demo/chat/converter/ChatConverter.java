@@ -38,7 +38,7 @@ public class ChatConverter {
 
     public static ChatStartResponse toChatStartResponse() {
         return ChatStartResponse.builder()
-                .isStart(true)
+                .content("meeting started")
                 .build();
     }
 }
