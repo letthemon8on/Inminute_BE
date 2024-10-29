@@ -4,6 +4,7 @@ import org.example.inminute_demo.chat.domain.Chat;
 import org.example.inminute_demo.chat.domain.MessageType;
 import org.example.inminute_demo.chat.dto.request.ChatRequest;
 import org.example.inminute_demo.chat.dto.response.ChatResponse;
+import org.example.inminute_demo.chat.dto.response.ChatStartResponse;
 
 public class ChatConverter {
 
@@ -32,6 +33,12 @@ public class ChatConverter {
                 .type(MessageType.CHAT)
                 .content(transcript)
                 .uuid(uuid)
+                .build();
+    }
+
+    public static ChatStartResponse toChatStartResponse() {
+        return ChatStartResponse.builder()
+                .isStart(true)
                 .build();
     }
 }

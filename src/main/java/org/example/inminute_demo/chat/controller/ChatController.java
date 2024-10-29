@@ -5,10 +5,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.inminute_demo.apipayload.ApiResponse;
+import org.example.inminute_demo.chat.converter.ChatConverter;
 import org.example.inminute_demo.chat.dto.request.AudioRequest;
 import org.example.inminute_demo.chat.dto.request.ChatRequest;
 import org.example.inminute_demo.chat.dto.response.ChatResponse;
 import org.example.inminute_demo.chat.dto.response.ChatResponses;
+import org.example.inminute_demo.chat.dto.response.ChatStartResponse;
 import org.example.inminute_demo.chat.dto.response.ChatsInNote;
 import org.example.inminute_demo.chat.service.ChatService;
 import org.springframework.data.domain.Pageable;
@@ -72,5 +74,14 @@ public class ChatController {
                                          @Payload AudioRequest audioRequest) {
 
         return chatService.transcribe(audioRequest, uuid, simpSessionAttributes);
+    }
+
+    // 회의 시작 버튼 클릭 -> 모든 참여자들에게 회의 시작 여부 Broadcasting
+    @MessageMapping("/chat.start/{uuid}")
+    @SendTo("/topic/public/{uuid}")
+    public ChatStartResponse startChatting(@DestinationVariable String uuid,
+                                           @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes) {
+
+        return ChatConverter.toChatStartResponse();
     }
 }
