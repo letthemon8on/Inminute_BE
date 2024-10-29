@@ -8,6 +8,7 @@ import org.example.inminute_demo.apipayload.ApiResponse;
 import org.example.inminute_demo.chat.converter.ChatConverter;
 import org.example.inminute_demo.chat.dto.request.AudioRequest;
 import org.example.inminute_demo.chat.dto.request.ChatRequest;
+import org.example.inminute_demo.chat.dto.request.ChatStartRequest;
 import org.example.inminute_demo.chat.dto.response.ChatResponse;
 import org.example.inminute_demo.chat.dto.response.ChatResponses;
 import org.example.inminute_demo.chat.dto.response.ChatStartResponse;
@@ -80,7 +81,8 @@ public class ChatController {
     @MessageMapping("/chat.start/{uuid}")
     @SendTo("/topic/public/{uuid}")
     public ChatStartResponse startChatting(@DestinationVariable String uuid,
-                                           @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes) {
+                                           @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
+                                           @Payload ChatStartRequest chatStartRequest) {
 
         return ChatConverter.toChatStartResponse();
     }

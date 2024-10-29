@@ -4,6 +4,6 @@ import lombok.Builder;
 
 @Builder
 public record ChatStartResponse(
-        Boolean isStart
+        String content
 ) {
 }
