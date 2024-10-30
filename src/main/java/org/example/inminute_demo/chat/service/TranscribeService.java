@@ -4,18 +4,22 @@ import com.google.cloud.speech.v1.*;
 import com.google.protobuf.ByteString;
 import jakarta.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 import static jakarta.xml.bind.DatatypeConverter.parseBase64Binary;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TranscribeService {
 
     // Google STT로 오디오 데이터를 변환하는 메소드
     public String transcribeAudio(String audioCode) {
+
+        log.debug("audioCode: " + audioCode);
 
         // byte code로 수신한 오디오 데이터 디코딩
         byte[] byteAudio = parseBase64Binary(audioCode);
