@@ -1,6 +1,7 @@
 package org.example.inminute_demo.chat.config;
 
 import lombok.RequiredArgsConstructor;
+import org.example.inminute_demo.chat.handler.AgentWebSocketHandlerDecoratorFactory;
 import org.example.inminute_demo.chat.handler.StompHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -16,6 +17,7 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final StompHandler stompHandler; // STOMP 메세지 입출력 담당
+    private final AgentWebSocketHandlerDecoratorFactory agentWebSocketHandlerDecoratorFactory;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) { // Web Socket 시작 endpoint 등록
@@ -39,8 +41,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        registration.setMessageSizeLimit(50 * 1024 * 1024); // 메세지 크기 제한 오류 방지(이 코드가 없으면 byte code를 보낼때 소켓 연결이 끊길 수 있음)
-        registration.setSendTimeLimit(20000);
+        registration.setDecoratorFactories(agentWebSocketHandlerDecoratorFactory);
     }
-
 }
