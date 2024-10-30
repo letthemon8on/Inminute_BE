@@ -62,17 +62,11 @@ public class ChatService {
 
     @Transactional
     public ChatResponse transcribeByChunk(AudioChunkRequest audioChunkRequest, String uuid, Map<String, Object> header) {
+
         String username = getValueFromHeader(header, "username");
 
-        // audioRequest의 청크 데이터를 디코딩 후 청크 리스트에 추가
-        byte[] byteChunk = null;
-        if (audioChunkRequest.chunkCode() != null) {
-            byteChunk = parseBase64Binary(audioChunkRequest.chunkCode());
-        }
-        chunkMap.computeIfAbsent(username, k -> new ArrayList<>()).add(byteChunk);
-
         // 마지막 청크인지 확인
-        if (audioChunkRequest.isLast()) {
+        if (audioChunkRequest.chunkCode().equals("END")) {
             // 모든 청크를 병합한 후 변환 진행
             byte[] completeAudio = mergeChunks(chunkMap.get(username));
             String transcript = transcribeService.transcribeAudioChunk(completeAudio);
@@ -86,6 +80,10 @@ public class ChatService {
 
             return toChatResponse(savedChat, header);
         }
+
+        // audioRequest의 청크 데이터를 디코딩 후 청크 리스트에 추가
+        byte[] byteChunk = parseBase64Binary(audioChunkRequest.chunkCode());
+        chunkMap.computeIfAbsent(username, k -> new ArrayList<>()).add(byteChunk);
 
         return toChatResponse(null, header); // 마지막 청크가 아닐 경우
     }
