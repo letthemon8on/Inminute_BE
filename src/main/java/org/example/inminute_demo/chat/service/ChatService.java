@@ -1,6 +1,7 @@
 package org.example.inminute_demo.chat.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.inminute_demo.chat.converter.ChatConverter;
 import org.example.inminute_demo.chat.domain.Chat;
 import org.example.inminute_demo.chat.dto.request.AudioRequest;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -40,6 +42,8 @@ public class ChatService {
     @Transactional
     public ChatResponse transcribe(AudioRequest audioRequest, String uuid, Map<String, Object> header) {
         String username = getValueFromHeader(header, "username");
+
+        log.debug("audioCode: " + audioRequest.audioCode());
 
         String transcript = transcribeService.transcribeAudio(audioRequest.audioCode());
 
