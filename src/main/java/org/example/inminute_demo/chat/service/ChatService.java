@@ -65,10 +65,11 @@ public class ChatService {
         String username = getValueFromHeader(header, "username");
 
         // audioRequest의 청크 데이터를 디코딩 후 청크 리스트에 추가
+        byte[] byteChunk = null;
         if (audioChunkRequest.chunkCode() != null) {
-            byte[] byteChunk = parseBase64Binary(audioChunkRequest.chunkCode());
-            chunkMap.computeIfAbsent(username, k -> new ArrayList<>()).add(byteChunk);
+            byteChunk = parseBase64Binary(audioChunkRequest.chunkCode());
         }
+        chunkMap.computeIfAbsent(username, k -> new ArrayList<>()).add(byteChunk);
 
         // 마지막 청크인지 확인
         if (audioChunkRequest.isLast()) {

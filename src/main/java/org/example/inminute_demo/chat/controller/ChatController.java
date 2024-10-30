@@ -73,7 +73,7 @@ public class ChatController {
 
     @MessageMapping("/chat.sendAudioByChunk/{uuid}")
     @SendTo("/topic/public/{uuid}") // /topic/public/{uuid} 경로를 구독하는 클라이언트들에게 변환된 텍스트 메세지 전달
-    public ChatResponse sendAudioMessage(@DestinationVariable String uuid,
+    public ChatResponse sendAudioChunk(@DestinationVariable String uuid,
                                          @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
                                          @Payload AudioChunkRequest audioChunkRequest) {
 
