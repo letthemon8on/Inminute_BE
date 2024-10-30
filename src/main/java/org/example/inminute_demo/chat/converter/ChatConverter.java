@@ -5,6 +5,7 @@ import org.example.inminute_demo.chat.domain.MessageType;
 import org.example.inminute_demo.chat.dto.request.ChatRequest;
 import org.example.inminute_demo.chat.dto.response.ChatResponse;
 import org.example.inminute_demo.chat.dto.response.ChatStartResponse;
+import org.example.inminute_demo.chat.dto.response.ChatStopResponse;
 
 public class ChatConverter {
 
@@ -39,6 +40,12 @@ public class ChatConverter {
     public static ChatStartResponse toChatStartResponse() {
         return ChatStartResponse.builder()
                 .content("meeting started")
+                .build();
+    }
+
+    public static ChatStopResponse toChatStompResponse() {
+        return ChatStopResponse.builder()
+                .content("meeting finished")
                 .build();
     }
 }

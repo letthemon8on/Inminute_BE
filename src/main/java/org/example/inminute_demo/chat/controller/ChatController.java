@@ -3,25 +3,18 @@ package org.example.inminute_demo.chat.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.inminute_demo.apipayload.ApiResponse;
 import org.example.inminute_demo.chat.converter.ChatConverter;
 import org.example.inminute_demo.chat.dto.request.AudioRequest;
 import org.example.inminute_demo.chat.dto.request.ChatRequest;
 import org.example.inminute_demo.chat.dto.request.ChatStartRequest;
-import org.example.inminute_demo.chat.dto.response.ChatResponse;
-import org.example.inminute_demo.chat.dto.response.ChatResponses;
-import org.example.inminute_demo.chat.dto.response.ChatStartResponse;
-import org.example.inminute_demo.chat.dto.response.ChatsInNote;
+import org.example.inminute_demo.chat.dto.response.*;
 import org.example.inminute_demo.chat.service.ChatService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.*;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -85,5 +78,15 @@ public class ChatController {
                                            @Payload ChatStartRequest chatStartRequest) {
 
         return ChatConverter.toChatStartResponse();
+    }
+
+    // 회의 종료 시 호출 -> 추후에 Flask, GPT 적용하여 리팩토링 필요
+    @MessageMapping("/chat.stop/{uuid}")
+    @SendTo("/topic/public/{uuid}")
+    public ChatStopResponse stopChatting(@DestinationVariable String uuid,
+                                         @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
+                                         @Payload ChatStartRequest chatStartRequest) {
+
+        return ChatConverter.toChatStompResponse();
     }
 }
