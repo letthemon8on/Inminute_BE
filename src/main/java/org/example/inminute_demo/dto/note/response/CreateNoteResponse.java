@@ -16,4 +16,5 @@ public class CreateNoteResponse {
     private Long id;
     private LocalDateTime createdAt;
     private String uuid;
+    private Boolean isStart;
 }

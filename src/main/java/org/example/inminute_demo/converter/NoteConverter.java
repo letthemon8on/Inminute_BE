@@ -12,6 +12,7 @@ public class NoteConverter {
                 .id(note.getId())
                 .createdAt(note.getCreated_at())
                 .uuid(note.getUuid())
+                .isStart(false)
                 .build();
     }
 

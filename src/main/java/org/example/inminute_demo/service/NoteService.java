@@ -46,12 +46,14 @@ public class NoteService {
                     .member(member)
                     .folder(folder)
                     .name(createNoteRequest.getName())
+                    .isStart(false)
                     .build();
         }
         else {
             note = Note.builder()
                     .member(member)
                     .name(createNoteRequest.getName())
+                    .isStart(false)
                     .build();
         }
         noteRepository.save(note);
@@ -133,6 +135,7 @@ public class NoteService {
                 .name(note.getName())
                 .script(note.getScript())
                 .summary(note.getSummary())
+                .isStart(note.getIsStart())
                 .createdAt(note.getCreated_at())
                 .build();
 
@@ -148,6 +151,7 @@ public class NoteService {
                 .name(note.getName())
                 .script(note.getScript())
                 .summary(note.getSummary())
+                .isStart(note.getIsStart())
                 .createdAt(note.getCreated_at())
                 .build();
 
@@ -171,5 +175,13 @@ public class NoteService {
     public List<Note> getNotesNotInFolder(Long memberId) {
 
         return noteRepository.findAllByMember_IdAndFolder_IdIsNull(memberId);
+    }
+
+    public void updateIsStart(String uuid, Boolean isStart) {
+
+        Note note = noteRepository.findByUuid(uuid)
+                .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
+
+        note.updateIsStart(isStart);
     }
 }

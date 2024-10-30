@@ -3,7 +3,7 @@ package org.example.inminute_demo.chat.dto.response;
 import lombok.Builder;
 
 @Builder
-public record ChatStartResponse(
-        String content
+public record ChatStatusResponse(
+        Boolean isStart
 ) {
 }

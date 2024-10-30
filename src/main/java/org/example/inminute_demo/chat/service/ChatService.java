@@ -6,8 +6,10 @@ import org.example.inminute_demo.chat.domain.Chat;
 import org.example.inminute_demo.chat.dto.request.AudioRequest;
 import org.example.inminute_demo.chat.dto.request.ChatRequest;
 import org.example.inminute_demo.chat.dto.response.ChatResponse;
+import org.example.inminute_demo.chat.dto.response.ChatStatusResponse;
 import org.example.inminute_demo.chat.dto.response.ChatsInNote;
 import org.example.inminute_demo.chat.repository.ChatRepository;
+import org.example.inminute_demo.service.NoteService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ public class ChatService {
 
     private final ChatRepository chatRepository;
     private final TranscribeService transcribeService;
+    private final NoteService noteService;
 
     // 채팅 내역 저장
     @Transactional
@@ -44,6 +47,18 @@ public class ChatService {
         Chat savedChat = chatRepository.save(chat);
 
         return toChatResponse(savedChat, header);
+    }
+
+    public ChatStatusResponse startChatting(String uuid) {
+
+        noteService.updateIsStart(uuid, true);
+        return ChatConverter.toChatStatusResponse(true);
+    }
+
+    public ChatStatusResponse stopChatting(String uuid) {
+
+        noteService.updateIsStart(uuid, false);
+        return ChatConverter.toChatStatusResponse(false);
     }
 
     // 채팅 내역 조회(페이징)

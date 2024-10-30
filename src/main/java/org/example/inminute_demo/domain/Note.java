@@ -43,6 +43,8 @@ public class Note extends BaseEntity{
     @Column(nullable = false, unique = true)
     private String uuid; // 링크 공유를 위해 생성
 
+    private Boolean isStart; // 회의 시작/종료 여부
+
     @PrePersist
     public void prePersist() {
         this.uuid = UUID.randomUUID().toString();
@@ -58,6 +60,10 @@ public class Note extends BaseEntity{
         if (summary != null) {
             this.summary = summary;
         }
+    }
+
+    public void updateIsStart(Boolean isStart) {
+        this.isStart = isStart;
     }
 
     public void toScript(String script) {

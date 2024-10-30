@@ -8,6 +8,7 @@ import org.example.inminute_demo.chat.converter.ChatConverter;
 import org.example.inminute_demo.chat.dto.request.AudioRequest;
 import org.example.inminute_demo.chat.dto.request.ChatRequest;
 import org.example.inminute_demo.chat.dto.request.ChatStartRequest;
+import org.example.inminute_demo.chat.dto.request.ChatStopRequest;
 import org.example.inminute_demo.chat.dto.response.*;
 import org.example.inminute_demo.chat.service.ChatService;
 import org.springframework.data.domain.Pageable;
@@ -73,20 +74,20 @@ public class ChatController {
     // 회의 시작 버튼 클릭 -> 모든 참여자들에게 회의 시작 여부 Broadcasting
     @MessageMapping("/chat.start/{uuid}")
     @SendTo("/topic/public/{uuid}")
-    public ChatStartResponse startChatting(@DestinationVariable String uuid,
-                                           @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
-                                           @Payload ChatStartRequest chatStartRequest) {
+    public ChatStatusResponse startChatting(@DestinationVariable String uuid,
+                                            @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
+                                            @Payload ChatStartRequest chatStartRequest) {
 
-        return ChatConverter.toChatStartResponse();
+        return chatService.startChatting(uuid);
     }
 
     // 회의 종료 시 호출 -> 추후에 Flask, GPT 적용하여 리팩토링 필요
     @MessageMapping("/chat.stop/{uuid}")
     @SendTo("/topic/public/{uuid}")
-    public ChatStopResponse stopChatting(@DestinationVariable String uuid,
+    public ChatStatusResponse stopChatting(@DestinationVariable String uuid,
                                          @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
-                                         @Payload ChatStartRequest chatStartRequest) {
+                                         @Payload ChatStopRequest chatStopRequest) {
 
-        return ChatConverter.toChatStompResponse();
+        return chatService.stopChatting(uuid);
     }
 }

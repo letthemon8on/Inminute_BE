@@ -19,5 +19,6 @@ public class NoteDetailResponse {
     private String name;
     private String script;
     private String summary;
+    private Boolean isStart;
     private LocalDateTime createdAt;
 }
