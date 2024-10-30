@@ -177,11 +177,13 @@ public class NoteService {
         return noteRepository.findAllByMember_IdAndFolder_IdIsNull(memberId);
     }
 
+    @Transactional
     public void updateIsStart(String uuid, Boolean isStart) {
 
         Note note = noteRepository.findByUuid(uuid)
                 .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
 
         note.updateIsStart(isStart);
+        noteRepository.save(note);
     }
 }
