@@ -6,7 +6,6 @@ import jakarta.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,12 +16,10 @@ import static jakarta.xml.bind.DatatypeConverter.parseBase64Binary;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@EnableAsync
 public class TranscribeService {
 
     // Google STT로 오디오 데이터를 변환하는 메소드
-    @Async
-    public CompletableFuture<String> transcribeAudio(String audioCode) {
+    public String transcribeAudio(String audioCode) {
 
         log.debug("audioCode: " + audioCode);
 
@@ -54,7 +51,7 @@ public class TranscribeService {
                 transcript.append(alternative.getTranscript());
             }
 
-            return CompletableFuture.completedFuture(transcript.toString());
+            return transcript.toString();
 
         } catch (IOException e) {
             throw new RuntimeException(e);

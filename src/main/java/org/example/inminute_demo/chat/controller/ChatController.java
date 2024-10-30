@@ -67,17 +67,11 @@ public class ChatController {
     // 바이트 코드로 인코딩된 오디오 데이터를 받아 텍스트로 변환 후 구독자들에게 전송
     @MessageMapping("/chat.sendAudio/{uuid}")
     @SendTo("/topic/public/{uuid}") // /topic/public/{uuid} 경로를 구독하는 클라이언트들에게 변환된 텍스트 메세지 전달
-    public void sendAudioMessage(@DestinationVariable String uuid,
+    public ChatResponse sendAudioMessage(@DestinationVariable String uuid,
                                          @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
                                          @Payload AudioRequest audioRequest) {
 
-        // 비동기 STT 변환 요청
-        CompletableFuture<ChatResponse> futureResponse = chatService.transcribe(audioRequest, uuid, simpSessionAttributes);
-
-        // 변환 완료 후 구독자에게 메시지 전송
-        futureResponse.thenAccept(chatResponse ->
-                messagingTemplate.convertAndSend("/topic/public/" + uuid, chatResponse)
-        );
+        return chatService.transcribe(audioRequest, uuid, simpSessionAttributes);
     }
 
     // 회의 시작 버튼 클릭 -> 모든 참여자들에게 회의 시작 여부 Broadcasting

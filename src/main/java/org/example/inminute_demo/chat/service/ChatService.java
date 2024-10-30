@@ -41,20 +41,16 @@ public class ChatService {
     }
 
     @Transactional
-    public CompletableFuture<ChatResponse> transcribe(AudioRequest audioRequest, String uuid, Map<String, Object> header) {
+    public ChatResponse transcribe(AudioRequest audioRequest, String uuid, Map<String, Object> header) {
         String username = getValueFromHeader(header, "username");
 
         log.debug("audioCode: " + audioRequest.audioCode());
 
-        // 비동기적으로 STT 변환 요청
-        return transcribeService.transcribeAudio(audioRequest.audioCode())
-                .thenApply(transcript -> {
-                    Chat chat = ChatConverter.toChatFromTranscript(transcript, username, uuid);
-                    Chat savedChat = chatRepository.save(chat);
+        String transcript = transcribeService.transcribeAudio(audioRequest.audioCode());
+        Chat chat = ChatConverter.toChatFromTranscript(transcript, username, uuid);
+        Chat savedChat = chatRepository.save(chat);
 
-                    // 최종 ChatResponse 반환
-                    return toChatResponse(savedChat, header);
-                });
+        return toChatResponse(savedChat, header);
     }
 
     public ChatStatusResponse startChatting(String uuid) {
