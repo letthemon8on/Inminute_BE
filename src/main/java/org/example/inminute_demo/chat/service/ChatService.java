@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +37,7 @@ public class ChatService {
     private final NoteService noteService;
 
     // 사용자 발언 청크 저장용 Map
-    private final Map<String, List<byte[]>> chunkMap = new ConcurrentHashMap<>();
+    private final Map<String, ByteArrayOutputStream> chunkBufferMap = new ConcurrentHashMap<>();
 
     // 채팅 내역 저장
     @Transactional
@@ -65,25 +67,38 @@ public class ChatService {
 
         String username = getValueFromHeader(header, "username");
 
-        // 마지막 청크인지 확인
-        if (audioChunkRequest.chunkCode().equals("END")) {
-            // 모든 청크를 병합한 후 변환 진행
-            byte[] completeAudio = mergeChunks(chunkMap.get(username));
-            String transcript = transcribeService.transcribeAudioChunk(completeAudio);
+        try {
+            if (audioChunkRequest.chunkCode().equals("END")) {
+                // 마지막 청크일 경우 버퍼에서 데이터 병합 후 처리
+                ByteArrayOutputStream buffer = chunkBufferMap.get(username);
+                if (buffer == null) {
+                    throw new IllegalStateException("No audio data available for user " + username);
+                }
 
-            // 병합된 오디오 데이터로 채팅 메시지 생성
-            Chat chat = ChatConverter.toChatFromTranscript(transcript, username, uuid);
-            Chat savedChat = chatRepository.save(chat);
+                // 병합된 오디오 데이터로 변환 및 저장
+                byte[] completeAudio = buffer.toByteArray();
+                String transcript = transcribeService.transcribeAudioChunk(completeAudio);
 
-            // 청크 리스트 초기화
-            chunkMap.remove(username);
+                // 채팅 메시지 생성 및 저장
+                Chat chat = ChatConverter.toChatFromTranscript(transcript, username, uuid);
+                Chat savedChat = chatRepository.save(chat);
 
-            return toChatResponse(savedChat, header);
+                // 버퍼 초기화
+                chunkBufferMap.remove(username);
+                buffer.close();
+
+                return toChatResponse(savedChat, header);
+            }
+
+            // 청크 데이터를 Base64 디코딩 후 버퍼에 저장
+            byte[] byteChunk = parseBase64Binary(audioChunkRequest.chunkCode());
+            ByteArrayOutputStream buffer = chunkBufferMap.computeIfAbsent(username, k -> new ByteArrayOutputStream());
+            buffer.write(byteChunk);
+
+        } catch (IOException e) {
+            log.error("Error processing audio chunk for user {}: {}", username, e.getMessage());
+            throw new RuntimeException("Failed to process audio chunk", e);
         }
-
-        // audioRequest의 청크 데이터를 디코딩 후 청크 리스트에 추가
-        byte[] byteChunk = parseBase64Binary(audioChunkRequest.chunkCode());
-        chunkMap.computeIfAbsent(username, k -> new ArrayList<>()).add(byteChunk);
 
         return toChatResponse(null, header); // 마지막 청크가 아닐 경우
     }
