@@ -11,7 +11,7 @@ public class SubProtocolWebSocketHandlerInterceptor extends DelegatingIntroducti
 
         if (mi.getMethod().getName().equals("afterConnectionEstablished")) {
             WebSocketSession session = (WebSocketSession) mi.getArguments()[0];
-            session.setTextMessageSizeLimit(20 * 1024 * 1024);
+            session.setTextMessageSizeLimit(10 * 1024 * 1024);
         }
         return super.doProceed(mi);
     }

@@ -43,12 +43,4 @@ public class ChatConverter {
                 .isStart(isStart)
                 .build();
     }
-
-    public static AudioStatusResponse toAudioStatusResponse(Boolean isLast, String username, String nickname) {
-        return AudioStatusResponse.builder()
-                .username(username)
-                .nickname(nickname)
-                .isLast(isLast)
-                .build();
-    }
 }
