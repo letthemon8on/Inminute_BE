@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -40,17 +41,20 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatResponse transcribe(AudioRequest audioRequest, String uuid, Map<String, Object> header) {
+    public CompletableFuture<ChatResponse> transcribe(AudioRequest audioRequest, String uuid, Map<String, Object> header) {
         String username = getValueFromHeader(header, "username");
 
         log.debug("audioCode: " + audioRequest.audioCode());
 
-        String transcript = transcribeService.transcribeAudio(audioRequest.audioCode());
+        // 비동기적으로 STT 변환 요청
+        return transcribeService.transcribeAudio(audioRequest.audioCode())
+                .thenApply(transcript -> {
+                    Chat chat = ChatConverter.toChatFromTranscript(transcript, username, uuid);
+                    Chat savedChat = chatRepository.save(chat);
 
-        Chat chat = ChatConverter.toChatFromTranscript(transcript, username, uuid);
-        Chat savedChat = chatRepository.save(chat);
-
-        return toChatResponse(savedChat, header);
+                    // 최종 ChatResponse 반환
+                    return toChatResponse(savedChat, header);
+                });
     }
 
     public ChatStatusResponse startChatting(String uuid) {

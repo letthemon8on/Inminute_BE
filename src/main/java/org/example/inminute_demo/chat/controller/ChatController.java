@@ -14,12 +14,14 @@ import org.example.inminute_demo.chat.service.ChatService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.messaging.handler.annotation.*;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -29,6 +31,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class ChatController {
 
     private final ChatService chatService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping(value = "/notes/{uuid}/chats", produces = APPLICATION_JSON_VALUE)
     @Operation(summary = "회의록 전체 채팅 조회(페이징)", description = "해당 회의록에 작성된 모든 채팅 내역을 페이징 처리하여 조회합니다.")
@@ -64,11 +67,17 @@ public class ChatController {
     // 바이트 코드로 인코딩된 오디오 데이터를 받아 텍스트로 변환 후 구독자들에게 전송
     @MessageMapping("/chat.sendAudio/{uuid}")
     @SendTo("/topic/public/{uuid}") // /topic/public/{uuid} 경로를 구독하는 클라이언트들에게 변환된 텍스트 메세지 전달
-    public ChatResponse sendAudioMessage(@DestinationVariable String uuid,
+    public void sendAudioMessage(@DestinationVariable String uuid,
                                          @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
                                          @Payload AudioRequest audioRequest) {
 
-        return chatService.transcribe(audioRequest, uuid, simpSessionAttributes);
+        // 비동기 STT 변환 요청
+        CompletableFuture<ChatResponse> futureResponse = chatService.transcribe(audioRequest, uuid, simpSessionAttributes);
+
+        // 변환 완료 후 구독자에게 메시지 전송
+        futureResponse.thenAccept(chatResponse ->
+                messagingTemplate.convertAndSend("/topic/public/" + uuid, chatResponse)
+        );
     }
 
     // 회의 시작 버튼 클릭 -> 모든 참여자들에게 회의 시작 여부 Broadcasting
