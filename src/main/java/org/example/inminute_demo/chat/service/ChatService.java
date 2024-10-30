@@ -53,16 +53,16 @@ public class ChatService {
         return toChatResponse(savedChat, header);
     }
 
-    public ChatStatusResponse startChatting(String uuid) {
+    public ChatStatusResponse startChatting(String uuid, Map<String, Object> header) {
 
         noteService.updateIsStart(uuid, true);
-        return ChatConverter.toChatStatusResponse(true);
+        return toChatStatusResponse(true, header);
     }
 
-    public ChatStatusResponse stopChatting(String uuid) {
+    public ChatStatusResponse stopChatting(String uuid, Map<String, Object> header) {
 
         noteService.updateIsStart(uuid, false);
-        return ChatConverter.toChatStatusResponse(false);
+        return toChatStatusResponse(false, header);
     }
 
     // 채팅 내역 조회(페이징)
@@ -81,6 +81,13 @@ public class ChatService {
         String nickname = getValueFromHeader(header, "nickname");
 
         return ChatConverter.toChatResponse(chat, username, nickname);
+    }
+
+    private ChatStatusResponse toChatStatusResponse(Boolean isStart, Map<String, Object> header) {
+        String username = getValueFromHeader(header, "username");
+        String nickname = getValueFromHeader(header, "nickname");
+
+        return ChatConverter.toChatStatusResponse(isStart, username, nickname);
     }
 
     private String getValueFromHeader(Map<String, Object> header, String key) {

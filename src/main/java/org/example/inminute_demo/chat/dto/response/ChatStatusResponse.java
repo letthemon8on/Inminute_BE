@@ -4,6 +4,8 @@ import lombok.Builder;
 
 @Builder
 public record ChatStatusResponse(
+        String username,
+        String nickname,
         Boolean isStart
 ) {
 }

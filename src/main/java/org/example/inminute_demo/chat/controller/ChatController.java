@@ -81,7 +81,7 @@ public class ChatController {
                                             @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
                                             @Payload ChatStartRequest chatStartRequest) {
 
-        return chatService.startChatting(uuid);
+        return chatService.startChatting(uuid, simpSessionAttributes);
     }
 
     // 회의 종료 시 호출 -> 추후에 Flask, GPT 적용하여 리팩토링 필요
@@ -91,6 +91,6 @@ public class ChatController {
                                          @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
                                          @Payload ChatStopRequest chatStopRequest) {
 
-        return chatService.stopChatting(uuid);
+        return chatService.stopChatting(uuid, simpSessionAttributes);
     }
 }

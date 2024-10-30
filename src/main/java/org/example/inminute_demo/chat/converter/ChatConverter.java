@@ -36,8 +36,10 @@ public class ChatConverter {
                 .build();
     }
 
-    public static ChatStatusResponse toChatStatusResponse(Boolean isStart) {
+    public static ChatStatusResponse toChatStatusResponse(Boolean isStart, String username, String nickname) {
         return ChatStatusResponse.builder()
+                .username(username)
+                .nickname(nickname)
                 .isStart(isStart)
                 .build();
     }
