@@ -5,10 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.apipayload.ApiResponse;
 import org.example.inminute_demo.chat.converter.ChatConverter;
-import org.example.inminute_demo.chat.dto.request.AudioRequest;
-import org.example.inminute_demo.chat.dto.request.ChatRequest;
-import org.example.inminute_demo.chat.dto.request.ChatStartRequest;
-import org.example.inminute_demo.chat.dto.request.ChatStopRequest;
+import org.example.inminute_demo.chat.dto.request.*;
 import org.example.inminute_demo.chat.dto.response.*;
 import org.example.inminute_demo.chat.service.ChatService;
 import org.springframework.data.domain.Pageable;
@@ -72,6 +69,15 @@ public class ChatController {
                                          @Payload AudioRequest audioRequest) {
 
         return chatService.transcribe(audioRequest, uuid, simpSessionAttributes);
+    }
+
+    @MessageMapping("/chat.sendAudioByChunk/{uuid}")
+    @SendTo("/topic/public/{uuid}") // /topic/public/{uuid} 경로를 구독하는 클라이언트들에게 변환된 텍스트 메세지 전달
+    public ChatResponse sendAudioMessage(@DestinationVariable String uuid,
+                                         @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
+                                         @Payload AudioChunkRequest audioChunkRequest) {
+
+        return chatService.transcribeByChunk(audioChunkRequest, uuid, simpSessionAttributes);
     }
 
     // 회의 시작 버튼 클릭 -> 모든 참여자들에게 회의 시작 여부 Broadcasting
