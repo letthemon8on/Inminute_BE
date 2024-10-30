@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static jakarta.xml.bind.DatatypeConverter.parseBase64Binary;
+
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -62,8 +64,9 @@ public class ChatService {
     public ChatResponse transcribeByChunk(AudioChunkRequest audioChunkRequest, String uuid, Map<String, Object> header) {
         String username = getValueFromHeader(header, "username");
 
-        // audioRequest의 청크 데이터를 그대로 추가
-        chunkMap.computeIfAbsent(username, k -> new ArrayList<>()).add(audioChunkRequest.audioChunk());
+        // audioRequest의 청크 데이터를 디코딩 후 청크 리스트에 추가
+        byte[] byteChunk = parseBase64Binary(audioChunkRequest.chunkCode());
+        chunkMap.computeIfAbsent(username, k -> new ArrayList<>()).add(byteChunk);
 
         // 마지막 청크인지 확인
         if (audioChunkRequest.isLast()) {
