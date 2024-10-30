@@ -17,7 +17,6 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final StompHandler stompHandler; // STOMP 메세지 입출력 담당
-    private final AgentWebSocketHandlerDecoratorFactory agentWebSocketHandlerDecoratorFactory;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) { // Web Socket 시작 endpoint 등록
@@ -41,6 +40,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        registration.setDecoratorFactories(agentWebSocketHandlerDecoratorFactory);
+        registration.setDecoratorFactories(new AgentWebSocketHandlerDecoratorFactory());
     }
 }

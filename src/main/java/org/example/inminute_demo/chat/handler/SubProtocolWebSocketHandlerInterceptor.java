@@ -2,10 +2,8 @@ package org.example.inminute_demo.chat.handler;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.support.DelegatingIntroductionInterceptor;
-import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
-@Component
 public class SubProtocolWebSocketHandlerInterceptor extends DelegatingIntroductionInterceptor {
 
     @Override
