@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.inminute_demo.chat.converter.ChatConverter;
 import org.example.inminute_demo.chat.domain.Chat;
+import org.example.inminute_demo.chat.domain.MessageType;
 import org.example.inminute_demo.chat.dto.request.AudioChunkRequest;
 import org.example.inminute_demo.chat.dto.request.AudioRequest;
 import org.example.inminute_demo.chat.dto.request.ChatRequest;
@@ -100,7 +101,14 @@ public class ChatService {
             throw new RuntimeException("Failed to process audio chunk", e);
         }
 
-        return toChatResponse(null, header); // 마지막 청크가 아닐 경우
+        Chat tempChat = Chat.builder()
+                .username(username)
+                .type(MessageType.CHAT)
+                .content("변환중")
+                .uuid(uuid)
+                .build();
+
+        return toChatResponse(tempChat, header); // 마지막 청크가 아닐 경우
     }
 
     public ChatStatusResponse startChatting(String uuid, Map<String, Object> header) {
