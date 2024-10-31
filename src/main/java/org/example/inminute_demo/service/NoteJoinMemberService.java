@@ -11,6 +11,8 @@ import org.example.inminute_demo.repository.NoteJoinMemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class NoteJoinMemberService {
@@ -35,5 +37,10 @@ public class NoteJoinMemberService {
 
         noteJoinMember.update(updateNoteJoinMemberRequest.getSummary(), updateNoteJoinMemberRequest.getTodo());
         noteJoinMemberRepository.save(noteJoinMember);
+    }
+
+    public List<NoteJoinMember> getAllNoteJoinMemberByNoteId(Long noteId) {
+
+        return noteJoinMemberRepository.findAllByNote_Id(noteId);
     }
 }

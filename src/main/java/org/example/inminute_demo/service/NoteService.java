@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -129,10 +130,21 @@ public class NoteService {
         Note note = noteRepository.findById(noteId)
                 .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
 
+        List<NoteJoinMember> noteJoinMembers = noteJoinMemberService.getAllNoteJoinMemberByNoteId(noteId);
+
+        List<Member> members = noteJoinMembers.stream()
+                .map(NoteJoinMember::getMember)
+                .collect(Collectors.toList());
+
+        List<String> nicknameList = members.stream()
+                .map(Member::getNickname)
+                .collect(Collectors.toList());
+
         NoteDetailResponse noteDetailResponse = NoteDetailResponse.builder()
                 .id(note.getId())
                 .uuid(note.getUuid())
                 .name(note.getName())
+                .nicknameList(nicknameList)
                 .script(note.getScript())
                 .summary(note.getSummary())
                 .isStart(note.getIsStart())
@@ -143,12 +155,24 @@ public class NoteService {
     }
 
     public NoteDetailResponse getNoteByUuid(String uuid) {
+
         Note note = noteRepository.findByUuid(uuid)
                 .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
+
+        List<NoteJoinMember> noteJoinMembers = noteJoinMemberService.getAllNoteJoinMemberByNoteId(note.getId());
+
+        List<Member> members = noteJoinMembers.stream()
+                .map(NoteJoinMember::getMember)
+                .collect(Collectors.toList());
+
+        List<String> nicknameList = members.stream()
+                .map(Member::getNickname)
+                .collect(Collectors.toList());
 
         NoteDetailResponse noteDetailResponse = NoteDetailResponse.builder()
                 .id(note.getId())
                 .name(note.getName())
+                .nicknameList(nicknameList)
                 .script(note.getScript())
                 .summary(note.getSummary())
                 .isStart(note.getIsStart())

@@ -17,6 +17,7 @@ public class NoteDetailResponse {
     private Long id;
     private String uuid;
     private String name;
+    private List<String> nicknameList;
     private String script;
     private String summary;
     private Boolean isStart;
