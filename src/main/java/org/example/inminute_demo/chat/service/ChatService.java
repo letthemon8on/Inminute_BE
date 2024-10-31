@@ -112,7 +112,7 @@ public class ChatService {
 
         Chat tempChat = Chat.builder()
                 .username(username)
-                .type(MessageType.CHAT)
+                .type(MessageType.CONVERTING)
                 .content("변환중")
                 .uuid(uuid)
                 .build();
