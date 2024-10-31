@@ -76,17 +76,18 @@ public class ChatService {
                     throw new IllegalStateException("No audio data available for user " + username);
                 }
 
-                // 병합된 오디오 데이터로 변환 및 저장
                 byte[] completeAudio = buffer.toByteArray();
+
+                // 버퍼 초기화
+                chunkBufferMap.remove(username);
+                buffer.close();
+
+                // 병합된 오디오 데이터로 변환 및 저장
                 String transcript = transcribeService.transcribeAudioChunk(completeAudio);
 
                 // 채팅 메시지 생성 및 저장
                 Chat chat = ChatConverter.toChatFromTranscript(transcript, username, uuid);
                 Chat savedChat = chatRepository.save(chat);
-
-                // 버퍼 초기화
-                chunkBufferMap.remove(username);
-                buffer.close();
 
                 return toChatResponse(savedChat, header);
             }
