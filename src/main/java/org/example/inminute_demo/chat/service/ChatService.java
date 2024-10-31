@@ -81,7 +81,7 @@ public class ChatService {
                 // 마지막 청크일 경우 버퍼에서 데이터 병합 후 처리
                 ByteArrayOutputStream buffer = chunkBufferMap.get(username);
                 if (buffer == null) {
-                    throw new IllegalStateException("No audio data available for user " + username);
+                    throw new WebSocketException("No audio data available for user");
                 }
 
                 byte[] completeAudio = buffer.toByteArray();
@@ -112,7 +112,7 @@ public class ChatService {
 
         } catch (IOException e) {
             log.error("Error processing audio chunk for user {}: {}", username, e.getMessage());
-            throw new RuntimeException("Failed to process audio chunk", e);
+            throw new WebSocketException("Failed to process audio chunk");
         }
 
         Chat tempChat = Chat.builder()
