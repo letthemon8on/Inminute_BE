@@ -83,7 +83,7 @@ public class ChatService {
 
                 // 길이 검사 추가 (예: 제한 1분으로 가정)
                 if (completeAudio.length > MAX_AUDIO_LENGTH) {
-                    throw new IllegalStateException("Audio data too long for processing");
+                    chunkBufferMap.remove(username);
                 }
 
                 // 병합된 오디오 데이터로 변환 및 저장
@@ -108,11 +108,6 @@ public class ChatService {
         } catch (IOException e) {
             log.error("Error processing audio chunk for user {}: {}", username, e.getMessage());
             throw new RuntimeException("Failed to process audio chunk", e);
-        } catch (IllegalStateException e) {
-            log.error("Audio length error for user {}: {}", username, e.getMessage());
-            // 길이 초과 시 버퍼 제거로 데이터 초기화
-            chunkBufferMap.remove(username);
-            throw e;
         }
 
         Chat tempChat = Chat.builder()
