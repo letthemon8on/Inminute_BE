@@ -32,4 +32,10 @@ public class Chat extends BaseEntity {
 
     @Column(columnDefinition = "TEXT")
     private String content;
+
+    public void updateContent(String content) {
+        if (content != null) {
+            this.content = content;
+        }
+    }
 }

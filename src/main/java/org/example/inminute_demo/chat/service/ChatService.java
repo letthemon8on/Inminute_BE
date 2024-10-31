@@ -8,10 +8,13 @@ import org.example.inminute_demo.chat.domain.MessageType;
 import org.example.inminute_demo.chat.dto.request.AudioChunkRequest;
 import org.example.inminute_demo.chat.dto.request.AudioRequest;
 import org.example.inminute_demo.chat.dto.request.ChatRequest;
+import org.example.inminute_demo.chat.dto.request.ChatUpdateRequest;
 import org.example.inminute_demo.chat.dto.response.ChatResponse;
 import org.example.inminute_demo.chat.dto.response.ChatStatusResponse;
 import org.example.inminute_demo.chat.dto.response.ChatsInNote;
+import org.example.inminute_demo.chat.exception.WebSocketException;
 import org.example.inminute_demo.chat.repository.ChatRepository;
+import org.example.inminute_demo.exception.GeneralException;
 import org.example.inminute_demo.service.NoteService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,6 +49,7 @@ public class ChatService {
     // 채팅 내역 저장
     @Transactional
     public ChatResponse save(ChatRequest chatRequest, String uuid, Map<String, Object> header) {
+
         String username = getValueFromHeader(header, "username");
         Chat chat = ChatConverter.toChat(chatRequest, username, uuid);
         Chat savedChat = chatRepository.save(chat);
@@ -55,6 +59,7 @@ public class ChatService {
 
     @Transactional
     public ChatResponse transcribe(AudioRequest audioRequest, String uuid, Map<String, Object> header) {
+
         String username = getValueFromHeader(header, "username");
 
         log.debug("audioCode: " + audioRequest.audioCode());
@@ -118,6 +123,18 @@ public class ChatService {
                 .build();
 
         return toChatResponse(tempChat, header); // 마지막 청크가 아닐 경우
+    }
+
+    @Transactional
+    public ChatResponse update(ChatUpdateRequest chatUpdateRequest,  Map<String, Object> header) {
+
+        Chat chat = chatRepository.findById(chatUpdateRequest.chatId())
+                .orElseThrow(() -> new WebSocketException("존재하지 않는 채팅입니다."));
+
+        chat.updateContent(chatUpdateRequest.content());
+        Chat updatedChat = chatRepository.save(chat);
+
+        return toChatResponse(updatedChat, header);
     }
 
     public ChatStatusResponse startChatting(String uuid, Map<String, Object> header) {

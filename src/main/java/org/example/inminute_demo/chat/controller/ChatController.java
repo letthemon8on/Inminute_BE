@@ -71,6 +71,7 @@ public class ChatController {
         return chatService.transcribe(audioRequest, uuid, simpSessionAttributes);
     }
 
+    // 청크 단위로 인코딩된 오디오 데이터를 받아 병합한 후 텍스트로 변환하여 구독자들에게 전송
     @MessageMapping("/chat.sendAudioByChunk/{uuid}")
     @SendTo("/topic/public/{uuid}") // /topic/public/{uuid} 경로를 구독하는 클라이언트들에게 변환된 텍스트 메세지 전달
     public ChatResponse sendAudioChunk(@DestinationVariable String uuid,
@@ -78,6 +79,16 @@ public class ChatController {
                                          @Payload AudioChunkRequest audioChunkRequest) {
 
         return chatService.transcribeByChunk(audioChunkRequest, uuid, simpSessionAttributes);
+    }
+
+    // chatId로 채팅내역을 조회해 content 갱신 후 save
+    @MessageMapping("/chat.updateChat/{uuid}")
+    @SendTo("/topic/public/{uuid}")
+    public ChatResponse updateChat(@DestinationVariable String uuid,
+                                   @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
+                                   @Payload ChatUpdateRequest chatUpdateRequest) {
+
+        return chatService.update(chatUpdateRequest, simpSessionAttributes);
     }
 
     // 회의 시작 버튼 클릭 -> 모든 참여자들에게 회의 시작 여부 Broadcasting
