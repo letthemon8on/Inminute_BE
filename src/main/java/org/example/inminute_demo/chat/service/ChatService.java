@@ -40,6 +40,9 @@ public class ChatService {
     // 사용자 발언 청크 저장용 Map
     private final Map<String, ByteArrayOutputStream> chunkBufferMap = new ConcurrentHashMap<>();
 
+    // 1분 동안의 음성 데이터 바이트 제한 (5.76MB)
+    private static final int MAX_AUDIO_LENGTH = 5760000;
+
     // 채팅 내역 저장
     @Transactional
     public ChatResponse save(ChatRequest chatRequest, String uuid, Map<String, Object> header) {
@@ -78,9 +81,10 @@ public class ChatService {
 
                 byte[] completeAudio = buffer.toByteArray();
 
-                // 버퍼 초기화
-                chunkBufferMap.remove(username);
-                buffer.close();
+                // 길이 검사 추가 (예: 제한 1분으로 가정)
+                if (completeAudio.length > MAX_AUDIO_LENGTH) {
+                    throw new IllegalStateException("Audio data too long for processing");
+                }
 
                 // 병합된 오디오 데이터로 변환 및 저장
                 String transcript = transcribeService.transcribeAudioChunk(completeAudio);
@@ -88,6 +92,10 @@ public class ChatService {
                 // 채팅 메시지 생성 및 저장
                 Chat chat = ChatConverter.toChatFromTranscript(transcript, username, uuid);
                 Chat savedChat = chatRepository.save(chat);
+
+                // 버퍼 초기화
+                chunkBufferMap.remove(username);
+                buffer.close();
 
                 return toChatResponse(savedChat, header);
             }
@@ -100,6 +108,11 @@ public class ChatService {
         } catch (IOException e) {
             log.error("Error processing audio chunk for user {}: {}", username, e.getMessage());
             throw new RuntimeException("Failed to process audio chunk", e);
+        } catch (IllegalStateException e) {
+            log.error("Audio length error for user {}: {}", username, e.getMessage());
+            // 길이 초과 시 버퍼 제거로 데이터 초기화
+            chunkBufferMap.remove(username);
+            throw e;
         }
 
         Chat tempChat = Chat.builder()
