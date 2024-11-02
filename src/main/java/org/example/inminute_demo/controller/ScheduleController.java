@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.apipayload.ApiResponse;
 import org.example.inminute_demo.dto.schedule.request.CreateScheduleRequest;
+import org.example.inminute_demo.dto.schedule.request.UpdateScheduleRequest;
 import org.example.inminute_demo.dto.schedule.response.ScheduleListResponse;
 import org.example.inminute_demo.security.dto.CustomOAuth2User;
 import org.example.inminute_demo.service.ScheduleService;
@@ -35,5 +36,22 @@ public class ScheduleController {
                                                                     @RequestParam(name = "month") Integer month) {
 
         return ApiResponse.onSuccess(scheduleService.getAllScheduleByMonth(customOAuth2User, year, month));
+    }
+
+    @PatchMapping("/{scheduleId}")
+    @Operation(summary = "일정 이름 수정", description = "일정 이름을 수정합니다.")
+    public ApiResponse<?> updateSchedule(@PathVariable Long scheduleId,
+                                         @RequestBody UpdateScheduleRequest updateScheduleRequest) {
+
+        scheduleService.updateSchedule(scheduleId, updateScheduleRequest);
+        return ApiResponse.onSuccess("일정 수정 성공");
+    }
+
+    @DeleteMapping("/{scheduleId}")
+    @Operation(summary = "일정 삭제", description = "일정을 삭제합니다.")
+    public ApiResponse<?> deleteSchedule(@PathVariable Long scheduleId) {
+
+        scheduleService.deleteSchedule(scheduleId);
+        return ApiResponse.onSuccess("일정 삭제 성공");
     }
 }

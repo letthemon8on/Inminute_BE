@@ -1,10 +1,13 @@
 package org.example.inminute_demo.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.inminute_demo.apipayload.Handler.TempHandler;
+import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
 import org.example.inminute_demo.converter.ScheduleConverter;
 import org.example.inminute_demo.domain.Member;
 import org.example.inminute_demo.domain.Schedule;
 import org.example.inminute_demo.dto.schedule.request.CreateScheduleRequest;
+import org.example.inminute_demo.dto.schedule.request.UpdateScheduleRequest;
 import org.example.inminute_demo.dto.schedule.response.ScheduleListResponse;
 import org.example.inminute_demo.dto.schedule.response.ScheduleResponse;
 import org.example.inminute_demo.repository.schedule.ScheduleCustomRepository;
@@ -48,5 +51,24 @@ public class ScheduleService {
                 .collect(Collectors.toList());
 
         return new ScheduleListResponse(scheduleResponses);
+    }
+
+    @Transactional
+    public void updateSchedule(Long scheduleId, UpdateScheduleRequest updateScheduleRequest) {
+
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new TempHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
+
+        schedule.updateName(updateScheduleRequest.name());
+        scheduleRepository.save(schedule);
+    }
+
+    @Transactional
+    public void deleteSchedule(Long scheduleId) {
+
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new TempHandler(ErrorStatus.SCHEDULE_NOT_FOUND));
+
+        scheduleRepository.delete(schedule);
     }
 }

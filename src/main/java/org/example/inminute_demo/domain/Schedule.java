@@ -25,4 +25,10 @@ public class Schedule extends BaseEntity {
 
     private String name;
     private LocalDateTime startDateTime;
+
+    public void updateName(String name) {
+        if (name != null) {
+            this.name = name;
+        }
+    }
 }
