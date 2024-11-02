@@ -24,5 +24,5 @@ public class Schedule extends BaseEntity {
     private Member member;
 
     private String name;
-    private LocalDateTime time;
+    private LocalDateTime startDateTime;
 }
