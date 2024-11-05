@@ -38,4 +38,10 @@ public class Chat extends BaseEntity {
             this.content = content;
         }
     }
+
+    public void updateType(MessageType type) {
+        if (type != null) {
+            this.type = type;
+        }
+    }
 }

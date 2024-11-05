@@ -132,6 +132,7 @@ public class ChatService {
                 .orElseThrow(() -> new WebSocketException("존재하지 않는 채팅입니다."));
 
         chat.updateContent(chatUpdateRequest.content());
+        chat.updateType(MessageType.EDIT);
         Chat updatedChat = chatRepository.save(chat);
 
         return toChatResponse(updatedChat, header);
