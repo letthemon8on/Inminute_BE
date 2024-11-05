@@ -50,21 +50,10 @@ public class Note extends BaseEntity{
         this.uuid = UUID.randomUUID().toString();
     }
 
-    public void update(String name, String script, String summary) {
-        if (name != null) {
-            this.name = name;
-        }
-        if (script != null) {
-            this.script = script;
-        }
-        if (summary != null) {
-            this.summary = summary;
-        }
-    }
-
-    public void updateIsStart(Boolean isStart) {
-        this.isStart = isStart;
-    }
+    public void updateName(String name) { this.name = name; }
+    public void updateScript(String script) { this.script = script; }
+    public void updateSummary(String summary) { this.summary = summary; }
+    public void updateIsStart(Boolean isStart) { this.isStart = isStart; }
 
     public void toScript(String script) {
         this.script = script;
