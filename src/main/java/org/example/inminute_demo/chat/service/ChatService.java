@@ -13,7 +13,6 @@ import org.example.inminute_demo.chat.dto.response.ChatStopResponse;
 import org.example.inminute_demo.chat.dto.response.ChatsInNote;
 import org.example.inminute_demo.chat.exception.WebSocketException;
 import org.example.inminute_demo.chat.repository.ChatRepository;
-import org.example.inminute_demo.exception.GeneralException;
 import org.example.inminute_demo.service.NoteService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
