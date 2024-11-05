@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.apipayload.ApiResponse;
-import org.example.inminute_demo.chat.converter.ChatConverter;
 import org.example.inminute_demo.chat.dto.request.*;
 import org.example.inminute_demo.chat.dto.response.*;
 import org.example.inminute_demo.chat.service.ChatService;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
