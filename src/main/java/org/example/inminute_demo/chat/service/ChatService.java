@@ -1,16 +1,15 @@
 package org.example.inminute_demo.chat.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.inminute_demo.chat.converter.ChatConverter;
 import org.example.inminute_demo.chat.domain.Chat;
 import org.example.inminute_demo.chat.domain.MessageType;
-import org.example.inminute_demo.chat.dto.request.AudioChunkRequest;
-import org.example.inminute_demo.chat.dto.request.AudioRequest;
-import org.example.inminute_demo.chat.dto.request.ChatRequest;
-import org.example.inminute_demo.chat.dto.request.ChatUpdateRequest;
+import org.example.inminute_demo.chat.dto.request.*;
 import org.example.inminute_demo.chat.dto.response.ChatResponse;
 import org.example.inminute_demo.chat.dto.response.ChatStatusResponse;
+import org.example.inminute_demo.chat.dto.response.ChatStopResponse;
 import org.example.inminute_demo.chat.dto.response.ChatsInNote;
 import org.example.inminute_demo.chat.exception.WebSocketException;
 import org.example.inminute_demo.chat.repository.ChatRepository;
@@ -27,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import static jakarta.xml.bind.DatatypeConverter.parseBase64Binary;
 
@@ -39,6 +39,7 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final TranscribeService transcribeService;
     private final NoteService noteService;
+    private final SummaryService summaryService;
 
     // 사용자 발언 청크 저장용 Map
     private final Map<String, ByteArrayOutputStream> chunkBufferMap = new ConcurrentHashMap<>();
@@ -143,10 +144,25 @@ public class ChatService {
         return toChatStatusResponse(true, header);
     }
 
-    public ChatStatusResponse stopChatting(String uuid, Map<String, Object> header) {
+    public ChatStopResponse stopChatting(String uuid) {
 
         noteService.updateIsStart(uuid, false);
-        return toChatStatusResponse(false, header);
+
+        List<ChatResponse> chatList = chatRepository.findAllByNoteUUID(uuid);
+
+        SummaryRequest summaryRequest = new SummaryRequest(chatList.stream()
+                .map(ChatResponse::content)
+                .collect(Collectors.toList()));
+
+        try {
+            String summary = summaryService.getSummaryFromFlask(summaryRequest);
+
+            noteService.updateSummary(uuid, summary);
+
+            return ChatConverter.toChatStopResponse(summary);
+        } catch (JsonProcessingException e) {
+            throw new WebSocketException("flask api를 호출하지 못했습니다.");
+        }
     }
 
     // 채팅 내역 조회(페이징)
