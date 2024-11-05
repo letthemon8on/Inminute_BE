@@ -82,7 +82,7 @@ public class ChatController {
     }
 
     // chatId로 채팅내역을 조회해 content 갱신 후 save
-    @MessageMapping("/chat.updateChat/{uuid}")
+    @MessageMapping("/chat.update/{uuid}")
     @SendTo("/topic/public/{uuid}")
     public ChatResponse updateChat(@DestinationVariable String uuid,
                                    @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
