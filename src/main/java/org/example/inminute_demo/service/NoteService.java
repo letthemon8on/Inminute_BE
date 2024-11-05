@@ -70,7 +70,16 @@ public class NoteService {
         Note note = noteRepository.findById(noteId)
                 .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
 
-        note.update(updateNoteRequest.getName(), updateNoteRequest.getScript(), updateNoteRequest.getSummary());
+        if (updateNoteRequest.getName() != null) {
+            note.updateName(updateNoteRequest.getName());
+        }
+        if (updateNoteRequest.getScript() != null) {
+            note.updateScript(updateNoteRequest.getScript());
+        }
+        if (updateNoteRequest.getSummary() != null)
+        {
+            note.updateSummary(updateNoteRequest.getSummary());
+        }
         noteRepository.save(note);
 
         UpdateNoteResponse updateNoteResponse = NoteConverter.toUpdateNoteResponse(note);
@@ -208,6 +217,17 @@ public class NoteService {
                 .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
 
         note.updateIsStart(isStart);
+        noteRepository.save(note);
+    }
+
+    @Transactional
+    public void updateSummary(String uuid, String summary) {
+
+        Note note = noteRepository.findByUuid(uuid)
+                .orElseThrow(() -> new TempHandler(ErrorStatus.NOTE_NOT_FOUND));
+        if (summary != null) {
+            note.updateSummary(summary);
+        }
         noteRepository.save(note);
     }
 }
