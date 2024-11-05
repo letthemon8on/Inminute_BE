@@ -20,6 +20,7 @@ public class ChatConverter {
 
     public static ChatResponse toChatResponse(Chat chat, String username, String nickname) {
         return ChatResponse.builder()
+                .id(chat.getId())
                 .username(username)
                 .nickname(nickname)
                 .type(chat.getType())
