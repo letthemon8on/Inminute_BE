@@ -31,10 +31,11 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
 			FROM Chat c 
 			JOIN Member u ON u.username = c.username 
 			WHERE c.uuid = :uuid
+			ORDER BY c.id
 		""")
     List<ChatResponse> findAllByNoteUUID(@Param("uuid") String uuid);
 
-	@Query("""
+	/*@Query("""
 			SELECT 
 			new org.example.inminute_demo.chat.dto.response.ChatResponse
 			(c.id, u.username, u.nickname, c.type, c.created_at, c.content)
@@ -44,5 +45,5 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
 			GROUP BY u.username, c.id, u.nickname, c.type, c.created_at, c.content
 			ORDER BY u.username, c.created_at
         """)
-	Map<String, List<ChatResponse>> findAllGroupedByUsername(@Param("uuid") String uuid);
+	Map<String, List<ChatResponse>> findAllGroupedByUsername(@Param("uuid") String uuid);*/
 }

@@ -164,7 +164,9 @@ public class ChatService {
 
         noteService.updateSummary(uuid, oneLineSummary);
 
-        Map<String, List<ChatResponse>> scriptByUsername = chatRepository.findAllGroupedByUsername(uuid);
+        // username 기준으로 그룹화
+        Map<String, List<ChatResponse>> scriptByUsername = script.stream()
+                .collect(Collectors.groupingBy(ChatResponse::username));
 
         List<SummaryByMember> summaryByMemberList = new ArrayList<>();
         for (Map.Entry<String, List<ChatResponse>> entry : scriptByUsername.entrySet()) {
