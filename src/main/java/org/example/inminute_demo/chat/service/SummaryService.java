@@ -19,7 +19,7 @@ public class SummaryService {
 
     //데이터를 JSON 객체로 변환하기 위해서 사용
     private final ObjectMapper objectMapper;
-    private final String FLASK_URL = "https://inminute_flask:5000/summary";
+    private final String FLASK_URL = "http://inminute_flask:5000/summary";
 
     @Transactional
     public String getSummaryFromFlask(SummaryRequest summaryRequest) throws JsonProcessingException {
