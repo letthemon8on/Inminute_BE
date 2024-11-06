@@ -184,7 +184,7 @@ public class ChatService {
             String summaryByUsername = summaryService.getSummaryFromFlask(summaryRequestByUsername);
 
             // 생성된 요약을 저장
-            noteJoinMemberService.updateSummary(entry.getKey(), uuid, summaryByUsername);
+            noteJoinMemberService.updateSummary(uuid, entry.getKey(), summaryByUsername);
 
             SummaryByMember summaryByMember = SummaryByMember.builder()
                     .username(entry.getKey())
