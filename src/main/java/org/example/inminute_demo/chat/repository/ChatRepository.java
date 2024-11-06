@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ChatRepository extends JpaRepository<Chat, Long> {
 
@@ -32,4 +33,16 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
 			WHERE c.uuid = :uuid
 		""")
     List<ChatResponse> findAllByNoteUUID(@Param("uuid") String uuid);
+
+	@Query("""
+			SELECT 
+			new org.example.inminute_demo.chat.dto.response.ChatResponse
+			(c.id, u.username, u.nickname, c.type, c.created_at, c.content)
+			FROM Chat c
+			JOIN Member u ON u.username = c.username
+			WHERE c.uuid = :uuid
+			GROUP BY u.username, c.id, u.nickname, c.type, c.created_at, c.content
+			ORDER BY u.username, c.created_at
+        """)
+	Map<String, List<ChatResponse>> findAllGroupedByUsername(@Param("uuid") String uuid);
 }

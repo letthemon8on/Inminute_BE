@@ -7,12 +7,13 @@ import org.example.inminute_demo.chat.converter.ChatConverter;
 import org.example.inminute_demo.chat.domain.Chat;
 import org.example.inminute_demo.chat.domain.MessageType;
 import org.example.inminute_demo.chat.dto.request.*;
-import org.example.inminute_demo.chat.dto.response.ChatResponse;
-import org.example.inminute_demo.chat.dto.response.ChatStatusResponse;
-import org.example.inminute_demo.chat.dto.response.ChatStopResponse;
-import org.example.inminute_demo.chat.dto.response.ChatsInNote;
+import org.example.inminute_demo.chat.dto.response.*;
 import org.example.inminute_demo.chat.exception.WebSocketException;
 import org.example.inminute_demo.chat.repository.ChatRepository;
+import org.example.inminute_demo.domain.Note;
+import org.example.inminute_demo.domain.NoteJoinMember;
+import org.example.inminute_demo.repository.NoteRepository;
+import org.example.inminute_demo.service.NoteJoinMemberService;
 import org.example.inminute_demo.service.NoteService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +39,7 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final TranscribeService transcribeService;
     private final NoteService noteService;
+    private final NoteJoinMemberService noteJoinMemberService;
     private final SummaryService summaryService;
 
     // 사용자 발언 청크 저장용 Map
@@ -149,23 +152,44 @@ public class ChatService {
         return toChatStatusResponse(false, header);
     }
 
-    public ChatStopResponse stopChatting(String uuid) {
+    public ChatStopResponse stopChatting(String uuid) throws JsonProcessingException {
 
-        List<ChatResponse> chatList = chatRepository.findAllByNoteUUID(uuid);
+        List<ChatResponse> script = chatRepository.findAllByNoteUUID(uuid);
 
-        SummaryRequest summaryRequest = new SummaryRequest(chatList.stream()
+        SummaryRequest summaryRequest = new SummaryRequest(script.stream()
                 .map(ChatResponse::content)
                 .collect(Collectors.toList()));
 
-        try {
-            String summary = summaryService.getSummaryFromFlask(summaryRequest);
+        String oneLineSummary = summaryService.getSummaryFromFlask(summaryRequest);
 
-            noteService.updateSummary(uuid, summary);
+        noteService.updateSummary(uuid, oneLineSummary);
 
-            return ChatConverter.toChatStopResponse(summary);
-        } catch (JsonProcessingException e) {
-            throw new WebSocketException("flask api를 호출하지 못했습니다.");
+        Map<String, List<ChatResponse>> scriptByUsername = chatRepository.findAllGroupedByUsername(uuid);
+
+        List<SummaryByMember> summaryByMemberList = new ArrayList<>();
+        for (Map.Entry<String, List<ChatResponse>> entry : scriptByUsername.entrySet()) {
+            // 각 username에 해당하는 ChatResponse 리스트를 가져옵니다.
+            List<ChatResponse> chatListByUsername = entry.getValue();
+
+            // ChatResponse 리스트의 content만 추출하여 SummaryRequest 생성
+            SummaryRequest summaryRequestByUsername = new SummaryRequest(
+                    chatListByUsername.stream()
+                            .map(ChatResponse::content)  // content 추출
+                            .collect(Collectors.toList())
+            );
+
+            // Flask에서 요약 생성
+            String summaryByUsername = summaryService.getSummaryFromFlask(summaryRequestByUsername);
+
+            // 생성된 요약을 저장
+            noteJoinMemberService.updateSummary(entry.getKey(), uuid, summaryByUsername);
+
+            SummaryByMember summaryByMember = SummaryByMember.builder()
+                    .username(entry.getKey())
+                    .summary(summaryByUsername).build();
+            summaryByMemberList.add(summaryByMember);
         }
+        return ChatConverter.toChatStopResponse(oneLineSummary, summaryByMemberList);
     }
 
     // 채팅 내역 조회(페이징)

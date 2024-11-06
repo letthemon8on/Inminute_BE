@@ -4,6 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record SummaryByMember(
+        String username,
         String summary
 ) {
 }

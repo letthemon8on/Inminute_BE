@@ -43,4 +43,14 @@ public class NoteJoinMemberService {
 
         return noteJoinMemberRepository.findAllByNote_Id(noteId);
     }
+
+    @Transactional
+    public void updateSummary(String uuid, String username, String summary) {
+
+        NoteJoinMember noteJoinMember = noteJoinMemberRepository.findByMember_UsernameAndNote_Uuid(username, uuid)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.NOTE_NOT_FOUND));
+
+        noteJoinMember.updateSummary(summary);
+        noteJoinMemberRepository.save(noteJoinMember);
+    }
 }

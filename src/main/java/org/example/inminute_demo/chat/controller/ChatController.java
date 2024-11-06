@@ -1,5 +1,6 @@
 package org.example.inminute_demo.chat.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -11,10 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -110,10 +108,10 @@ public class ChatController {
         return chatService.stopChattingStatus(uuid, simpSessionAttributes);
     }
 
-    @PostMapping("/notes/{uuid}/stop")
+    @PatchMapping("/notes/{uuid}/stop")
     @Operation(summary = "회의 종료", description = "회의 종료 후 호출하면 한 줄 요약을 반환합니다." +
             "<br> 화자별 요약 및 to do는 추가될 예정입니다. 헤헤")
-    public ApiResponse<ChatStopResponse> stopChatting(@PathVariable(name = "uuid") String uuid) {
+    public ApiResponse<ChatStopResponse> stopChatting(@PathVariable(name = "uuid") String uuid) throws JsonProcessingException {
 
         return ApiResponse.onSuccess(chatService.stopChatting(uuid));
     }

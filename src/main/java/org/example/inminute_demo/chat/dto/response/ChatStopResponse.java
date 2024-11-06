@@ -6,7 +6,7 @@ import java.util.List;
 
 @Builder
 public record ChatStopResponse(
-        String summary
-        //, List<SummaryByMember> summaryByMemberList
+        String summary,
+        List<SummaryByMember> summaryByMemberList
 ) {
 }

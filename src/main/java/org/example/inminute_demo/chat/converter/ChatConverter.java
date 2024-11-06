@@ -6,6 +6,9 @@ import org.example.inminute_demo.chat.dto.request.ChatRequest;
 import org.example.inminute_demo.chat.dto.response.ChatResponse;
 import org.example.inminute_demo.chat.dto.response.ChatStatusResponse;
 import org.example.inminute_demo.chat.dto.response.ChatStopResponse;
+import org.example.inminute_demo.chat.dto.response.SummaryByMember;
+
+import java.util.List;
 
 public class ChatConverter {
 
@@ -46,9 +49,10 @@ public class ChatConverter {
                 .build();
     }
 
-    public static ChatStopResponse toChatStopResponse(String summary) {
+    public static ChatStopResponse toChatStopResponse(String summary, List<SummaryByMember> summaryByMemberList) {
         return ChatStopResponse.builder()
                 .summary(summary)
+                .summaryByMemberList(summaryByMemberList)
                 .build();
     }
 }

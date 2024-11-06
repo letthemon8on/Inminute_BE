@@ -38,4 +38,10 @@ public class NoteJoinMember extends BaseEntity {
             this.todo = todo;
         }
     }
+
+    public void updateSummary(String summary) {
+        if (summary != null) {
+            this.summary = summary;
+        }
+    }
 }
