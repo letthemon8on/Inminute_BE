@@ -101,16 +101,17 @@ public class ChatController {
     }
 
     // 회의 종료 시 호출 -> 추후에 Flask, GPT 적용하여 리팩토링 필요
-    /*@MessageMapping("/chat.stop/{uuid}")
+    @MessageMapping("/chat.stop/{uuid}")
     @SendTo("/topic/public/{uuid}")
-    public ChatStatusResponse stopChatting(@DestinationVariable String uuid,
+    public ChatStatusResponse stopChattingStatus(@DestinationVariable String uuid,
                                          @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
                                          @Payload ChatStopRequest chatStopRequest) {
 
-        return chatService.stopChatting(uuid, simpSessionAttributes);
-    }*/
+        return chatService.stopChattingStatus(uuid, simpSessionAttributes);
+    }
+
     @PostMapping("/notes/{uuid}/stop")
-    @Operation(summary = "회의 종료", description = "회의를 종료하고 한 줄 요약을 반환합니다." +
+    @Operation(summary = "회의 종료", description = "회의 종료 후 호출하면 한 줄 요약을 반환합니다." +
             "<br> 화자별 요약 및 to do는 추가될 예정입니다. 헤헤")
     public ApiResponse<ChatStopResponse> stopChatting(@PathVariable(name = "uuid") String uuid) {
 

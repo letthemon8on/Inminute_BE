@@ -143,9 +143,13 @@ public class ChatService {
         return toChatStatusResponse(true, header);
     }
 
-    public ChatStopResponse stopChatting(String uuid) {
+    public ChatStatusResponse stopChattingStatus(String uuid, Map<String, Object> header) {
 
         noteService.updateIsStart(uuid, false);
+        return toChatStatusResponse(false, header);
+    }
+
+    public ChatStopResponse stopChatting(String uuid) {
 
         List<ChatResponse> chatList = chatRepository.findAllByNoteUUID(uuid);
 
