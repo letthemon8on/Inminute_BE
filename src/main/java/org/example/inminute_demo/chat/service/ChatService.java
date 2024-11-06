@@ -132,9 +132,9 @@ public class ChatService {
 
         chat.updateContent(chatUpdateRequest.content());
         chat.updateType(MessageType.EDIT);
-        Chat updatedChat = chatRepository.save(chat);
+        chatRepository.save(chat);
 
-        return toChatResponse(updatedChat, header);
+        return toChatResponse(chat, header);
     }
 
     public ChatStatusResponse startChatting(String uuid, Map<String, Object> header) {
