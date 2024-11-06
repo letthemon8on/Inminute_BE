@@ -152,6 +152,7 @@ public class ChatService {
         return toChatStatusResponse(false, header);
     }
 
+    @Transactional
     public ChatStopResponse stopChatting(String uuid) throws JsonProcessingException {
 
         List<ChatResponse> script = chatRepository.findAllByNoteUUID(uuid);
