@@ -5,11 +5,9 @@ import com.google.protobuf.ByteString;
 import jakarta.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
 
 import static jakarta.xml.bind.DatatypeConverter.parseBase64Binary;
 
