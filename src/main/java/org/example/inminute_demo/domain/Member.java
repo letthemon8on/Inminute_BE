@@ -1,9 +1,6 @@
 package org.example.inminute_demo.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -27,6 +24,10 @@ public class Member extends BaseEntity {
     private String nickname;
 
     private Boolean isFirst;
+
+    @Column(nullable = false, columnDefinition = "varchar(255)")
+    @Enumerated(EnumType.STRING)
+    private LoginType loginType;
 
     public void updateIsFirst() { this.isFirst = false; }
     public void updateNickname(String nickname) { this.nickname = nickname; }
