@@ -25,6 +25,7 @@ public class Schedule extends BaseEntity {
 
     private String name;
     private LocalDateTime startDateTime;
+    private String color;
 
     public void updateName(String name) {
         if (name != null) {

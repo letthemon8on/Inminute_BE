@@ -46,6 +46,7 @@ public class ScheduleService {
         List<ScheduleResponse> scheduleResponses = schedules.stream()
                 .map(schedule -> ScheduleResponse.builder()
                         .name(schedule.getName())
+                        .color(schedule.getColor())
                         .startDateTime(schedule.getStartDateTime())
                         .build())
                 .collect(Collectors.toList());

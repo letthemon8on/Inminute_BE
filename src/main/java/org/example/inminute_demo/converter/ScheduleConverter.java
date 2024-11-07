@@ -10,6 +10,7 @@ public class ScheduleConverter {
 
         return Schedule.builder()
                 .name(createScheduleRequest.name())
+                .color(createScheduleRequest.color())
                 .startDateTime(createScheduleRequest.startDateTime())
                 .member(member)
                 .build();
