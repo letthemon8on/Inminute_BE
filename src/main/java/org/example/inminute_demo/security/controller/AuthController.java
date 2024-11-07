@@ -20,18 +20,16 @@ public class AuthController {
     @PostMapping("/google/sign-in")
     @Operation(summary = "구글 로그인", description = "구글 로그인을 통한 회원가입 및 로그인")
     public ApiResponse<?> signInWithGoogle(@RequestParam("code") String code,
-                                           @RequestBody(required = false) MemberInfoRequest memberInfoRequest,
                                            HttpServletResponse response) {
-        socialLoginService.signInWithGoogle(code, memberInfoRequest, response);
+        socialLoginService.signInWithGoogle(code, response);
         return ApiResponse.onSuccess("구글 로그인 성공");
     }
 
-    /*@PostMapping("/kakao/sign-in")
+    @PostMapping("/kakao/sign-in")
     @Operation(summary = "카카오 로그인", description = "카카오 로그인을 통한 회원가입 및 로그인")
     public ApiResponse<?> signInWithKakao(@RequestParam("code") String code,
-                                          @RequestBody(required = false) MemberInfoRequest memberInfoRequest,
                                           HttpServletResponse response) {
-        socialLoginService.signInWithKakao(code, memberInfoRequest, response);
+        socialLoginService.signInWithKakao(code, response);
         return ApiResponse.onSuccess("카카오 로그인 성공");
-    }*/
+    }
 }
