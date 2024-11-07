@@ -9,8 +9,6 @@ import org.example.inminute_demo.security.exception.CustomAuthenticationEntryPoi
 import org.example.inminute_demo.security.jwt.CustomLogoutFilter;
 import org.example.inminute_demo.security.jwt.JWTFilter;
 import org.example.inminute_demo.security.jwt.JWTUtil;
-import org.example.inminute_demo.security.oauth2.CustomSuccessHandler;
-import org.example.inminute_demo.security.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,8 +29,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomOAuth2UserService customOAuth2UserService;
-    private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
     private final RedisClient redisClient;
 
@@ -40,7 +36,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> {
             web.ignoring()
-                    .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html/**", "/v3/api-docs/**", "/swagger-ui/index.html#/**");// 필터를 타면 안되는 경로
+                    .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html/**", "/v3/api-docs/**", "/swagger-ui/index.html#/**", "auth/**");// 필터를 타면 안되는 경로
         };
     }
 
@@ -90,13 +86,6 @@ public class SecurityConfig {
         /*http
                 .addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);*/
 
-        // oauth2
-        http
-                .oauth2Login((oauth2) -> oauth2
-                        .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
-                                .userService(customOAuth2UserService))
-                        .successHandler(customSuccessHandler)
-                );
 
         // 로그아웃 필터
         http
@@ -111,7 +100,7 @@ public class SecurityConfig {
         // 경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "oauth2/**", "/login", "logout", "/reissue").permitAll()
+                        .requestMatchers("/", "auth/**", "/login", "logout", "/reissue").permitAll()
                         .requestMatchers("/zoomApi").permitAll()
                         .requestMatchers("/swagger-ui.html", "/v3/sapi-docs/**", "/swagger-ui/**").permitAll()
                         .requestMatchers("/ws/**").permitAll() // WebSocket 핸드셰이크 요청 허용
