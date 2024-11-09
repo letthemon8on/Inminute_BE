@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,8 +35,14 @@ public class ScheduleService {
 
         Member member = memberService.loadMemberByCustomOAuth2User(customOAuth2User);
 
-        Schedule schedule = ScheduleConverter.toSchedule(createScheduleRequest, member);
-        scheduleRepository.save(schedule);
+        List<String> dateList = createScheduleRequest.dateList();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        for (String date : dateList) {
+            LocalDateTime startDateTime = LocalDateTime.parse(date + " " + createScheduleRequest.startTime(), formatter);
+            Schedule schedule = ScheduleConverter.toSchedule(createScheduleRequest, startDateTime, member);
+            scheduleRepository.save(schedule);
+        }
     }
 
     public ScheduleListResponse getAllScheduleByMonth(CustomOAuth2User customOAuth2User, Integer year, Integer month) {

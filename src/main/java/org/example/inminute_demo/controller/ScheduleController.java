@@ -21,7 +21,7 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    @Operation(summary = "일정 생성", description = "yyyy-MM-dd HH:mm 형식으로 시작 시간을 지정하고 일정을 생성합니다.")
+    @Operation(summary = "일정 생성", description = "yyyy-MM-dd 형식으로 일정 날짜 리스트, HH:mm 형식으로 시작 시간을 지정하고 일정을 생성합니다.")
     public ApiResponse<?> createSchedule(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,
                                          @RequestBody CreateScheduleRequest createScheduleRequest) {
 
