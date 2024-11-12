@@ -3,6 +3,8 @@ package org.example.inminute_demo.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -34,5 +36,13 @@ public class Member extends BaseEntity {
     public void updateEmail(String email) { this.email = email; }
     public void updateName(String name) { this.name = name; }
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Folder> folders;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<NoteJoinMember> noteJoinMembers;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Note> notes;
 
 }
