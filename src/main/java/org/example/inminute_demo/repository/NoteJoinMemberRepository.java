@@ -12,4 +12,5 @@ public interface NoteJoinMemberRepository extends JpaRepository<NoteJoinMember, 
     Optional<NoteJoinMember> findByMember_UsernameAndNote_Uuid(String username, String uuid);
     Boolean existsByMember_UsernameAndNote_Uuid(String username, String uuid);
     List<NoteJoinMember> findAllByNote_Id(Long noteId);
+    List<NoteJoinMember> findAllByNote_Uuid(String uuid);
 }

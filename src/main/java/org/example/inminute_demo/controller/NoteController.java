@@ -10,6 +10,7 @@ import org.example.inminute_demo.dto.note.response.NoteDetailResponse;
 import org.example.inminute_demo.dto.note.response.NoteListResponse;
 import org.example.inminute_demo.dto.note.response.UpdateNoteResponse;
 import org.example.inminute_demo.dto.noteJoinMember.request.UpdateNoteJoinMemberRequest;
+import org.example.inminute_demo.dto.noteJoinMember.response.NoteJoinMemberListResponse;
 import org.example.inminute_demo.service.NoteJoinMemberService;
 import org.example.inminute_demo.service.NoteService;
 import org.example.inminute_demo.apipayload.ApiResponse;
@@ -71,9 +72,15 @@ public class NoteController {
     }
 
     @GetMapping("/detail/{uuid}")
-    @Operation(summary = "UUID 회의록 상세정보 조회(개발중)", description = "url의 UUID를 통해 회의록 상세 정보를 조회합니다.")
+    @Operation(summary = "UUID 회의록 상세정보 조회", description = "회의록의 UUID로 회의록 상세 정보를 조회합니다.")
     public ApiResponse<NoteDetailResponse> getNoteByUuid(@PathVariable String uuid) {
         return ApiResponse.onSuccess(noteService.getNoteByUuid(uuid));
+    }
+
+    @GetMapping("/join-member/{uuid}")
+    @Operation(summary = "UUID 회의록 참여자 상세정보 조회", description = "회의록의 UUID로 회의 참여자 상세정보 리스트를 조회합니다.")
+    public ApiResponse<NoteJoinMemberListResponse> getNoteJoinMemberByUuid(@PathVariable String uuid) {
+        return ApiResponse.onSuccess(noteJoinMemberService.getAllNoteJoinMember(uuid));
     }
 
     @DeleteMapping("/{noteId}")
