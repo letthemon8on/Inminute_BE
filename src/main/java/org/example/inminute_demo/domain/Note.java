@@ -17,6 +17,7 @@ import static jakarta.persistence.FetchType.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "note")
 public class Note extends BaseEntity{
 
     @Id
