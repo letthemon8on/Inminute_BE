@@ -23,6 +23,7 @@ public class ToDoService {
 
         return toDoList.stream()
                 .map(toDo -> ToDoResponse.builder()
+                        .toDoId(toDo.getId())
                         .content(toDo.getContent())
                         .isDone(toDo.getIsDone())
                         .build())

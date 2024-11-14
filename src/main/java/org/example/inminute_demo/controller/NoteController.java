@@ -18,8 +18,6 @@ import org.example.inminute_demo.security.dto.CustomOAuth2User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @Tag(name = "Note", description = "Note 관련 API입니다.")
 @RestController
 @RequiredArgsConstructor
@@ -41,14 +39,6 @@ public class NoteController {
     @Operation(summary = "회의록 수정", description = "회의록 이름, 전체 스크립트, 한 줄 요약 중 원하는 항목을 수정합니다.")
     public ApiResponse<UpdateNoteResponse> updateNote(@PathVariable Long noteId, @RequestBody UpdateNoteRequest updateNoteRequest) {
         return ApiResponse.onSuccess(noteService.updateNote(noteId, updateNoteRequest));
-    }
-
-    @PatchMapping("/join-member/{noteId}")
-    @Operation(summary = "회의록 화자별 세부정보 수정", description = "화자별 요약, 화자별 todo 중 원하는 항목을 수정합니다.")
-    public ApiResponse<?> updateNoteJoinMember(@PathVariable Long noteId,
-                                               @RequestBody UpdateNoteJoinMemberRequest updateNoteJoinMemberRequest) {
-        noteJoinMemberService.updateNoteJoinMember(noteId, updateNoteJoinMemberRequest);
-        return ApiResponse.onSuccess("수정 완료됨");
     }
 
     @GetMapping("/all")
@@ -81,6 +71,14 @@ public class NoteController {
     @Operation(summary = "UUID 회의록 참여자 상세정보 조회", description = "회의록의 UUID로 회의 참여자 상세정보 리스트를 조회합니다.")
     public ApiResponse<NoteJoinMemberListResponse> getNoteJoinMemberByUuid(@PathVariable String uuid) {
         return ApiResponse.onSuccess(noteJoinMemberService.getAllNoteJoinMember(uuid));
+    }
+
+    @PatchMapping("/join-member/{noteJoinMemberId}")
+    @Operation(summary = "회의록 참여자별 요약 수정", description = "회의 참여자 id(noteJoinMemberId)를 사용하여 요약 내용을 수정합니다.")
+    public ApiResponse<?> updateNoteJoinMember(@PathVariable Long noteJoinMemberId,
+                                               @RequestBody UpdateNoteJoinMemberRequest updateNoteJoinMemberRequest) {
+        noteJoinMemberService.updateNoteJoinMemberSummary(noteJoinMemberId, updateNoteJoinMemberRequest);
+        return ApiResponse.onSuccess("수정 완료됨");
     }
 
     @DeleteMapping("/{noteId}")

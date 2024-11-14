@@ -10,7 +10,6 @@ import org.example.inminute_demo.dto.noteJoinMember.response.NoteJoinMemberListR
 import org.example.inminute_demo.dto.noteJoinMember.response.NoteJoinMemberResponse;
 import org.example.inminute_demo.exception.GeneralException;
 import org.example.inminute_demo.repository.NoteJoinMemberRepository;
-import org.example.inminute_demo.repository.ToDoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,12 +34,12 @@ public class NoteJoinMemberService {
     }
 
     @Transactional
-    public void updateNoteJoinMember(Long noteId, UpdateNoteJoinMemberRequest updateNoteJoinMemberRequest) {
+    public void updateNoteJoinMemberSummary(Long noteJoinMemberId, UpdateNoteJoinMemberRequest updateNoteJoinMemberRequest) {
 
-        NoteJoinMember noteJoinMember = noteJoinMemberRepository.findByNote_Id(noteId)
+        NoteJoinMember noteJoinMember = noteJoinMemberRepository.findById(noteJoinMemberId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.NOTE_NOT_FOUND));
 
-        noteJoinMember.update(updateNoteJoinMemberRequest.getSummary(), updateNoteJoinMemberRequest.getTodo());
+        noteJoinMember.updateSummary(updateNoteJoinMemberRequest.summary());
         noteJoinMemberRepository.save(noteJoinMember);
     }
 

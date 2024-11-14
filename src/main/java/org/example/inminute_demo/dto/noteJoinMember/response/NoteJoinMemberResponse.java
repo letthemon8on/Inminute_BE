@@ -14,6 +14,7 @@ public record NoteJoinMemberResponse(
 ) {
     @Builder
     public record ToDoResponse(
+            Long toDoId,
             String content,
             Boolean isDone
     ) {
