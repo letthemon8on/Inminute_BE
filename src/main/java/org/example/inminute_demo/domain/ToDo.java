@@ -11,19 +11,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MeetingRoomJoinMember extends BaseEntity {
+@Table(name = "to_do")
+public class ToDo extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "note_join_member_id")
+    private NoteJoinMember noteJoinMember;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "meeting_room_id")
-    private MeetingRoom meetingRoom;
+    private String content;
 
-    private String script;
+    private Boolean isDone;
 }

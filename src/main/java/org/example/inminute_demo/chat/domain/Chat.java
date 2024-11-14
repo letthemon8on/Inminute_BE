@@ -17,6 +17,7 @@ import static org.springframework.util.Assert.notNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
+@Table(name = "chat")
 public class Chat extends BaseEntity {
 
     @Id

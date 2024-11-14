@@ -15,6 +15,7 @@ import static jakarta.persistence.FetchType.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "folder")
 public class Folder extends BaseEntity{
 
     @Id

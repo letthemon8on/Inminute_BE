@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "note_join_member")
 public class NoteJoinMember extends BaseEntity {
 
     @Id
