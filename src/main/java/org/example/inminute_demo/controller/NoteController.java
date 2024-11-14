@@ -11,14 +11,14 @@ import org.example.inminute_demo.dto.note.response.NoteListResponse;
 import org.example.inminute_demo.dto.note.response.UpdateNoteResponse;
 import org.example.inminute_demo.dto.noteJoinMember.request.UpdateNoteJoinMemberRequest;
 import org.example.inminute_demo.dto.noteJoinMember.response.NoteJoinMemberListResponse;
+import org.example.inminute_demo.dto.toDo.request.UpdateToDoRequest;
 import org.example.inminute_demo.service.NoteJoinMemberService;
 import org.example.inminute_demo.service.NoteService;
 import org.example.inminute_demo.apipayload.ApiResponse;
 import org.example.inminute_demo.security.dto.CustomOAuth2User;
+import org.example.inminute_demo.service.ToDoService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @Tag(name = "Note", description = "Note 관련 API입니다.")
 @RestController
@@ -28,6 +28,7 @@ public class NoteController {
 
     private final NoteService noteService;
     private final NoteJoinMemberService noteJoinMemberService;
+    private final ToDoService toDoService;
 
     @PostMapping
     @Operation(summary = "회의록 생성", description = "folderId 값을 requestBody에 포함할 경우 폴더가 지정된 회의록이, " +
@@ -41,14 +42,6 @@ public class NoteController {
     @Operation(summary = "회의록 수정", description = "회의록 이름, 전체 스크립트, 한 줄 요약 중 원하는 항목을 수정합니다.")
     public ApiResponse<UpdateNoteResponse> updateNote(@PathVariable Long noteId, @RequestBody UpdateNoteRequest updateNoteRequest) {
         return ApiResponse.onSuccess(noteService.updateNote(noteId, updateNoteRequest));
-    }
-
-    @PatchMapping("/join-member/{noteId}")
-    @Operation(summary = "회의록 화자별 세부정보 수정", description = "화자별 요약, 화자별 todo 중 원하는 항목을 수정합니다.")
-    public ApiResponse<?> updateNoteJoinMember(@PathVariable Long noteId,
-                                               @RequestBody UpdateNoteJoinMemberRequest updateNoteJoinMemberRequest) {
-        noteJoinMemberService.updateNoteJoinMember(noteId, updateNoteJoinMemberRequest);
-        return ApiResponse.onSuccess("수정 완료됨");
     }
 
     @GetMapping("/all")
@@ -81,6 +74,22 @@ public class NoteController {
     @Operation(summary = "UUID 회의록 참여자 상세정보 조회", description = "회의록의 UUID로 회의 참여자 상세정보 리스트를 조회합니다.")
     public ApiResponse<NoteJoinMemberListResponse> getNoteJoinMemberByUuid(@PathVariable String uuid) {
         return ApiResponse.onSuccess(noteJoinMemberService.getAllNoteJoinMember(uuid));
+    }
+
+    @PatchMapping("/join-member/{noteJoinMemberId}")
+    @Operation(summary = "회의록 참여자별 요약 수정", description = "회의 참여자 id(noteJoinMemberId)를 사용하여 요약 내용을 수정합니다.")
+    public ApiResponse<?> updateNoteJoinMember(@PathVariable Long noteJoinMemberId,
+                                               @RequestBody UpdateNoteJoinMemberRequest updateNoteJoinMemberRequest) {
+        noteJoinMemberService.updateNoteJoinMemberSummary(noteJoinMemberId, updateNoteJoinMemberRequest);
+        return ApiResponse.onSuccess("수정 완료됨");
+    }
+
+    @PatchMapping("/join-member/to-do/{toDoId}")
+    @Operation(summary = "회의록 참여자별 ToDo 수정", description = "회의 참여자별 ToDo 내용 또는 완료려부를 수정합니다.")
+    public ApiResponse<?> updateToDo(@PathVariable Long toDoId,
+                                     @RequestBody UpdateToDoRequest updateToDoRequest) {
+        toDoService.updateToDo(toDoId, updateToDoRequest);
+        return ApiResponse.onSuccess("ToDo 수정 완료됨");
     }
 
     @DeleteMapping("/{noteId}")
