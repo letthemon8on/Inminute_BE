@@ -25,4 +25,7 @@ public class ToDo extends BaseEntity {
     private String content;
 
     private Boolean isDone;
+
+    public void updateContent(String content) { this.content = content; }
+    public void updateIsDone(Boolean isDone) { this.isDone = isDone; }
 }
