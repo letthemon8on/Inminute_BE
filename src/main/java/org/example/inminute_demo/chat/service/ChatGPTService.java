@@ -1,21 +1,16 @@
 package org.example.inminute_demo.chat.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.inminute_demo.chat.config.ChatGPTConfig;
 import org.example.inminute_demo.chat.dto.request.GPTRequest;
-import org.example.inminute_demo.chat.dto.request.GPTTestRequest;
+import org.example.inminute_demo.chat.dto.request.ToDoRequest;
 import org.example.inminute_demo.chat.dto.response.GPTResponse;
-import org.example.inminute_demo.chat.dto.response.GPTTestListResponse;
-import org.example.inminute_demo.chat.dto.response.GPTTestResponse;
+import org.example.inminute_demo.chat.dto.response.ToDoListResponse;
+import org.example.inminute_demo.chat.dto.response.ToDoResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,11 +31,11 @@ public class ChatGPTService {
     @Value("${openai.prompt-url}")
     private String promptUrl;
 
-    public GPTTestListResponse prompt(GPTTestRequest gptTestRequest) {
+    public ToDoListResponse prompt(String prompt) {
 
         HttpHeaders headers = chatGPTConfig.httpHeaders();
 
-        GPTRequest gptRequest = new GPTRequest(model, gptTestRequest.question());
+        GPTRequest gptRequest = new GPTRequest(model, prompt);
 
         HttpEntity<GPTRequest> request = new HttpEntity<>(gptRequest, headers);
 
@@ -53,20 +48,20 @@ public class ChatGPTService {
 
         System.out.println(gptResponse.getChoices().get(0).getMessage().getContent());
 
-        List<GPTTestResponse> gptTestResponses = extractTodos(gptResponse.getChoices().get(0).getMessage().getContent());
+        List<ToDoResponse> toDoResponses = extractTodos(gptResponse.getChoices().get(0).getMessage().getContent());
 
-        return new GPTTestListResponse(gptTestResponses);
+        return new ToDoListResponse(toDoResponses);
     }
 
-    public List<GPTTestResponse> extractTodos(String input) {
+    public List<ToDoResponse> extractTodos(String input) {
 
         // 각 사용자와 할 일 목록을 매칭하기 위한 정규식
-        Pattern pattern = Pattern.compile("(username\\d+):\\n((?:\\d+\\. .+\\n?)+)");
+        Pattern pattern = Pattern.compile("([가-힣a-zA-Z0-9]+):\\n((?:\\d+\\. .+\\n?)+)");
         Matcher matcher = pattern.matcher(input);
 
-        List<GPTTestResponse> gptTestResponses = new ArrayList<>();
+        List<ToDoResponse> toDoResponses = new ArrayList<>();
         while (matcher.find()) {
-            String username = matcher.group(1);
+            String nickname = matcher.group(1);
             String todosBlock = matcher.group(2);
 
             // 각 할 일 항목을 분리하여 리스트로 저장
@@ -74,8 +69,11 @@ public class ChatGPTService {
             todos = new ArrayList<>(todos); // 수정 가능한 리스트로 변환
             todos.remove(0); // 첫 번째 빈 항목 제거
 
-            gptTestResponses.add(new GPTTestResponse(username, todos));
+            // 각 할 일 항목에서 "\n" 제거
+            todos.replaceAll(todo -> todo.replace("\n", "").trim());
+
+            toDoResponses.add(new ToDoResponse(nickname, todos));
         }
-        return gptTestResponses;
+        return toDoResponses;
     }
 }

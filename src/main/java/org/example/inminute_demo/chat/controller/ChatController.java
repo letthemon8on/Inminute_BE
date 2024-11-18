@@ -115,4 +115,11 @@ public class ChatController {
 
         return ApiResponse.onSuccess(chatService.stopChatting(uuid));
     }
+
+    @PostMapping("notes/{uuid}/to-do")
+    @Operation(summary = "회의 참여자별 todo 리스트 생성(개발중)")
+    public ApiResponse<ToDoListResponse> getToDo(@PathVariable(name = "uuid") String uuid) {
+
+        return ApiResponse.onSuccess(chatService.getToDo(uuid));
+    }
 }
