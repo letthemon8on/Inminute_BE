@@ -3,6 +3,7 @@ package org.example.inminute_demo.chat.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
 import org.example.inminute_demo.chat.converter.ChatConverter;
 import org.example.inminute_demo.chat.domain.Chat;
 import org.example.inminute_demo.chat.domain.MessageType;
@@ -10,9 +11,13 @@ import org.example.inminute_demo.chat.dto.request.*;
 import org.example.inminute_demo.chat.dto.response.*;
 import org.example.inminute_demo.chat.exception.WebSocketException;
 import org.example.inminute_demo.chat.repository.ChatRepository;
+import org.example.inminute_demo.domain.Member;
 import org.example.inminute_demo.domain.Note;
 import org.example.inminute_demo.domain.NoteJoinMember;
+import org.example.inminute_demo.exception.GeneralException;
+import org.example.inminute_demo.repository.MemberRepository;
 import org.example.inminute_demo.repository.NoteRepository;
+import org.example.inminute_demo.service.MemberService;
 import org.example.inminute_demo.service.NoteJoinMemberService;
 import org.example.inminute_demo.service.NoteService;
 import org.springframework.data.domain.Page;
@@ -41,6 +46,7 @@ public class ChatService {
     private final NoteService noteService;
     private final NoteJoinMemberService noteJoinMemberService;
     private final SummaryService summaryService;
+    private final MemberRepository memberRepository;
 
     // 사용자 발언 청크 저장용 Map
     private final Map<String, ByteArrayOutputStream> chunkBufferMap = new ConcurrentHashMap<>();
@@ -187,8 +193,12 @@ public class ChatService {
             // 생성된 요약을 저장
             noteJoinMemberService.updateSummary(uuid, entry.getKey(), summaryByUsername);
 
+            Member member = memberRepository.findByUsername(entry.getKey())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
             SummaryByMember summaryByMember = SummaryByMember.builder()
                     .username(entry.getKey())
+                    .nickname(member.getNickname())
                     .summary(summaryByUsername).build();
             summaryByMemberList.add(summaryByMember);
         }
