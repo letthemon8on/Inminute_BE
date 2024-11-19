@@ -224,7 +224,20 @@ public class ChatService {
                 "형식은 이름: 1.할 일 2. 항 일 이야. 각 할 일은 13자 이내로 만들어줘.";
         System.out.println(prompt);
 
-        return chatGPTService.prompt(prompt);
+        return chatGPTService.todo(prompt);
+    }
+
+    public AnswerResponse getAnswer(String uuid, QuestionRequest questionRequest) {
+        List<ChatResponse> chatResponses = chatRepository.findAllByNoteUUID(uuid);
+
+        String script = chatResponses.stream()
+                .map(chatResponse -> chatResponse.nickname() + ": " + chatResponse.content())
+                .collect(Collectors.joining(" "));
+
+        String prompt = script + " " + questionRequest.question();
+        System.out.println(prompt);
+
+        return chatGPTService.question(prompt);
     }
 
     // 채팅 내역 조회(페이징)

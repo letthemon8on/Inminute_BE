@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.inminute_demo.chat.config.ChatGPTConfig;
 import org.example.inminute_demo.chat.dto.request.GPTRequest;
+import org.example.inminute_demo.chat.dto.request.QuestionRequest;
 import org.example.inminute_demo.chat.dto.request.ToDoRequest;
-import org.example.inminute_demo.chat.dto.response.GPTResponse;
-import org.example.inminute_demo.chat.dto.response.ToDoList;
-import org.example.inminute_demo.chat.dto.response.ToDoListResponse;
-import org.example.inminute_demo.chat.dto.response.ToDoResponse;
+import org.example.inminute_demo.chat.dto.response.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -33,7 +31,7 @@ public class ChatGPTService {
     @Value("${openai.prompt-url}")
     private String promptUrl;
 
-    public List<ToDoResponse> prompt(String prompt) {
+    public List<ToDoResponse> todo(String prompt) {
 
         HttpHeaders headers = chatGPTConfig.httpHeaders();
 
@@ -81,5 +79,25 @@ public class ChatGPTService {
             toDoResponses.add(new ToDoResponse(nickname, toDoLists));
         }
         return toDoResponses;
+    }
+
+    public AnswerResponse question(String prompt) {
+
+        HttpHeaders headers = chatGPTConfig.httpHeaders();
+
+        GPTRequest gptRequest = new GPTRequest(model, prompt);
+
+        HttpEntity<GPTRequest> request = new HttpEntity<>(gptRequest, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        GPTResponse gptResponse = restTemplate.postForObject(promptUrl, request, GPTResponse.class);
+
+        if (gptResponse == null || gptResponse.getChoices() == null || gptResponse.getChoices().isEmpty()) {
+            throw new RuntimeException();
+        }
+
+        System.out.println(gptResponse.getChoices().get(0).getMessage().getContent());
+
+        return new AnswerResponse(gptResponse.getChoices().get(0).getMessage().getContent());
     }
 }
