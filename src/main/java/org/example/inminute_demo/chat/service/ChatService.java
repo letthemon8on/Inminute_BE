@@ -215,9 +215,11 @@ public class ChatService {
 
         String nicknameList = chatResponses.stream()
                 .map(ChatResponse::nickname)
+                .distinct()
                 .collect(Collectors.joining(", "));
 
-        String prompt = script + " " + nicknameList + "의 todo 리스트를 만들어줘.";
+        String prompt = script + " " + nicknameList + "의 todo 리스트를 만들어줘. 반드시 형식을 지켜야해." +
+                "형식은 이름: 1.할 일 2. 항 일 이야. 각 할 일은 13자 이내로 만들어줘.";
         System.out.println(prompt);
 
         return chatGPTService.prompt(prompt);
