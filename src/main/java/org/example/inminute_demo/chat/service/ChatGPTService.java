@@ -6,6 +6,7 @@ import org.example.inminute_demo.chat.config.ChatGPTConfig;
 import org.example.inminute_demo.chat.dto.request.GPTRequest;
 import org.example.inminute_demo.chat.dto.request.ToDoRequest;
 import org.example.inminute_demo.chat.dto.response.GPTResponse;
+import org.example.inminute_demo.chat.dto.response.ToDoList;
 import org.example.inminute_demo.chat.dto.response.ToDoListResponse;
 import org.example.inminute_demo.chat.dto.response.ToDoResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -72,7 +74,11 @@ public class ChatGPTService {
             // 각 할 일 항목에서 "\n" 제거
             todos.replaceAll(todo -> todo.replace("\n", "").trim());
 
-            toDoResponses.add(new ToDoResponse(nickname, todos));
+            List<ToDoList> toDoLists = todos.stream()
+                    .map(ToDoList::new)
+                    .collect(Collectors.toList());
+
+            toDoResponses.add(new ToDoResponse(nickname, toDoLists));
         }
         return toDoResponses;
     }

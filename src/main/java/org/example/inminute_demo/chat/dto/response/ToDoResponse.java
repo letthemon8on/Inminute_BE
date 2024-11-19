@@ -4,6 +4,6 @@ import java.util.List;
 
 public record ToDoResponse(
         String nickname,
-        List<String> todoList
+        List<ToDoList> toDoLists
 ) {
 }
