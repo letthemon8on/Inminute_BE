@@ -123,4 +123,12 @@ public class ChatController {
         List<ToDoResponse> toDoResponseList = chatService.getToDo(uuid);
         return ApiResponse.onSuccess(new ToDoListResponse(toDoResponseList));
     }
+
+    @PostMapping("/notes/{uuid}/chat-bot")
+    @Operation(summary = "큐 앤 에이", description = "뀨 앤 에에에ㅔ에에에ㅔ에에에에에ㅔㅇ이")
+    public ApiResponse<AnswerResponse> getAnswer(@PathVariable(name = "uuid") String uuid,
+                                                 @RequestBody QuestionRequest questionRequest) {
+
+        return ApiResponse.onSuccess(chatService.getAnswer(uuid, questionRequest));
+    }
 }
