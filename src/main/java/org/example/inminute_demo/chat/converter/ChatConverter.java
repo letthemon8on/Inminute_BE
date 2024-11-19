@@ -3,10 +3,7 @@ package org.example.inminute_demo.chat.converter;
 import org.example.inminute_demo.chat.domain.Chat;
 import org.example.inminute_demo.chat.domain.MessageType;
 import org.example.inminute_demo.chat.dto.request.ChatRequest;
-import org.example.inminute_demo.chat.dto.response.ChatResponse;
-import org.example.inminute_demo.chat.dto.response.ChatStatusResponse;
-import org.example.inminute_demo.chat.dto.response.ChatStopResponse;
-import org.example.inminute_demo.chat.dto.response.SummaryByMember;
+import org.example.inminute_demo.chat.dto.response.*;
 
 import java.util.List;
 
@@ -49,10 +46,12 @@ public class ChatConverter {
                 .build();
     }
 
-    public static ChatStopResponse toChatStopResponse(String summary, List<SummaryByMember> summaryByMemberList) {
+    public static ChatStopResponse toChatStopResponse(String summary, List<SummaryByMember> summaryByMemberList,
+                                                      List<ToDoResponse> toDoResponseList) {
         return ChatStopResponse.builder()
                 .summary(summary)
                 .summaryByMemberList(summaryByMemberList)
+                .toDoResponseList(toDoResponseList)
                 .build();
     }
 }

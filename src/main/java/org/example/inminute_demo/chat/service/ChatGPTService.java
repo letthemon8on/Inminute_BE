@@ -31,7 +31,7 @@ public class ChatGPTService {
     @Value("${openai.prompt-url}")
     private String promptUrl;
 
-    public ToDoListResponse prompt(String prompt) {
+    public List<ToDoResponse> prompt(String prompt) {
 
         HttpHeaders headers = chatGPTConfig.httpHeaders();
 
@@ -50,7 +50,7 @@ public class ChatGPTService {
 
         List<ToDoResponse> toDoResponses = extractTodos(gptResponse.getChoices().get(0).getMessage().getContent());
 
-        return new ToDoListResponse(toDoResponses);
+        return toDoResponses;
     }
 
     public List<ToDoResponse> extractTodos(String input) {

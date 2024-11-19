@@ -203,10 +203,12 @@ public class ChatService {
                     .summary(summaryByUsername).build();
             summaryByMemberList.add(summaryByMember);
         }
-        return ChatConverter.toChatStopResponse(oneLineSummary, summaryByMemberList);
+
+        List<ToDoResponse> toDoResponseList = getToDo(uuid);
+        return ChatConverter.toChatStopResponse(oneLineSummary, summaryByMemberList, toDoResponseList);
     }
 
-    public ToDoListResponse getToDo(String uuid) {
+    public List<ToDoResponse> getToDo(String uuid) {
         List<ChatResponse> chatResponses = chatRepository.findAllByNoteUUID(uuid);
 
         String script = chatResponses.stream()

@@ -109,17 +109,18 @@ public class ChatController {
     }
 
     @PatchMapping("/notes/{uuid}/stop")
-    @Operation(summary = "회의 종료", description = "회의 종료 후 호출하면 한 줄 요약을 반환합니다." +
-            "<br> 화자별 요약 및 to do는 추가될 예정입니다. 헤헤")
+    @Operation(summary = "회의 종료", description = "회의 종료 후 한 줄 요약, 화자별 요약, 화자별 todo 리스트를 생성합니다." +
+            "<br> todo 리스트 디비 저장 로직은 나중에 만들꼬얌")
     public ApiResponse<ChatStopResponse> stopChatting(@PathVariable(name = "uuid") String uuid) throws JsonProcessingException {
 
         return ApiResponse.onSuccess(chatService.stopChatting(uuid));
     }
 
     @PostMapping("notes/{uuid}/to-do")
-    @Operation(summary = "회의 참여자별 todo 리스트 생성(개발중)")
+    @Operation(summary = "회의 참여자별 todo 리스트 생성(개발중)", description = "uuid에 해당하는 회의록 참여자별 todo 리스트를 생성합니다.")
     public ApiResponse<ToDoListResponse> getToDo(@PathVariable(name = "uuid") String uuid) {
 
-        return ApiResponse.onSuccess(chatService.getToDo(uuid));
+        List<ToDoResponse> toDoResponseList = chatService.getToDo(uuid);
+        return ApiResponse.onSuccess(new ToDoListResponse(toDoResponseList));
     }
 }
