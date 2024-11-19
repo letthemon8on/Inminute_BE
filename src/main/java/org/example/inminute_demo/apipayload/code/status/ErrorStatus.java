@@ -38,7 +38,7 @@ public enum ErrorStatus implements BaseCode {
     // 웹 소켓
     EXCEPTION_IN_WEBSOCKET(HttpStatus.UNAUTHORIZED, "W4001", "웹 소켓 연결 중에 예외가 발생하였습니다."),
 
-    // 일정
+    // 캘린더
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE4001", "존재하지 않는 일정입니다.");
 
 
