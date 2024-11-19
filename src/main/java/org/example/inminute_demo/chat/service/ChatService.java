@@ -46,6 +46,7 @@ public class ChatService {
     private final NoteService noteService;
     private final NoteJoinMemberService noteJoinMemberService;
     private final SummaryService summaryService;
+    private final ChatGPTService chatGPTService;
     private final MemberRepository memberRepository;
 
     // 사용자 발언 청크 저장용 Map
@@ -202,7 +203,28 @@ public class ChatService {
                     .summary(summaryByUsername).build();
             summaryByMemberList.add(summaryByMember);
         }
-        return ChatConverter.toChatStopResponse(oneLineSummary, summaryByMemberList);
+
+        List<ToDoResponse> toDoResponseList = getToDo(uuid);
+        return ChatConverter.toChatStopResponse(oneLineSummary, summaryByMemberList, toDoResponseList);
+    }
+
+    public List<ToDoResponse> getToDo(String uuid) {
+        List<ChatResponse> chatResponses = chatRepository.findAllByNoteUUID(uuid);
+
+        String script = chatResponses.stream()
+                .map(chatResponse -> chatResponse.nickname() + ": " + chatResponse.content())
+                .collect(Collectors.joining(" "));
+
+        String nicknameList = chatResponses.stream()
+                .map(ChatResponse::nickname)
+                .distinct()
+                .collect(Collectors.joining(", "));
+
+        String prompt = script + " " + nicknameList + "의 todo 리스트를 만들어줘. 반드시 형식을 지켜야해." +
+                "형식은 이름: 1.할 일 2. 항 일 이야. 각 할 일은 13자 이내로 만들어줘.";
+        System.out.println(prompt);
+
+        return chatGPTService.prompt(prompt);
     }
 
     // 채팅 내역 조회(페이징)
@@ -215,6 +237,8 @@ public class ChatService {
     public List<ChatResponse> getAllByNoteUUID(String uuid) {
         return chatRepository.findAllByNoteUUID(uuid);
     }
+
+
 
     private ChatResponse toChatResponse(Chat chat, Map<String, Object> header) {
         String username = getValueFromHeader(header, "username");
