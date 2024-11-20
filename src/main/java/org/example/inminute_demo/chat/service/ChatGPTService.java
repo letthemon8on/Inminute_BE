@@ -54,28 +54,25 @@ public class ChatGPTService {
     }
 
     public List<ToDoResponse> extractTodos(String input) {
-        // 사용자와 할 일 목록을 매칭하기 위한 정규식
-        Pattern pattern = Pattern.compile("- ([가-힣a-zA-Z0-9]+): ((?:\\d+\\. [^\\d]+)+)");
+        // 각 사용자와 할 일 목록을 매칭하기 위한 정규식
+        Pattern pattern = Pattern.compile("([가-힣a-zA-Z0-9]+):\\n((?:\\d+\\. .+\\n?)+)");
         Matcher matcher = pattern.matcher(input);
-
         List<ToDoResponse> toDoResponses = new ArrayList<>();
-
         while (matcher.find()) {
-            String nickname = matcher.group(1); // 사용자 닉네임 추출
-            String todosBlock = matcher.group(2); // 할 일 블록 추출
+            String nickname = matcher.group(1);
+            String todosBlock = matcher.group(2);
+            // 각 할 일 항목을 분리하여 리스트로 저장
+            List<String> todos = Arrays.asList(todosBlock.split("\\d+\\. "));
+            todos = new ArrayList<>(todos); // 수정 가능한 리스트로 변환
+            todos.remove(0); // 첫 번째 빈 항목 제거
+            // 각 할 일 항목에서 "\n" 제거
+            todos.replaceAll(todo -> todo.replace("\n", "").trim());
 
-            // 각 할 일 항목을 분리하고 다른 사용자의 이름이 포함되지 않도록 처리
-            List<ToDoList> toDoLists = Arrays.stream(todosBlock.split("\\d+\\. "))
-                    .skip(1) // 첫 번째 빈 항목 제거
-                    .map(todo -> todo.replace("\n", "").trim()) // 줄바꿈 및 공백 제거
-                    .filter(todo -> !todo.startsWith("- ")) // 다른 사용자의 이름이 포함된 항목 제거
-                    .map(ToDoList::new) // ToDoList 객체로 변환
+            List<ToDoList> toDoLists = todos.stream()
+                    .map(ToDoList::new)
                     .collect(Collectors.toList());
-
-            // 사용자별 ToDoResponse 생성
             toDoResponses.add(new ToDoResponse(nickname, toDoLists));
         }
-
         return toDoResponses;
     }
 
