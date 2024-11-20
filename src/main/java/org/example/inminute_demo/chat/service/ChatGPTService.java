@@ -56,7 +56,7 @@ public class ChatGPTService {
     public List<ToDoResponse> extractTodos(String input) {
 
         // 각 사용자와 할 일 목록을 매칭하기 위한 정규식
-        Pattern pattern = Pattern.compile("([가-힣a-zA-Z0-9]+):\\n((?:\\d+\\. .+\\n?)+)");
+        Pattern pattern = Pattern.compile("- ([가-힣a-zA-Z0-9]+): ((?:\\d+\\. .+? ?)+)");
         Matcher matcher = pattern.matcher(input);
 
         List<ToDoResponse> toDoResponses = new ArrayList<>();
