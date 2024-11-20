@@ -56,22 +56,22 @@ public class ChatGPTService {
     public List<ToDoResponse> extractTodos(String input) {
 
         // 각 사용자와 할 일 목록을 매칭하기 위한 정규식
-        Pattern pattern = Pattern.compile("- ([가-힣a-zA-Z0-9]+): ((?:\\d+\\. .+? ?)+)");
+        Pattern pattern = Pattern.compile("- ([가-힣a-zA-Z0-9]+): ((?:\\d+\\. [^\\d]+)+)");
         Matcher matcher = pattern.matcher(input);
 
         List<ToDoResponse> toDoResponses = new ArrayList<>();
         while (matcher.find()) {
-            String nickname = matcher.group(1);
-            String todosBlock = matcher.group(2);
+            String nickname = matcher.group(1); // 사용자 닉네임 추출
+            String todosBlock = matcher.group(2); // 할 일 블록 추출
 
-            // 각 할 일 항목을 분리하여 Stream을 통해 DTO로 매핑
+            // 각 할 일 항목을 숫자와 점("1.", "2.")으로 분리
             List<ToDoList> toDoLists = Arrays.stream(todosBlock.split("\\d+\\. "))
-                    .skip(1) // 첫 번째 빈 항목 제거
-                    .map(todo -> todo.replace("\n", "").trim()) // "\n" 제거 및 공백 제거
-                    .map(ToDoList::new) // ToDoList 객체 생성
+                    .filter(todo -> !todo.isBlank()) // 빈 문자열 필터링
+                    .map(todo -> todo.replace("\n", "").trim()) // 줄바꿈과 공백 제거
+                    .map(ToDoList::new) // ToDoList 객체로 매핑
                     .collect(Collectors.toList());
 
-            // ToDoResponse 생성 및 추가
+            // ToDoResponse 객체 생성 및 추가
             toDoResponses.add(new ToDoResponse(nickname, toDoLists));
         }
         return toDoResponses;
