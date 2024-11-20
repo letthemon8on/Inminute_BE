@@ -221,7 +221,7 @@ public class ChatService {
                 .collect(Collectors.joining(", "));
 
         String prompt = script + ". 여기까지가 회의록이야. " + nicknameList + "의 todo 리스트를 만들어줘. 반드시 형식을 지켜야해." +
-                "형식은 {이름: 1.할 일 2. 할 일} 이야. 각 할 일은 13자 이내로 만들어줘." +
+                "형식은 {이름:[줄바꿈]1.할 일 2. 할 일} 이야. 각 할 일은 13자 이내로 만들어줘." +
                 "각 할 일은 줄바꿈 말고 공백으로 구분해줘.";
         System.out.println(prompt);
 
