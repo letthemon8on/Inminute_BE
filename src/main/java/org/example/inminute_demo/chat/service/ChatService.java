@@ -221,7 +221,7 @@ public class ChatService {
                 .collect(Collectors.joining(", "));
 
         String prompt = script + ". 여기까지가 회의록이야. " + nicknameList + "의 todo 리스트를 만들어줘. 반드시 다음의 형식을 지켜야해.\n" +
-                "이름:\n1.회의 준비하기\n2. 문서 작성하기\n3. 발표 자료 만들기. 각 할 일은 13자 이내로 만들어줘.";
+                "이름:\n1. 회의 준비하기\n2. 문서 작성하기\n3. 발표 자료 만들기\n 각 할 일은 13자 이내로 만들어줘.";
         System.out.println(prompt);
 
         return chatGPTService.todo(prompt);
