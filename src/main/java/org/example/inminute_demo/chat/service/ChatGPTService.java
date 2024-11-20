@@ -64,18 +64,14 @@ public class ChatGPTService {
             String nickname = matcher.group(1);
             String todosBlock = matcher.group(2);
 
-            // 각 할 일 항목을 분리하여 리스트로 저장
-            List<String> todos = Arrays.asList(todosBlock.split("\\d+\\. "));
-            todos = new ArrayList<>(todos); // 수정 가능한 리스트로 변환
-            todos.remove(0); // 첫 번째 빈 항목 제거
-
-            // 각 할 일 항목에서 "\n" 제거
-            todos.replaceAll(todo -> todo.replace("\n", "").trim());
-
-            List<ToDoList> toDoLists = todos.stream()
-                    .map(ToDoList::new)
+            // 각 할 일 항목을 분리하여 Stream을 통해 DTO로 매핑
+            List<ToDoList> toDoLists = Arrays.stream(todosBlock.split("\\d+\\. "))
+                    .skip(1) // 첫 번째 빈 항목 제거
+                    .map(todo -> todo.replace("\n", "").trim()) // "\n" 제거 및 공백 제거
+                    .map(ToDoList::new) // ToDoList 객체 생성
                     .collect(Collectors.toList());
 
+            // ToDoResponse 생성 및 추가
             toDoResponses.add(new ToDoResponse(nickname, toDoLists));
         }
         return toDoResponses;
