@@ -84,14 +84,6 @@ public class NoteController {
         return ApiResponse.onSuccess("수정 완료됨");
     }
 
-    @PatchMapping("/join-member/to-do/{toDoId}")
-    @Operation(summary = "회의록 참여자별 ToDo 수정", description = "회의 참여자별 ToDo 내용 또는 완료려부를 수정합니다.")
-    public ApiResponse<?> updateToDo(@PathVariable Long toDoId,
-                                     @RequestBody UpdateToDoRequest updateToDoRequest) {
-        toDoService.updateToDo(toDoId, updateToDoRequest);
-        return ApiResponse.onSuccess("ToDo 수정 완료됨");
-    }
-
     @DeleteMapping("/{noteId}")
     @Operation(summary = "회의록 삭제(개발중)", description = "지정한 회의록을 삭제합니다.")
     public ApiResponse<?> deleteNote(@PathVariable Long noteId) {
