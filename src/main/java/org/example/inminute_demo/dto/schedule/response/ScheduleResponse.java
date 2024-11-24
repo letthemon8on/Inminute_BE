@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record ScheduleResponse(
+        Long id,
         String name,
         String color,
         LocalDateTime startDateTime
