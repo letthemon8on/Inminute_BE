@@ -220,8 +220,10 @@ public class ChatService {
                 .distinct()
                 .collect(Collectors.joining(", "));
 
-        String prompt = script + ". 여기까지가 회의록이야. " + nicknameList + "의 todo 리스트를 만들어줘. 반드시 다음의 형식을 지켜야해.\n" +
-                "이름:\n1. 할 일\n2. 할 일\n3. 할 일\n 각 할 일은 13자 이내로 만들어줘.";
+        String prompt = script + "\n\n여기까지가 회의록이야.\n" + nicknameList + "의 todo 리스트를 만들어줘. 각 할 일은 13자 이내로 만들어줘." +
+                "\n다음의 예시를 참고해서 만들어줘. 반드시 예시의 형식을 지켜야해.\n" +
+                "홍길동:\n1. 와이어프레임 만들기\n2. 기획안 수정하기\n3. 프로젝트 일정 조정하기\n\n" +
+                "김철수:\n1. ERD 작성하기\n2. API 명세서 완성하기\n\n";
         System.out.println(prompt);
 
         return chatGPTService.todo(prompt);
