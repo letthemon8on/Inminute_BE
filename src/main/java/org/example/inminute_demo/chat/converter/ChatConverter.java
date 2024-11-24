@@ -2,8 +2,12 @@ package org.example.inminute_demo.chat.converter;
 
 import org.example.inminute_demo.chat.domain.Chat;
 import org.example.inminute_demo.chat.domain.MessageType;
-import org.example.inminute_demo.chat.dto.request.ChatRequest;
-import org.example.inminute_demo.chat.dto.response.*;
+import org.example.inminute_demo.chat.dto.chat.request.ChatRequest;
+import org.example.inminute_demo.chat.dto.chat.response.ChatResponse;
+import org.example.inminute_demo.chat.dto.chat.response.ChatStatusResponse;
+import org.example.inminute_demo.chat.dto.chat.response.ChatStopResponse;
+import org.example.inminute_demo.chat.dto.flask.response.SummaryByMember;
+import org.example.inminute_demo.chat.dto.gpt.response.ToDoResponse;
 
 import java.util.List;
 

@@ -7,17 +7,24 @@ import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
 import org.example.inminute_demo.chat.converter.ChatConverter;
 import org.example.inminute_demo.chat.domain.Chat;
 import org.example.inminute_demo.chat.domain.MessageType;
-import org.example.inminute_demo.chat.dto.request.*;
-import org.example.inminute_demo.chat.dto.response.*;
+import org.example.inminute_demo.chat.dto.chat.request.ChatRequest;
+import org.example.inminute_demo.chat.dto.chat.request.ChatUpdateRequest;
+import org.example.inminute_demo.chat.dto.chat.response.ChatResponse;
+import org.example.inminute_demo.chat.dto.chat.response.ChatStatusResponse;
+import org.example.inminute_demo.chat.dto.chat.response.ChatStopResponse;
+import org.example.inminute_demo.chat.dto.chat.response.ChatsInNote;
+import org.example.inminute_demo.chat.dto.flask.request.SummaryRequest;
+import org.example.inminute_demo.chat.dto.flask.response.SummaryByMember;
+import org.example.inminute_demo.chat.dto.gpt.request.QuestionRequest;
+import org.example.inminute_demo.chat.dto.gpt.response.AnswerResponse;
+import org.example.inminute_demo.chat.dto.gpt.response.ToDoResponse;
+import org.example.inminute_demo.chat.dto.stt.request.AudioChunkRequest;
+import org.example.inminute_demo.chat.dto.stt.request.AudioRequest;
 import org.example.inminute_demo.chat.exception.WebSocketException;
 import org.example.inminute_demo.chat.repository.ChatRepository;
 import org.example.inminute_demo.domain.Member;
-import org.example.inminute_demo.domain.Note;
-import org.example.inminute_demo.domain.NoteJoinMember;
 import org.example.inminute_demo.exception.GeneralException;
 import org.example.inminute_demo.repository.MemberRepository;
-import org.example.inminute_demo.repository.NoteRepository;
-import org.example.inminute_demo.service.MemberService;
 import org.example.inminute_demo.service.NoteJoinMemberService;
 import org.example.inminute_demo.service.NoteService;
 import org.springframework.data.domain.Page;
@@ -135,7 +142,7 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatResponse update(ChatUpdateRequest chatUpdateRequest,  Map<String, Object> header) {
+    public ChatResponse update(ChatUpdateRequest chatUpdateRequest, Map<String, Object> header) {
 
         Chat chat = chatRepository.findById(chatUpdateRequest.chatId())
                 .orElseThrow(() -> new WebSocketException("존재하지 않는 채팅입니다."));

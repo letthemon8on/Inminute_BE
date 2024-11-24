@@ -1,7 +1,7 @@
 package org.example.inminute_demo.chat.repository;
 
 import org.example.inminute_demo.chat.domain.Chat;
-import org.example.inminute_demo.chat.dto.response.ChatResponse;
+import org.example.inminute_demo.chat.dto.chat.response.ChatResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,14 +9,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ChatRepository extends JpaRepository<Chat, Long> {
 
     // DTO로 반환
     @Query("""
 			SELECT 
-			new org.example.inminute_demo.chat.dto.response.ChatResponse
+			new org.example.inminute_demo.chat.dto.chat.response.ChatResponse
 			(c.id, u.username, u.nickname, c.type, c.created_at, c.content) 
 			FROM Chat c 
 			JOIN Member u ON u.username = c.username
@@ -26,7 +25,7 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
 
     @Query("""
 			SELECT 
-			new org.example.inminute_demo.chat.dto.response.ChatResponse
+			new org.example.inminute_demo.chat.dto.chat.response.ChatResponse
 			(c.id, u.username, u.nickname, c.type, c.created_at, c.content) 
 			FROM Chat c 
 			JOIN Member u ON u.username = c.username 
@@ -37,7 +36,7 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
 
 	/*@Query("""
 			SELECT 
-			new org.example.inminute_demo.chat.dto.response.ChatResponse
+			new org.example.inminute_demo.chat.dto.chat.response.ChatResponse
 			(c.id, u.username, u.nickname, c.type, c.created_at, c.content)
 			FROM Chat c
 			JOIN Member u ON u.username = c.username

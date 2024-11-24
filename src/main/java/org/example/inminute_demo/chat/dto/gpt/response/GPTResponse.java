@@ -1,9 +1,9 @@
-package org.example.inminute_demo.chat.dto.response;
+package org.example.inminute_demo.chat.dto.gpt.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.inminute_demo.chat.dto.request.GPTMessage;
+import org.example.inminute_demo.chat.dto.gpt.request.GPTMessage;
 
 import java.util.List;
 
