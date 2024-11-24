@@ -1,5 +1,6 @@
 package org.example.inminute_demo.chat.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.inminute_demo.chat.config.ChatGPTConfig;
@@ -7,7 +8,7 @@ import org.example.inminute_demo.chat.dto.gpt.request.GPTRequest;
 import org.example.inminute_demo.chat.dto.gpt.response.AnswerResponse;
 import org.example.inminute_demo.chat.dto.gpt.response.GPTResponse;
 import org.example.inminute_demo.chat.dto.gpt.response.ToDoList;
-import org.example.inminute_demo.chat.dto.gpt.response.ToDoResponse;
+import org.example.inminute_demo.chat.dto.gpt.response.CreateToDoResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -32,7 +33,8 @@ public class ChatGPTService {
     @Value("${openai.prompt-url}")
     private String promptUrl;
 
-    public List<ToDoResponse> todo(String prompt) {
+    @Transactional
+    public List<CreateToDoResponse> todo(String prompt) {
 
         HttpHeaders headers = chatGPTConfig.httpHeaders();
 
@@ -49,18 +51,18 @@ public class ChatGPTService {
 
         System.out.println(gptResponse.getChoices().get(0).getMessage().getContent());
 
-        List<ToDoResponse> toDoResponses = extractTodos(gptResponse.getChoices().get(0).getMessage().getContent());
+        List<CreateToDoResponse> createToDoResponses = extractTodos(gptResponse.getChoices().get(0).getMessage().getContent());
 
-        return toDoResponses;
+        return createToDoResponses;
     }
 
-    public List<ToDoResponse> extractTodos(String input) {
+    public List<CreateToDoResponse> extractTodos(String input) {
         // 각 사용자와 할 일 목록을 매칭하기 위한 정규식
-        Pattern pattern = Pattern.compile("([가-힣a-zA-Z0-9]+):\\n((?:\\d+\\. .+\\n?)+)");
+        Pattern pattern = Pattern.compile("([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}):\\n((?:\\d+\\. .+\\n?)+)");
         Matcher matcher = pattern.matcher(input);
-        List<ToDoResponse> toDoResponses = new ArrayList<>();
+        List<CreateToDoResponse> createToDoResponses = new ArrayList<>();
         while (matcher.find()) {
-            String nickname = matcher.group(1);
+            String username = matcher.group(1);
             String todosBlock = matcher.group(2);
             // 각 할 일 항목을 분리하여 리스트로 저장
             List<String> todos = Arrays.asList(todosBlock.split("\\d+\\. "));
@@ -72,9 +74,9 @@ public class ChatGPTService {
             List<ToDoList> toDoLists = todos.stream()
                     .map(ToDoList::new)
                     .collect(Collectors.toList());
-            toDoResponses.add(new ToDoResponse(nickname, toDoLists));
+            createToDoResponses.add(new CreateToDoResponse(username, toDoLists));
         }
-        return toDoResponses;
+        return createToDoResponses;
     }
 
     public AnswerResponse question(String prompt) {

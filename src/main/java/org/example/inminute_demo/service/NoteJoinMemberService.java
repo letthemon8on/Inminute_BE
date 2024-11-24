@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 public class NoteJoinMemberService {
 
     private final NoteJoinMemberRepository noteJoinMemberRepository;
-    private final ToDoService toDoService;
 
     @Transactional
     public void saveParents(Member member, Note note) {
@@ -67,7 +66,6 @@ public class NoteJoinMemberService {
                         .id(noteJoinMember.getId())
                         .nickname(noteJoinMember.getMember().getNickname())
                         .summary(noteJoinMember.getSummary())
-                        .toDoList(toDoService.findAll(noteJoinMember.getId()))
                         .build())
                 .collect(Collectors.toList());
 
