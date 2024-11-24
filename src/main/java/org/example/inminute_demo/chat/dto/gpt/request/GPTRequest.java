@@ -1,4 +1,4 @@
-package org.example.inminute_demo.chat.dto.request;
+package org.example.inminute_demo.chat.dto.gpt.request;
 
 import lombok.Data;
 

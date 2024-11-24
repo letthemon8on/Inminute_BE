@@ -2,7 +2,7 @@ package org.example.inminute_demo.chat.handler;
 
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.chat.domain.MessageType;
-import org.example.inminute_demo.chat.dto.request.ChatRequest;
+import org.example.inminute_demo.chat.dto.chat.request.ChatRequest;
 import org.example.inminute_demo.chat.exception.WebSocketException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

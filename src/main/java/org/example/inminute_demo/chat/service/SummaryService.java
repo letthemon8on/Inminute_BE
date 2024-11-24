@@ -3,8 +3,9 @@ package org.example.inminute_demo.chat.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.example.inminute_demo.chat.dto.request.SummaryRequest;
-import org.example.inminute_demo.chat.dto.response.SummaryResponse;
+import org.example.inminute_demo.chat.dto.flask.request.SummaryRequest;
+import org.example.inminute_demo.chat.dto.flask.response.OneLineSummary;
+import org.example.inminute_demo.chat.dto.flask.response.SummaryResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -22,7 +23,7 @@ public class SummaryService {
     private final String FLASK_URL = "http://inminute_flask:5000/summary";
 
     @Transactional
-    public String getSummaryFromFlask(SummaryRequest summaryRequest) throws JsonProcessingException {
+    public SummaryResponse getSummaryFromFlask(SummaryRequest summaryRequest) throws JsonProcessingException {
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -39,7 +40,7 @@ public class SummaryService {
 
         // 응답에서 summary 필드값 반환
         if (response.getBody() != null) {
-            return response.getBody().summary();
+            return response.getBody();
         }
         return null;
     }

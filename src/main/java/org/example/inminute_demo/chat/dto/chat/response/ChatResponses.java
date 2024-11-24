@@ -1,4 +1,4 @@
-package org.example.inminute_demo.chat.dto.response;
+package org.example.inminute_demo.chat.dto.chat.response;
 
 import java.util.List;
 
