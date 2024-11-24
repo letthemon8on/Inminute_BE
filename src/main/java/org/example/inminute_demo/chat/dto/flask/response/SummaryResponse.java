@@ -1,6 +1,12 @@
 package org.example.inminute_demo.chat.dto.flask.response;
 
+import lombok.Builder;
+
+import java.util.List;
+
+@Builder
 public record SummaryResponse(
-        String summary
+        OneLineSummary summary,
+        List<SummaryByMember> summaryByMemberList
 ) {
 }

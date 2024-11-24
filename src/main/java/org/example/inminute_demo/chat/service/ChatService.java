@@ -13,8 +13,11 @@ import org.example.inminute_demo.chat.dto.chat.response.ChatResponse;
 import org.example.inminute_demo.chat.dto.chat.response.ChatStatusResponse;
 import org.example.inminute_demo.chat.dto.chat.response.ChatStopResponse;
 import org.example.inminute_demo.chat.dto.chat.response.ChatsInNote;
+import org.example.inminute_demo.chat.dto.flask.request.MeetingScript;
+import org.example.inminute_demo.chat.dto.flask.request.ScriptByMember;
 import org.example.inminute_demo.chat.dto.flask.request.SummaryRequest;
 import org.example.inminute_demo.chat.dto.flask.response.SummaryByMember;
+import org.example.inminute_demo.chat.dto.flask.response.SummaryResponse;
 import org.example.inminute_demo.chat.dto.gpt.request.QuestionRequest;
 import org.example.inminute_demo.chat.dto.gpt.response.AnswerResponse;
 import org.example.inminute_demo.chat.dto.gpt.response.ToDoResponse;
@@ -171,48 +174,49 @@ public class ChatService {
 
         List<ChatResponse> script = chatRepository.findAllByNoteUUID(uuid);
 
-        SummaryRequest summaryRequest = new SummaryRequest(script.stream()
+        MeetingScript meetingScript = new MeetingScript(script.stream()
                 .map(ChatResponse::content)
                 .collect(Collectors.toList()));
-
-        String oneLineSummary = summaryService.getSummaryFromFlask(summaryRequest);
-
-        noteService.updateSummary(uuid, oneLineSummary);
 
         // username 기준으로 그룹화
         Map<String, List<ChatResponse>> scriptByUsername = script.stream()
                 .collect(Collectors.groupingBy(ChatResponse::username));
 
-        List<SummaryByMember> summaryByMemberList = new ArrayList<>();
+        List<ScriptByMember> scriptByMemberList = new ArrayList<>();
         for (Map.Entry<String, List<ChatResponse>> entry : scriptByUsername.entrySet()) {
             // 각 username에 해당하는 ChatResponse 리스트를 가져옵니다.
             List<ChatResponse> chatListByUsername = entry.getValue();
 
-            // ChatResponse 리스트의 content만 추출하여 SummaryRequest 생성
-            SummaryRequest summaryRequestByUsername = new SummaryRequest(
-                    chatListByUsername.stream()
-                            .map(ChatResponse::content)  // content 추출
-                            .collect(Collectors.toList())
-            );
-
-            // Flask에서 요약 생성
-            String summaryByUsername = summaryService.getSummaryFromFlask(summaryRequestByUsername);
-
-            // 생성된 요약을 저장
-            noteJoinMemberService.updateSummary(uuid, entry.getKey(), summaryByUsername);
-
             Member member = memberRepository.findByUsername(entry.getKey())
                     .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
-            SummaryByMember summaryByMember = SummaryByMember.builder()
+            // ChatResponse 리스트의 content만 추출하여 SummaryRequest 생성
+            ScriptByMember scriptByMember = ScriptByMember.builder()
                     .username(entry.getKey())
                     .nickname(member.getNickname())
-                    .summary(summaryByUsername).build();
-            summaryByMemberList.add(summaryByMember);
+                    .contents(chatListByUsername.stream()
+                            .map(ChatResponse::content)  // content 추출
+                            .collect(Collectors.toList()))
+                    .build();
+
+            scriptByMemberList.add(scriptByMember);
+        }
+
+        SummaryRequest summaryRequest = SummaryRequest.builder()
+                .script(meetingScript)
+                .scriptByMemberList(scriptByMemberList)
+                .build();
+
+        SummaryResponse summaryResponse = summaryService.getSummaryFromFlask(summaryRequest);
+
+        noteService.updateSummary(uuid, summaryResponse.summary().summary());
+
+        for (SummaryByMember summaryByMember : summaryResponse.summaryByMemberList()) {
+            noteJoinMemberService.updateSummary(uuid, summaryByMember.username(), summaryByMember.summary());
         }
 
         List<ToDoResponse> toDoResponseList = getToDo(uuid);
-        return ChatConverter.toChatStopResponse(oneLineSummary, summaryByMemberList, toDoResponseList);
+        return ChatConverter.toChatStopResponse(summaryResponse.summary(), summaryResponse.summaryByMemberList(), toDoResponseList);
     }
 
     public List<ToDoResponse> getToDo(String uuid) {

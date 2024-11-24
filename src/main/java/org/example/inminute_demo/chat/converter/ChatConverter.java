@@ -6,6 +6,7 @@ import org.example.inminute_demo.chat.dto.chat.request.ChatRequest;
 import org.example.inminute_demo.chat.dto.chat.response.ChatResponse;
 import org.example.inminute_demo.chat.dto.chat.response.ChatStatusResponse;
 import org.example.inminute_demo.chat.dto.chat.response.ChatStopResponse;
+import org.example.inminute_demo.chat.dto.flask.response.OneLineSummary;
 import org.example.inminute_demo.chat.dto.flask.response.SummaryByMember;
 import org.example.inminute_demo.chat.dto.gpt.response.ToDoResponse;
 
@@ -50,10 +51,10 @@ public class ChatConverter {
                 .build();
     }
 
-    public static ChatStopResponse toChatStopResponse(String summary, List<SummaryByMember> summaryByMemberList,
+    public static ChatStopResponse toChatStopResponse(OneLineSummary oneLineSummary, List<SummaryByMember> summaryByMemberList,
                                                       List<ToDoResponse> toDoResponseList) {
         return ChatStopResponse.builder()
-                .summary(summary)
+                .summary(oneLineSummary.summary())
                 .summaryByMemberList(summaryByMemberList)
                 .toDoResponseList(toDoResponseList)
                 .build();

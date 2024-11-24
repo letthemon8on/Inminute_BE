@@ -5,8 +5,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record SummaryRequest(
-        MeetingScript script,
-        List<ScriptByMember> scriptByMemberList
+public record MeetingScript(
+        List<String> contents
 ) {
 }
