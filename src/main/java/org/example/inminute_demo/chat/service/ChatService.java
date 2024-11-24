@@ -209,14 +209,14 @@ public class ChatService {
 
         SummaryResponse summaryResponse = summaryService.getSummaryFromFlask(summaryRequest);
 
-        noteService.updateSummary(uuid, summaryResponse.summary().summary());
+        noteService.updateSummary(uuid, summaryResponse.oneLineSummary().summary());
 
         for (SummaryByMember summaryByMember : summaryResponse.summaryByMemberList()) {
             noteJoinMemberService.updateSummary(uuid, summaryByMember.username(), summaryByMember.summary());
         }
 
         List<ToDoResponse> toDoResponseList = getToDo(uuid);
-        return ChatConverter.toChatStopResponse(summaryResponse.summary(), summaryResponse.summaryByMemberList(), toDoResponseList);
+        return ChatConverter.toChatStopResponse(summaryResponse.oneLineSummary(), summaryResponse.summaryByMemberList(), toDoResponseList);
     }
 
     public List<ToDoResponse> getToDo(String uuid) {

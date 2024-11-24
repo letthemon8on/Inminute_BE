@@ -6,7 +6,7 @@ import java.util.List;
 
 @Builder
 public record SummaryResponse(
-        OneLineSummary summary,
+        OneLineSummary oneLineSummary,
         List<SummaryByMember> summaryByMemberList
 ) {
 }
