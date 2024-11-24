@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
 import org.example.inminute_demo.domain.ToDo;
-import org.example.inminute_demo.dto.noteJoinMember.response.NoteJoinMemberResponse;
 import org.example.inminute_demo.dto.toDo.request.UpdateToDoRequest;
 import org.example.inminute_demo.exception.GeneralException;
 import org.example.inminute_demo.repository.ToDoRepository;
