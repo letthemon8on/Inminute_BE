@@ -20,16 +20,18 @@ import org.example.inminute_demo.chat.dto.flask.response.SummaryByMember;
 import org.example.inminute_demo.chat.dto.flask.response.SummaryResponse;
 import org.example.inminute_demo.chat.dto.gpt.request.QuestionRequest;
 import org.example.inminute_demo.chat.dto.gpt.response.AnswerResponse;
-import org.example.inminute_demo.chat.dto.gpt.response.ToDoResponse;
+import org.example.inminute_demo.chat.dto.gpt.response.CreateToDoResponse;
 import org.example.inminute_demo.chat.dto.stt.request.AudioChunkRequest;
 import org.example.inminute_demo.chat.dto.stt.request.AudioRequest;
 import org.example.inminute_demo.chat.exception.WebSocketException;
 import org.example.inminute_demo.chat.repository.ChatRepository;
 import org.example.inminute_demo.domain.Member;
+import org.example.inminute_demo.dto.toDo.response.ToDoResponse;
 import org.example.inminute_demo.exception.GeneralException;
 import org.example.inminute_demo.repository.MemberRepository;
 import org.example.inminute_demo.service.NoteJoinMemberService;
 import org.example.inminute_demo.service.NoteService;
+import org.example.inminute_demo.service.ToDoService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -57,6 +59,7 @@ public class ChatService {
     private final NoteJoinMemberService noteJoinMemberService;
     private final SummaryService summaryService;
     private final ChatGPTService chatGPTService;
+    private final ToDoService toDoService;
     private final MemberRepository memberRepository;
 
     // 사용자 발언 청크 저장용 Map
@@ -219,6 +222,7 @@ public class ChatService {
         return ChatConverter.toChatStopResponse(summaryResponse.oneLineSummary(), summaryResponse.summaryByMemberList(), toDoResponseList);
     }
 
+    @Transactional
     public List<ToDoResponse> getToDo(String uuid) {
         List<ChatResponse> chatResponses = chatRepository.findAllByNoteUUID(uuid);
 
@@ -226,18 +230,21 @@ public class ChatService {
                 .map(chatResponse -> chatResponse.nickname() + ": " + chatResponse.content())
                 .collect(Collectors.joining(" "));
 
-        String nicknameList = chatResponses.stream()
-                .map(ChatResponse::nickname)
+        String usernameList = chatResponses.stream()
+                .map(ChatResponse::username)
                 .distinct()
                 .collect(Collectors.joining(", "));
 
-        String prompt = script + "\n\n여기까지가 회의록이야.\n" + nicknameList + "의 todo 리스트를 만들어줘. 각 할 일은 13자 이내로 만들어줘." +
+        String prompt = script + "\n\n여기까지가 회의록이야.\n" + usernameList + "의 todo 리스트를 만들어줘. 각 할 일은 13자 이내로 만들어줘." +
                 "\n다음의 예시를 참고해서 만들어줘. 반드시 예시의 형식을 지켜야해.\n" +
-                "홍길동:\n1. 와이어프레임 만들기\n2. 기획안 수정하기\n3. 프로젝트 일정 조정하기\n\n" +
-                "김철수:\n1. ERD 작성하기\n2. API 명세서 완성하기\n\n";
+                "googleabc123@google.com:\n1. 와이어프레임 만들기\n2. 기획안 수정하기\n3. 프로젝트 일정 조정하기\n\n" +
+                "kakaoqwe456@naver.com:\n1. ERD 작성하기\n2. API 명세서 완성하기\n\n";
         System.out.println(prompt);
 
-        return chatGPTService.todo(prompt);
+        List<CreateToDoResponse> createToDoResponses = chatGPTService.todo(prompt);
+        toDoService.saveToDo(createToDoResponses, uuid);
+
+        return toDoService.findAll(uuid);
     }
 
     public AnswerResponse getAnswer(String uuid, QuestionRequest questionRequest) {

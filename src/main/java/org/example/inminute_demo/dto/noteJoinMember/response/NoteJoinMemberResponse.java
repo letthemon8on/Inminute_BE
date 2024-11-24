@@ -9,14 +9,6 @@ import java.util.List;
 public record NoteJoinMemberResponse(
         Long id,
         String nickname,
-        String summary,
-        List<ToDoResponse> toDoList
-) {
-    @Builder
-    public record ToDoResponse(
-            Long toDoId,
-            String content,
-            Boolean isDone
-    ) {
-    }
-}
+        String summary
+)
+{ }
