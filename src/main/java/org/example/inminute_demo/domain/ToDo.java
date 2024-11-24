@@ -18,9 +18,9 @@ public class ToDo extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "note_join_member_id")
-    private NoteJoinMember noteJoinMember;
+    private String uuid;
+    private String username;
+    private String nickname;
 
     private String content;
 

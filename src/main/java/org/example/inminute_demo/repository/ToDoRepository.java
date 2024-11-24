@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ToDoRepository extends JpaRepository<ToDo, Long> {
 
-    List<ToDo> findAllByNoteJoinMember_Id(Long id);
+    List<ToDo> findAllByUuid(String uuid);
 }
