@@ -7,6 +7,7 @@ public record ToDoResponse(
         Long id,
         String uuid,
         String username,
+        String nickname,
         String content,
         Boolean isDone
 ) {

@@ -5,10 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
 import org.example.inminute_demo.chat.dto.gpt.response.CreateToDoResponse;
 import org.example.inminute_demo.chat.dto.gpt.response.ToDoList;
+import org.example.inminute_demo.domain.Member;
 import org.example.inminute_demo.domain.ToDo;
 import org.example.inminute_demo.dto.toDo.request.UpdateToDoRequest;
 import org.example.inminute_demo.dto.toDo.response.ToDoResponse;
 import org.example.inminute_demo.exception.GeneralException;
+import org.example.inminute_demo.repository.MemberRepository;
 import org.example.inminute_demo.repository.ToDoRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class ToDoService {
 
     private final ToDoRepository toDoRepository;
+    private final MemberRepository memberRepository;
 
     public List<ToDoResponse> findAll(String uuid) {
 
@@ -30,6 +33,7 @@ public class ToDoService {
                         .id(toDo.getId())
                         .uuid(toDo.getUuid())
                         .username(toDo.getUsername())
+                        .nickname(toDo.getNickname())
                         .content(toDo.getContent())
                         .isDone(toDo.getIsDone())
                         .build())
@@ -56,9 +60,13 @@ public class ToDoService {
 
         for (CreateToDoResponse createToDoResponse : createToDoResponses) {
             for (ToDoList toDoList : createToDoResponse.toDoLists()) {
+                Member member = memberRepository.findByUsername(createToDoResponse.username())
+                        .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
                 ToDo toDo = ToDo.builder()
                         .uuid(uuid)
                         .username(createToDoResponse.username())
+                        .nickname(member.getNickname())
                         .content(toDoList.todo())
                         .isDone(false)
                         .build();

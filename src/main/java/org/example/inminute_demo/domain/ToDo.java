@@ -20,6 +20,7 @@ public class ToDo extends BaseEntity {
 
     private String uuid;
     private String username;
+    private String nickname;
 
     private String content;
 

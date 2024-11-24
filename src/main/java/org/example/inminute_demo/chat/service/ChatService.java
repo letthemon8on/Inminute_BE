@@ -222,6 +222,7 @@ public class ChatService {
         return ChatConverter.toChatStopResponse(summaryResponse.oneLineSummary(), summaryResponse.summaryByMemberList(), toDoResponseList);
     }
 
+    @Transactional
     public List<ToDoResponse> getToDo(String uuid) {
         List<ChatResponse> chatResponses = chatRepository.findAllByNoteUUID(uuid);
 
