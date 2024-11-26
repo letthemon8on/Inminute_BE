@@ -175,10 +175,6 @@ public class ChatService {
     @Transactional
     public ChatStopResponse stopChatting(String uuid, Map<String, Object> header) throws JsonProcessingException {
 
-        //
-        noteService.updateIsStart(uuid, false);
-        //
-
         List<ChatResponse> script = chatRepository.findAllByNoteUUID(uuid);
 
         MeetingScript meetingScript = new MeetingScript(script.stream()

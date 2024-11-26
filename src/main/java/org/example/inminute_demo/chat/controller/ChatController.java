@@ -110,9 +110,19 @@ public class ChatController {
     }
 
     // 회의 종료 시 호출 -> 추후에 Flask, GPT 적용하여 리팩토링 필요
+    @MessageMapping("/chat.finish/{uuid}")
+    @SendTo("/topic/public/{uuid}")
+    public ChatStatusResponse stopChattingStatus(@DestinationVariable String uuid,
+                                               @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
+                                               @Payload ChatStopRequest chatStopRequest) {
+
+        return chatService.stopChattingStatus(uuid, simpSessionAttributes);
+    }
+
+    // 회의 종료 시 호출 -> 추후에 Flask, GPT 적용하여 리팩토링 필요
     @MessageMapping("/chat.stop/{uuid}")
     @SendTo("/topic/public/{uuid}")
-    public ChatStopResponse stopChattingStatus(@DestinationVariable String uuid,
+    public ChatStopResponse stopChatting(@DestinationVariable String uuid,
                                          @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
                                          @Payload ChatStopRequest chatStopRequest) throws JsonProcessingException {
 
