@@ -25,4 +25,14 @@ public class NoteCustomRepositoryImpl implements NoteCustomRepository{
                 .where(noteJoinMember.member.id.eq(memberId))
                 .fetch();
     }
+
+    @Override
+    public List<Note> findALlByMemberIdAndFolderIsNull(Long memberId) {
+        return jpaQueryFactory
+                .selectFrom(note)
+                .leftJoin(noteJoinMember)
+                .on(noteJoinMember.note.eq(note))
+                .where(noteJoinMember.member.id.eq(memberId).and(note.folder.isNull()))
+                .fetch();
+    }
 }

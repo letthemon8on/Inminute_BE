@@ -7,4 +7,5 @@ import java.util.List;
 public interface NoteCustomRepository {
 
     List<Note> findAllByMemberId(Long memberId);
+    List<Note> findALlByMemberIdAndFolderIsNull(Long memberId);
 }
