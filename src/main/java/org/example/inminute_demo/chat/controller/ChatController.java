@@ -5,10 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.apipayload.ApiResponse;
-import org.example.inminute_demo.chat.dto.chat.request.ChatRequest;
-import org.example.inminute_demo.chat.dto.chat.request.ChatStartRequest;
-import org.example.inminute_demo.chat.dto.chat.request.ChatStopRequest;
-import org.example.inminute_demo.chat.dto.chat.request.ChatUpdateRequest;
+import org.example.inminute_demo.chat.dto.chat.request.*;
 import org.example.inminute_demo.chat.dto.chat.response.*;
 import org.example.inminute_demo.chat.dto.gpt.request.QuestionRequest;
 import org.example.inminute_demo.chat.dto.gpt.response.AnswerResponse;
@@ -110,11 +107,11 @@ public class ChatController {
     }
 
     // 회의 종료 시 호출 -> 추후에 Flask, GPT 적용하여 리팩토링 필요
-    @MessageMapping("/chat.finish/{uuid}")
+    @MessageMapping("/chat.click/{uuid}")
     @SendTo("/topic/public/{uuid}")
     public ChatStatusResponse stopChattingStatus(@DestinationVariable String uuid,
                                                @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
-                                               @Payload ChatStopRequest chatStopRequest) {
+                                               @Payload ChatStopStatusRequest chatStopStatusRequest) {
 
         return chatService.stopChattingStatus(uuid, simpSessionAttributes);
     }
