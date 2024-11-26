@@ -160,17 +160,11 @@ public class ChatService {
         return toChatResponse(chat, header);
     }
 
-    @Transactional
     public ChatStatusResponse startChatting(String uuid, Map<String, Object> header) {
-
-        noteService.updateIsStart(uuid, true);
         return toChatStatusResponse(true, header);
     }
 
-    @Transactional
     public ChatStatusResponse stopChattingStatus(String uuid, Map<String, Object> header) {
-
-        noteService.updateIsStart(uuid, false);
         return toChatStatusResponse(false, header);
     }
 
