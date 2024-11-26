@@ -112,20 +112,20 @@ public class ChatController {
     // 회의 종료 시 호출 -> 추후에 Flask, GPT 적용하여 리팩토링 필요
     @MessageMapping("/chat.stop/{uuid}")
     @SendTo("/topic/public/{uuid}")
-    public ChatStatusResponse stopChattingStatus(@DestinationVariable String uuid,
+    public ChatStopResponse stopChattingStatus(@DestinationVariable String uuid,
                                          @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
-                                         @Payload ChatStopRequest chatStopRequest) {
+                                         @Payload ChatStopRequest chatStopRequest) throws JsonProcessingException {
 
-        return chatService.stopChattingStatus(uuid, simpSessionAttributes);
+        return chatService.stopChatting(uuid, simpSessionAttributes);
     }
 
-    @PatchMapping("/notes/{uuid}/stop")
+    /*@PatchMapping("/notes/{uuid}/stop")
     @Operation(summary = "회의 종료", description = "회의 종료 후 한 줄 요약, 화자별 요약, 화자별 todo 리스트를 생성합니다." +
             "<br> todo 리스트 디비 저장 로직은 나중에 만들꼬얌")
     public ApiResponse<ChatStopResponse> stopChatting(@PathVariable(name = "uuid") String uuid) throws JsonProcessingException {
 
         return ApiResponse.onSuccess(chatService.stopChatting(uuid));
-    }
+    }*/
 
     @PostMapping("notes/{uuid}/to-do")
     @Operation(summary = "회의 참여자별 todo 리스트 생성(개발중)", description = "uuid에 해당하는 회의록 참여자별 todo 리스트를 생성합니다.")

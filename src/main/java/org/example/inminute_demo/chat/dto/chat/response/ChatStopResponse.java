@@ -9,6 +9,12 @@ import java.util.List;
 
 @Builder
 public record ChatStopResponse(
+        //
+        String username,
+        String nickname,
+        Boolean isStart,
+        //
+
         String summary,
         List<SummaryByMember> summaryByMemberList,
         List<ToDoResponse> toDoResponseList

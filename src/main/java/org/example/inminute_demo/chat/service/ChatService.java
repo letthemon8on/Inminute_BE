@@ -173,7 +173,11 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatStopResponse stopChatting(String uuid) throws JsonProcessingException {
+    public ChatStopResponse stopChatting(String uuid, Map<String, Object> header) throws JsonProcessingException {
+
+        //
+        noteService.updateIsStart(uuid, false);
+        //
 
         List<ChatResponse> script = chatRepository.findAllByNoteUUID(uuid);
 
@@ -219,7 +223,14 @@ public class ChatService {
         }
 
         List<ToDoResponse> toDoResponseList = getToDo(uuid);
-        return ChatConverter.toChatStopResponse(summaryResponse.oneLineSummary(), summaryResponse.summaryByMemberList(), toDoResponseList);
+
+        //
+        String username = getValueFromHeader(header, "username");
+        String nickname = getValueFromHeader(header, "nickname");
+        //
+        return ChatConverter.toChatStopResponse(username, nickname,
+                summaryResponse.oneLineSummary(), summaryResponse.summaryByMemberList(),
+                toDoResponseList);
     }
 
     @Transactional

@@ -52,9 +52,15 @@ public class ChatConverter {
                 .build();
     }
 
-    public static ChatStopResponse toChatStopResponse(OneLineSummary oneLineSummary, List<SummaryByMember> summaryByMemberList,
+    public static ChatStopResponse toChatStopResponse(String username, String nickname,
+                                                      OneLineSummary oneLineSummary, List<SummaryByMember> summaryByMemberList,
                                                       List<ToDoResponse> toDoResponseList) {
         return ChatStopResponse.builder()
+                //
+                .username(username)
+                .nickname(nickname)
+                .isStart(false)
+                //
                 .summary(oneLineSummary.summary())
                 .summaryByMemberList(summaryByMemberList)
                 .toDoResponseList(toDoResponseList)
