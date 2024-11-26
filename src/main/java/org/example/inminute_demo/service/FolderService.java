@@ -3,10 +3,8 @@ package org.example.inminute_demo.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.converter.FolderConverter;
-import org.example.inminute_demo.dto.note.response.NoteResponse;
 import org.example.inminute_demo.dto.note.response.NotesNotInFolder;
 import org.example.inminute_demo.repository.FolderRepository;
-import org.example.inminute_demo.repository.NoteRepository;
 import org.example.inminute_demo.apipayload.Handler.TempHandler;
 import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
 import org.example.inminute_demo.domain.Folder;
@@ -15,7 +13,6 @@ import org.example.inminute_demo.dto.folder.request.CreateFolderRequest;
 import org.example.inminute_demo.dto.folder.request.UpdateFolderRequest;
 import org.example.inminute_demo.dto.folder.response.*;
 import org.example.inminute_demo.domain.Member;
-import org.example.inminute_demo.repository.MemberRepository;
 import org.example.inminute_demo.security.dto.CustomOAuth2User;
 import org.springframework.stereotype.Service;
 

@@ -8,7 +8,7 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.domain.Note;
-import org.example.inminute_demo.repository.NoteRepository;
+import org.example.inminute_demo.repository.note.NoteRepository;
 import org.example.inminute_demo.apipayload.Handler.TempHandler;
 import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
 import org.slf4j.Logger;

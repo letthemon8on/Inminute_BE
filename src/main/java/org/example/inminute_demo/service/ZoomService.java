@@ -2,7 +2,7 @@ package org.example.inminute_demo.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.domain.Note;
-import org.example.inminute_demo.repository.NoteRepository;
+import org.example.inminute_demo.repository.note.NoteRepository;
 import org.example.inminute_demo.apipayload.Handler.TempHandler;
 import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
 import org.example.inminute_demo.dto.zoom.request.ZoomMeetingDTO;

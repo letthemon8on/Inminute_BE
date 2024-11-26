@@ -1,6 +1,5 @@
 package org.example.inminute_demo.chat.handler;
 
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.inminute_demo.chat.exception.WebSocketException;
@@ -9,7 +8,7 @@ import org.example.inminute_demo.domain.Note;
 import org.example.inminute_demo.domain.NoteJoinMember;
 import org.example.inminute_demo.repository.MemberRepository;
 import org.example.inminute_demo.repository.NoteJoinMemberRepository;
-import org.example.inminute_demo.repository.NoteRepository;
+import org.example.inminute_demo.repository.note.NoteRepository;
 import org.example.inminute_demo.security.dto.CustomOAuth2User;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -17,7 +16,6 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

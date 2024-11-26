@@ -9,19 +9,16 @@ import org.example.inminute_demo.domain.NoteJoinMember;
 import org.example.inminute_demo.dto.note.request.CreateNoteRequest;
 import org.example.inminute_demo.dto.note.request.UpdateNoteRequest;
 import org.example.inminute_demo.repository.FolderRepository;
-import org.example.inminute_demo.repository.NoteJoinMemberRepository;
-import org.example.inminute_demo.repository.NoteRepository;
+import org.example.inminute_demo.repository.note.NoteRepository;
 import org.example.inminute_demo.apipayload.Handler.TempHandler;
 import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
 import org.example.inminute_demo.dto.note.response.*;
 import org.example.inminute_demo.domain.Member;
-import org.example.inminute_demo.repository.MemberRepository;
 import org.example.inminute_demo.security.dto.CustomOAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -90,7 +87,7 @@ public class NoteService {
 
         Member member = memberService.loadMemberByCustomOAuth2User(customOAuth2User);
 
-        List<Note> notes = noteRepository.findAllByMember_Id(member.getId());
+        List<Note> notes = noteRepository.findAllByMemberId(member.getId());
 
         List<NoteResponse> noteResponses = new ArrayList<>();
         for (Note note : notes) {

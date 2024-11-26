@@ -1,4 +1,4 @@
-package org.example.inminute_demo.repository;
+package org.example.inminute_demo.repository.note;
 
 import org.example.inminute_demo.domain.Note;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface NoteRepository extends JpaRepository<Note, Long> {
+public interface NoteRepository extends JpaRepository<Note, Long>, NoteCustomRepository {
 
     List<Note> findAllByFolder_Id(Long folderId);
     List<Note> findAllByMember_Id(Long memberId);
