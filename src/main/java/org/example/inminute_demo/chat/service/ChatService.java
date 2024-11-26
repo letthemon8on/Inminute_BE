@@ -49,7 +49,7 @@ import static jakarta.xml.bind.DatatypeConverter.parseBase64Binary;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
+//@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ChatService {
 
