@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.chat.dto.flask.request.SummaryRequest;
-import org.example.inminute_demo.chat.dto.flask.response.OneLineSummary;
 import org.example.inminute_demo.chat.dto.flask.response.SummaryResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
