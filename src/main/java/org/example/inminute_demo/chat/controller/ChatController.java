@@ -9,8 +9,6 @@ import org.example.inminute_demo.chat.dto.chat.request.*;
 import org.example.inminute_demo.chat.dto.chat.response.*;
 import org.example.inminute_demo.chat.dto.gpt.request.QuestionRequest;
 import org.example.inminute_demo.chat.dto.gpt.response.AnswerResponse;
-import org.example.inminute_demo.chat.dto.gpt.response.CreateToDoListResponse;
-import org.example.inminute_demo.chat.dto.gpt.response.CreateToDoResponse;
 import org.example.inminute_demo.chat.dto.stt.request.AudioChunkRequest;
 import org.example.inminute_demo.chat.dto.stt.request.AudioRequest;
 import org.example.inminute_demo.chat.service.ChatService;
