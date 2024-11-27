@@ -75,6 +75,10 @@ public class StompHandler implements ChannelInterceptor {
         } else if (StompCommand.DISCONNECT == command) { // Websocket 연결 종료
             String username = (String)getValue(accessor, "username");
             log.info("DISCONNECTED username : {}", username);
+
+            // 세션 속성 정리
+            Map<String, Object> sessionAttributes = getSessionAttributes(accessor);
+            sessionAttributes.clear(); // 모든 세션 속성 제거
         }
 
         log.info("header : " + message.getHeaders());
