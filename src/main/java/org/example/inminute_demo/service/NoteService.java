@@ -62,6 +62,7 @@ public class NoteService {
         return createNoteResponse;
     }
 
+    @Transactional
     public UpdateNoteResponse updateNote(Long noteId, UpdateNoteRequest updateNoteRequest) {
 
         Note note = noteRepository.findById(noteId)
