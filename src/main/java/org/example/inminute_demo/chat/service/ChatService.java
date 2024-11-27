@@ -171,6 +171,8 @@ public class ChatService {
     @Transactional
     public ChatStopResponse stopChatting(String uuid, Map<String, Object> header) throws JsonProcessingException {
 
+        System.out.println("----------stopChatting 호출됨----------");
+
         List<ChatResponse> script = chatRepository.findAllByNoteUUID(uuid);
 
         MeetingScript meetingScript = new MeetingScript(script.stream()
@@ -227,6 +229,9 @@ public class ChatService {
 
     @Transactional
     public List<ToDoResponse> getToDo(String uuid) {
+
+        System.out.println("----------getToDo 호출됨----------");
+
         List<ChatResponse> chatResponses = chatRepository.findAllByNoteUUID(uuid);
 
         String script = chatResponses.stream()
