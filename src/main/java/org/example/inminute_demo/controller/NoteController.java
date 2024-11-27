@@ -11,7 +11,6 @@ import org.example.inminute_demo.dto.note.response.NoteListResponse;
 import org.example.inminute_demo.dto.note.response.UpdateNoteResponse;
 import org.example.inminute_demo.dto.noteJoinMember.request.UpdateNoteJoinMemberRequest;
 import org.example.inminute_demo.dto.noteJoinMember.response.NoteJoinMemberListResponse;
-import org.example.inminute_demo.dto.toDo.request.UpdateToDoRequest;
 import org.example.inminute_demo.service.NoteJoinMemberService;
 import org.example.inminute_demo.service.NoteService;
 import org.example.inminute_demo.apipayload.ApiResponse;
