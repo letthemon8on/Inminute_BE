@@ -39,7 +39,7 @@ public class NoteController {
 
     @PatchMapping("/{noteId}")
     @Operation(summary = "회의록 수정", description = "회의록 이름, 한 줄 요약 중 원하는 항목을 수정합니다." +
-            "<br> 스크립트는 무시하삼")
+            "<br> 스크립트는 무시해주세요.")
     public ApiResponse<UpdateNoteResponse> updateNote(@PathVariable Long noteId, @RequestBody UpdateNoteRequest updateNoteRequest) {
         return ApiResponse.onSuccess(noteService.updateNote(noteId, updateNoteRequest));
     }
