@@ -141,7 +141,7 @@ public class ChatController {
     }
 
     @PostMapping("/notes/{uuid}/chat-bot")
-    @Operation(summary = "큐 앤 에이", description = "뀨 앤 에에에ㅔ에에에ㅔ에에에에에ㅔㅇ이")
+    @Operation(summary = "Q&A", description = "해당 회의록에 대해 질문하면 답변을 반환합니다.")
     public ApiResponse<AnswerResponse> getAnswer(@PathVariable(name = "uuid") String uuid,
                                                  @RequestBody QuestionRequest questionRequest) {
 
