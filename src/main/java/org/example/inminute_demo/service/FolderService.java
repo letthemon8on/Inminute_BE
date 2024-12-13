@@ -13,6 +13,7 @@ import org.example.inminute_demo.dto.folder.request.CreateFolderRequest;
 import org.example.inminute_demo.dto.folder.request.UpdateFolderRequest;
 import org.example.inminute_demo.dto.folder.response.*;
 import org.example.inminute_demo.domain.Member;
+import org.example.inminute_demo.repository.note.NoteRepository;
 import org.example.inminute_demo.security.dto.CustomOAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class FolderService {
     private final FolderRepository folderRepository;
     private final MemberService memberService;
     private final NoteService noteService;
+    private final NoteRepository noteRepository;
 
     @Transactional
     public CreateFolderResponse createFolder(CustomOAuth2User customOAuth2User, CreateFolderRequest createFolderRequest) {
@@ -115,6 +117,11 @@ public class FolderService {
 
         Folder folder = folderRepository.findById(folderId)
                         .orElseThrow(() -> new TempHandler(ErrorStatus.FOLDER_NOT_FOUND));
+
+        List<Note> notesInFolder = noteRepository.findAllByFolder_Id(folderId);
+        for (Note note : notesInFolder) {
+            note.deleteFolder();
+        }
 
         folderRepository.delete(folder);
     }

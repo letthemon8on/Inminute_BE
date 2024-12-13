@@ -38,12 +38,12 @@ public class MemberController {
     }
 
     @DeleteMapping
-    @Operation(summary = "삭제해보쉴?ㅋㅋ")
+    @Operation(summary = "사용자 탈퇴(개발중)")
     public ApiResponse<?> delete(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
         Member member = memberService.loadMemberByCustomOAuth2User(customOAuth2User);
 
         memberRepository.delete(member);
 
-        return ApiResponse.onSuccess("삭제 성공~~!~!~!!!!~!!!우하하");
+        return ApiResponse.onSuccess("탈퇴 성공");
     }
 }

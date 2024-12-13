@@ -43,7 +43,8 @@ public class FolderController {
     }
 
     @DeleteMapping("/{folderId}")
-    @Operation(summary = "폴더 삭제", description = "폴더 및 해당 폴더의 모든 회의록을 삭제합니다.")
+    @Operation(summary = "폴더 삭제", description = "해당 폴더를 삭제합니다." +
+            "<br> 폴더 내부 회의록은 삭제되지 않습니다.")
     public ApiResponse<?> deleteFolder(@PathVariable Long folderId) {
         folderService.deleteFolder(folderId);
         return ApiResponse.onSuccess("폴더 삭제됨");

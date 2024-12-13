@@ -56,6 +56,8 @@ public class Note extends BaseEntity{
     public void updateSummary(String summary) { this.summary = summary; }
     public void updateIsStart(Boolean isStart) { this.isStart = isStart; }
 
+    public void deleteFolder() { this.folder = null; }
+
     public void toScript(String script) {
         this.script = script;
     }
