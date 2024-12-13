@@ -1,6 +1,10 @@
 package org.example.inminute_demo.security.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.net.HttpHeaders;
+import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.inminute_demo.apipayload.code.status.ErrorStatus;
@@ -9,7 +13,6 @@ import org.example.inminute_demo.domain.Member;
 import org.example.inminute_demo.exception.GeneralException;
 import org.example.inminute_demo.redis.RedisClient;
 import org.example.inminute_demo.repository.MemberRepository;
-import org.example.inminute_demo.security.dto.MemberInfoRequest;
 import org.example.inminute_demo.security.google.GoogleClient;
 import org.example.inminute_demo.security.google.dto.GoogleProfile;
 import org.example.inminute_demo.security.google.dto.GoogleToken;
@@ -19,13 +22,17 @@ import org.example.inminute_demo.security.kakao.dto.KakaoProfile;
 import org.example.inminute_demo.security.kakao.dto.KakaoToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import static org.example.inminute_demo.security.exception.JwtException.jwtExceptionHandler;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class SocialLoginService {
+public class AuthService {
 
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     private String googleRedirectUrl;
@@ -125,5 +132,68 @@ public class SocialLoginService {
                 .loginType(loginType)
                 .build();
         return memberRepository.save(member);
+    }
+
+    public void signOut(HttpServletRequest request, HttpServletResponse response) {
+        // 쿠키에서 Refresh 토큰 가져옴
+        String refresh = null;
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("refreshToken")) {
+                refresh = cookie.getValue();
+            }
+        }
+
+        // 토큰 존재 여부 확인
+        if (refresh == null) {
+            throw new GeneralException(ErrorStatus.REFRESH_TOKEN_NOT_FOUND);
+        }
+
+        // 토큰 만료 여부 확인
+        try {
+            jwtUtil.isExpired(refresh);
+        } catch (ExpiredJwtException e) {
+            throw new GeneralException(ErrorStatus.REFRESH_TOKEN_EXPIRED);
+        }
+
+        // 토큰이 refresh인지 확인 (발급시 페이로드에 명시)
+        String category = jwtUtil.getCategory(refresh);
+        if (!category.equals("refresh")) {
+            throw new GeneralException(ErrorStatus.INVALID_REFRESH_TOKEN);
+        }
+
+        // DB에 저장되어 있는지 확인
+        String username = jwtUtil.getUsername(refresh);
+        String redisRefresh = redisClient.getValue(username);
+        if (StringUtils.isEmpty(redisRefresh) || !refresh.equals(redisRefresh)) {
+            throw new GeneralException(ErrorStatus.INVALID_REFRESH_TOKEN);
+        }
+
+        // 로그아웃 진행
+        // Refresh 토큰 DB에서 제거
+        redisClient.deleteValue(username);
+
+        // 쿠키에 저장되어 있는 Refresh 토큰, Access 토큰 null값 처리
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", null)
+                .maxAge(0)
+                .secure(true)
+                .path("/")
+                .httpOnly(true)
+                .domain(".inminute.kr")
+                .sameSite("None")
+                .build();
+
+        ResponseCookie accessCookie = ResponseCookie.from("accessToken", null)
+                .maxAge(0)
+                .secure(true)
+                .path("/")
+                .httpOnly(true)
+                .domain(".inminute.kr")
+                .sameSite("None")
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
+        response.setStatus(HttpStatus.OK.value());
     }
 }

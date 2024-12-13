@@ -88,8 +88,8 @@ public class SecurityConfig {
 
 
         // 로그아웃 필터
-        http
-                .addFilterBefore(new CustomLogoutFilter(jwtUtil, redisClient), LogoutFilter.class);
+        /*http
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, redisClient), LogoutFilter.class);*/
 
         // 시큐리티 필터 내부 예외처리
         http
