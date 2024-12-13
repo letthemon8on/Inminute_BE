@@ -262,7 +262,9 @@ public class ChatService {
                 .map(chatResponse -> chatResponse.nickname() + ": " + chatResponse.content())
                 .collect(Collectors.joining(" "));
 
-        String prompt = script + "\n\n여기까지가 회의록이야.\n" + "이 회의록에 대해서 질문할테니 대답해줘.\n" +
+        String prompt = "너는 우리 서비스의 챗봇 역할을 담당해야 해. 회의 스크립트를 보내줄게.\n\n" +
+                script + "\n\n위 대화는 회의 스크립트야.\n" +
+                "이 대화내용을 바탕으로 질문을 할건데, 답변은 존댓말로 해줘.\n" +
                 questionRequest.question();
         System.out.println(prompt);
 
