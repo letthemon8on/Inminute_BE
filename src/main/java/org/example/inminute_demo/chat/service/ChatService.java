@@ -262,7 +262,8 @@ public class ChatService {
                 .map(chatResponse -> chatResponse.nickname() + ": " + chatResponse.content())
                 .collect(Collectors.joining(" "));
 
-        String prompt = script + ". 이 회의록에 대해서 대답해줘. " + questionRequest.question();
+        String prompt = script + "\n\n여기까지가 회의록이야.\n" + "이 회의록에 대해서 질문할테니 대답해줘.\n" +
+                questionRequest.question();
         System.out.println(prompt);
 
         return chatGPTService.question(prompt);
