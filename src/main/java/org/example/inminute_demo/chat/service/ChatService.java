@@ -243,7 +243,9 @@ public class ChatService {
                 .distinct()
                 .collect(Collectors.joining(", "));
 
-        String prompt = script + "\n\n여기까지가 회의록이야.\n" + usernameList + "의 todo 리스트를 만들어줘. 각 할 일은 13자 이내로 만들어줘." +
+        String prompt = "너는 우리 서비스의 todo 리스트를 만들어주는 역할을 담당해야 해. 회의 스크립트를 보내줄게.\n\n" +
+                script + "\n\n위 대화는 회의 스크립트야.\n" +
+                "이 대화내용을 바탕으로 " + usernameList + "의 todo 리스트를 만들어줘. 각 할 일은 13자 이내로 만들어줘." +
                 "\n다음의 예시를 참고해서 만들어줘. 반드시 예시의 형식을 지켜야해.\n" +
                 "googleabc123@google.com:\n1. 와이어프레임 만들기\n2. 기획안 수정하기\n3. 프로젝트 일정 조정하기\n\n" +
                 "kakaoqwe456@naver.com:\n1. ERD 작성하기\n2. API 명세서 완성하기\n\n";
