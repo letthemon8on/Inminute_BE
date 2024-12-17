@@ -2,7 +2,6 @@ package org.example.inminute_demo.chat.service;
 
 import com.google.cloud.speech.v1.*;
 import com.google.protobuf.ByteString;
-import jakarta.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
