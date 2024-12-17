@@ -247,7 +247,6 @@ public class ChatService {
                 script + "\n\n위 대화는 회의 스크립트야.\n" +
                 "이 대화내용을 바탕으로 " + usernameList + "의 todo 리스트를 만들어줘.\n" +
                 "역할 파악을 잘 해야해. 각 할 일은 13자 이내로 만들어줘.\n" +
-                "이미 완료한 일은 todo 리스트에 넣지 마. 반드시 미래에 할 일만 todo 리스트에 넣어줘.\n" +
                 "다음의 예시를 참고해서 만들어줘. 반드시 예시의 형식을 지켜야해.\n" +
                 "googleabc123@google.com:\n1. 와이어프레임 만들기\n2. 기획안 수정하기\n3. 프로젝트 일정 조정하기\n\n" +
                 "kakaoqwe456@naver.com:\n1. ERD 작성하기\n2. API 명세서 완성하기\n\n";
