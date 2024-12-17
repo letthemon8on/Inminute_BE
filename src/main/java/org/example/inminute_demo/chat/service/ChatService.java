@@ -235,8 +235,8 @@ public class ChatService {
         List<ChatResponse> chatResponses = chatRepository.findAllByNoteUUID(uuid);
 
         String script = chatResponses.stream()
-                .map(chatResponse -> chatResponse.nickname() + ": " + chatResponse.content())
-                .collect(Collectors.joining(" "));
+                .map(chatResponse -> chatResponse.username() + ": " + chatResponse.content())
+                .collect(Collectors.joining("\n"));
 
         String usernameList = chatResponses.stream()
                 .map(ChatResponse::username)
